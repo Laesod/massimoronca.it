@@ -1,0 +1,48 @@
+@font-face {
+    font-family: 'SourceCodePro-Bold';
+    src: url('../fonts/SourceCodePro-Bold.eot');
+    src: url('../fonts/SourceCodePro-Bold.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/SourceCodePro-Bold.ttf.woff') format('woff'),
+         url('../fonts/SourceCodePro-Bold.ttf') format('truetype'),
+         url('../fonts/SourceCodePro-Bold.svg#CorbelBoldItalic') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'SourceCodePro-SemiBold';
+    src: url('../fonts/SourceCodePro-Semibold.eot');
+    src: url('../fonts/SourceCodePro-Semibold.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/SourceCodePro-Semibold.ttf.woff') format('woff'),
+         url('../fonts/SourceCodePro-Semibold.ttf') format('truetype'),
+         url('../fonts/SourceCodePro-Semibold.svg#CorbelItalic') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'Sentinel-Medium';
+    src: url('../fonts/Sentinel-Medium.eot');
+    src: url('../fonts/Sentinel-Medium.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Sentinel-Medium.woff') format('woff'),
+         url('../fonts/Sentinel-Medium.ttf') format('truetype'),
+         url('../fonts/Sentinel-Medium.svg#CorbelItalic') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'Sentinel-Book';
+    src: url('../fonts/Sentinel-Book.eot');
+    src: url('../fonts/Sentinel-Book.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Sentinel-Book.woff') format('woff'),
+         url('../fonts/Sentinel-Book.ttf') format('truetype'),
+         url('../fonts/Sentinel-Book.svg#CorbelItalic') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
