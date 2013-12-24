@@ -3,7 +3,5 @@ auto:        true
 lsi:         false
 server_port: 4000
 pygments:    true
-markdown:    rdiscount
+markdown: redcarpet-pygments
 permalink:   date
-rdiscount:
-  extensions: [smart]

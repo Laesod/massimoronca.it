@@ -1,9 +1,10 @@
 ---
-layout: default
+layout: post
 title: I tried Go and I liked it
+excerpt: Created inside Google by Ken Thompson and Rob Pike, fathers of Unix and UTF-8, to overcome the limitations of C++ (compile times being the most annoying), Go is a concurrent, garbage-collected language with fast compilation. This article will introduce you to the main language features and present you real life code snippets.
+source-name: MIKAMAYHEM
+source-url: http://dev.mikamai.com/post/65984358855/i-tried-go-and-i-liked-it
 ---
-I tried Go and I liked it
-====
 
 ![Gopher in all of its glory][1]   
 
@@ -57,10 +58,11 @@ Included in the package there is [godoc][21].
 When launched with the `-http` param, godoc act as a web server that present the documentation in form of web pages.   
 This is a typical godoc summoning ritual
 
-```
+``` bash
 $ godoc -http=:60666
 $ open http://localhost:60666
 ```
+
 My advice is to read carefully [How to write Go code][22] and [Effective Go][23] before starting writing Go code.  
 Go does not provide REPL, but you can try your snippets in the [Playground][24].
 
@@ -70,7 +72,7 @@ Go does not provide REPL, but you can try your snippets in the [Playground][24].
 
 Ok!
 
-```
+``` go
 package main
 
 import (
@@ -101,7 +103,7 @@ Let's explore  the code above in more detail:
 ### Packages and imports
 The first statement in a Go program must always be
 
-```
+``` go
 package name
 ```  
 
@@ -112,7 +114,7 @@ Next we find the import section, you can import packages by declaring your inten
 This is the first Go idiom we encounter: *statement grouping*.  
 You can import packages (or declare variables) one per line, like in
 
-```
+``` go
 import "fmt"
 import "net/http"
 ```
@@ -122,7 +124,7 @@ or you can group them together, surrounding the imports with parenthesis, like i
 Variables are declared *name first, then type*.  
 If you *declare and assign*, you can let the compiler infere the type.  
 
-```
+``` go
 // when variables are declared without assignment, Go assign them a default value:
 // zero for numbers, empty string for strings, nil for pointers and nullable types
 var a string
@@ -132,11 +134,11 @@ var b int
 c := "Hello, Wolrd!"  // := operator is available only inside function body
 var s = "a string"    // this pattern is available outside functions
 
-```
+``` 
 
 Of course *statement grouping* is available too
 
-```
+``` go
 var (
     s string
     i int
@@ -151,7 +153,7 @@ Don't worry about lining up the elements between the brackets, `gofmt` will take
 Go support [anonymous functions][26] and high order functions.  
 Functions are first class citizens in Go and can be assigned and carried around like regular variables.
 
-```
+``` go
 log := func(s string) {
     fmt.Printf("[%s] %s", time.Now(), s)
 }
@@ -196,7 +198,7 @@ So we are going to create a new object that implements the `ServeHTTP` method an
 Instead of classes, Go uses **structs**.  
 In this case it is an empty struct, but it can contain any other type as member variables (more on this later).
 
-```
+``` go
 // declare the new type Middleware.
 // Note: the type can be literally **any** type
 // type seq []int is a perfectly legal declaration
@@ -224,7 +226,7 @@ func NewMiddleware() *Middleware {
 
 We now pass the new handler to the listener
 
-```
+``` go
 http.ListenAndServe(":8080", NewMiddleware())
 ```
 
@@ -239,7 +241,7 @@ to do something different.
 In addition to adding the header with the artist's signature, we want to limit the ability to visit 
 our web site through one and only one specified host.  
 
-```
+``` go
 // we expand our middleware to contain the definition of the single allowed host
 type Middleware struct {
     allowedHost string
@@ -255,7 +257,7 @@ func NewMiddleware(host string) *Middleware {
 
 Rewrite `ServeHTTP` to check for the host validity
 
-```
+``` go
 func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// strip the port from hostname
@@ -284,7 +286,7 @@ func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 update the handler's initialization
 
-```
+``` go
 http.ListenAndServe(":8080", NewMiddleware("localhost"))
 ```
 

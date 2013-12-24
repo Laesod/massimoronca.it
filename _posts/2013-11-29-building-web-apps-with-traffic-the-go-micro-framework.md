@@ -1,8 +1,10 @@
 ---
-layout: default
+layout: post
 title: Building web apps with Traffic, the Go micro framework.  
+excerpt: In times when software development is moving towards creating services for other applications, micro frameworks serve very well this paradigm by providing an easy way to create the building blocks on top of which larger applications can rely. Traffic is one of them.
+source-name: MIKAMAYHEM
+source-url: http://dev.mikamai.com/post/68453619468/building-web-apps-with-traffic-the-go-micro-framework
 ---
-#Building web apps with Traffic, the Go micro framework.  
 
 Written by the long time Ruby developer [Andrea Franz][1],  [**Traffic**][5] is a [*micro framework*][4] for Web development inspired by [Sinatra][3].    
   
@@ -30,20 +32,28 @@ As usual, code is available on [github][7].
 ###Installing Traffic  
 Assuming you already have a working installation of Go, download Traffic   
 
-`go get github.com/pilu/traffic`
+``` bash
+$ go get github.com/pilu/traffic
+```
 
 and the command line tool  
 
-`go get github.com/pilu/traffic/traffic`
+```bash
+$ go get github.com/pilu/traffic/traffic
+```
 
 create a new project
 
-`traffic new demo_project`
+```bash
+$ traffic new demo_project
+```
 
 run it
 
-	cd demo_project  
-	go build && ./demo_project
+```bash
+$ cd demo_project  
+$ go build && ./demo_project
+```
 
 and point your browser to [http://127.0.0.1:7000/](http://127.0.0.1:7000/)
 
@@ -55,7 +65,7 @@ call a function that act as route-handler.
 
 Our first route 
 
-```
+```go
 package main
 
 import (
@@ -75,7 +85,7 @@ Routes are matched in the same order they are declared, the first that match is 
 
 Routes can contain named parameters that are accesible using the `Param` function.  
 
-```
+```go
 router.Get(`/:width/:height/?`, ImageHandler)
 
 func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
@@ -86,13 +96,13 @@ func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
 
 and parameters can be optional
 
-```
+```go
 router.Get(`/:width)/(:height)?`, ImageHandler)
 ```
 
 Route patterns can also include wildcards and regular expressions
 	
-```
+```go
 router.Get(`/:width/*`, ImageHandler)
 
 // match (width)x(height) format
@@ -106,7 +116,7 @@ Traffic allows to prepend the request handler with filters, which are like regul
 Before fitlers can be chained and can be attached to all routes or just some of them.  
 If a before filters write something in the Response Body, the request chain is interrupted.  
 
-```
+```go
 // if route match, before executing ImageHandler, Traffic executes the two filters
 // RequireValidImageParameters and GenerateImageCache in order  
 // If one of them fails and write to the response body, the execution stops
@@ -171,20 +181,23 @@ Traffic Response Writer has a method to render templates called `Render`, that t
 By default templates are placed in the `/view` folder.  
 Templates can be nested one isnide the other like in our `404` example
 
-```
+```django
+{% raw %}
 {{ template "includes/header" }}
 	<div class="error error-404"></div>
 {{ template "includes/footer" }}
+{% endraw %}
 ``` 
 If you are writing an API you might find the methods `WriteJSON` and `WriteXML` useful too.   
 
 Traffic also support serving static assets: every file placed in the `/public` folder is directly accessible.  
-For example if we put a css inside `/public/css/app.css` it will be automatically accessible as `http://<address>/css/app.css`.  
+For example if we put a css inside `/public/css/app.css` it will be automatically accessible as 
+```http://address/css/app.css```.  
 
 **Update**:  static files are served through `StaticMiddleware` that is added automatically only if environment is *‘development’*.
-Environment is set using the `TRAFFIC_ENV` variable, so if you set `TRAFFIC_ENV=production`, you have to manually add the `StaticMiddleware`  
+Environment is set using the `TRAFFIC_ENV` variable, so if you set it to`production`, you have to manually add the `StaticMiddleware`  
 
-```   
+```go  
 if traffic.Env() == "production" {
     router.Use(traffic.NewStaticMiddleware(traffic.PublicPath()))
 }
@@ -195,7 +208,7 @@ if traffic.Env() == "production" {
 
 The Traffic router has builtin handlers for `404` and `500` erros that can be customized.
 
-```
+```go
 // Custom not found handler
 router.NotFoundHandler = NotFoundHandler
 
