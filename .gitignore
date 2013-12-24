@@ -2,3 +2,5 @@ _site
 _import
 .DS_Store
 *.sublime-*
+
+Gemfile.lock
