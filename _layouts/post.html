@@ -1,11 +1,13 @@
 ---
 layout: default
 ---
-<article>
+<article id="{{page.id}}" class="post">
 	<h1 class="post-title">{{page.title}}</h1>
 	<div class="post-content">
 	{{content}}
 	</div>
 	<div class='small post-meta'>posted in <a href="{{page.source-url}}">{{page.source-name}}</a> on {{ page.date | date: "%A, %-d %B %Y" }}</div>
 </article>
-
+<script>
+  location.hash = "#{{page.id}}"
+</script>
