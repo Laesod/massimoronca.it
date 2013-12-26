@@ -410,6 +410,13 @@ article .highlight {
     padding: 10px;
 }
 
+.inline-code {
+    font-size: 0.9em;
+    background: #002b36;
+    color: #839496;
+    border-radius: 0.3em;
+    padding: 0 0.5em;
+}
 
 /*clearfix */
 .clearfix:after {
