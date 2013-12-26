@@ -313,6 +313,10 @@ footer a:hover {
   transition: all 0.3s ease-in-out;
 }
 
+.post-content, .post-excerpt {
+    text-align: justify;
+}
+
 .post-content a, .post-excerpt a, .post-meta a {
 
   border-bottom: 2px solid rgba(00, 43, 54, 0.4);
