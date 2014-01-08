@@ -411,11 +411,18 @@ article .highlight {
 }
 
 .inline-code {
-    font-size: 0.9em;
-    background: #002b36;
-    color: #839496;
-    border-radius: 0.3em;
-    padding: 0 0.5em;
+  background: #eee8d5;
+  font-size: .8em;
+  line-height: 1.5em;
+  color: #555;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 0.4em;
+  -moz-border-radius: 0.4em;
+  -ms-border-radius: 0.4em;
+  -o-border-radius: 0.4em;
+  border-radius: 0.4em;
+  padding: 0 .3em;
+  margin: -1px 0;
 }
 
 blockquote .inline-code {
