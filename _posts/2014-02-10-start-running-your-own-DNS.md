@@ -12,47 +12,57 @@ If you work on OS X, you probably have heard of [Pow](http://pow.cx/), but if yo
 [MAMP Pro](http://www.mamp.info/en/mamp-pro/index.html?utm_medium=twitter&utm_source=twitterfeed) offers domain resolution too, but it's not free.  
   
 There is, however, another solution: running your own instance of a DNS server.  
-What you need it's a copy of [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) and few commands in console.   
+What you need it's a copy of [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) and *stop worrying and love the shell.*.   
 
 First of all install dnsmasq and put it in autostart
 
-  	brew install dnsmasq  
-  	sudo cp -v $(brew --prefix dnsmasq)/*.plist /Library/LaunchDaemons
+```bash
+brew install dnsmasq  
+sudo cp -v $(brew --prefix dnsmasq)/*.plist /Library/LaunchDaemons
+```
 
 Configure the dns intance 
 
-	cat <<- EOF > $(brew --prefix)/etc/dnsmasq.conf
-	# IPV4
-	address=/dev/127.0.0.1
-	# IPV6, otherwise virtual hosts in Maverick won't work
-	address=/dev/::1
-	listen-address=127.0.0.1
-	EOF
+```bash
+cat <<- EOF > $(brew --prefix)/etc/dnsmasq.conf
+# IPV4
+address=/dev/127.0.0.1
+# IPV6, otherwise virtual hosts in Maverick won't work
+address=/dev/::1
+listen-address=127.0.0.1
+EOF
+```
 
 Then we configure the resolvers for all domains and create the one for the `.dev` suffixes 
 	
-	sudo mkdir -p /etc/resolver
-	# .dev domains
-	sudo bash -c 'echo "nameserver 127.0.0.1" > /etc/resolver/dev'
-	# universal catcher
-	sudo bash -c 'echo "nameserver 127.0.0.1" > /etc/resolver/catchall'
-	sudo bash -c 'echo "domain ." >> /etc/resolver/catchall'
+
+```bash
+sudo mkdir -p /etc/resolver
+# .dev domains
+sudo bash -c 'echo "nameserver 127.0.0.1" > /etc/resolver/dev'
+# universal catcher
+sudo bash -c 'echo "nameserver 127.0.0.1" > /etc/resolver/catchall'
+sudo bash -c 'echo "domain ." >> /etc/resolver/catchall'
+```
 
 
 Set localhost as main DNS server, unfortunately you can't automatically prepend localhost to the list of DNSs your DHCP assigned to you.  
 You have to change it manually and put 127.0.0.1 on top of the list.
 
-    networksetup -setdnsservers Ethernet 127.0.0.1
-    networksetup -setdnsservers Wi-Fi 127.0.0.1
+```bash
+networksetup -setdnsservers Ethernet 127.0.0.1
+networksetup -setdnsservers Wi-Fi 127.0.0.1
+```
 
 If everything's ok, running `scutil --dns` should return something like this
 
-	resolver #8
-	domain   : dev
-	nameserver[0] : 127.0.0.1
-	flags    : Request A records, Request AAAA records
-	reach    : Reachable,Local Address  	
-
+```bash
+resolver #8
+domain   : dev
+nameserver[0] : 127.0.0.1
+flags    : Request A records, Request AAAA records
+reach    : Reachable,Local Address  	
+```
 
 Now you can start dnsmasq 
 	
