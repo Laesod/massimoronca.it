@@ -1,3 +1,11 @@
+---
+layout: post
+title: Start running your own DNS server
+excerpt: Or why you should be running your own instance of a DNS server, it's easier than you think.
+source-name: MIKAMAYHEM
+source-url: http://dev.mikamai.com/post/76415968842/start-running-your-own-dns
+---
+
 A common problem in web development is simulating the final environment and, specifically, running your apps in their own private domain.  
 One solution is editing the `/etc/hosts` every time you need to add a new domain, but this can quickly become a very tedious process.  
 If you work on OS X, you probably have heard of [Pow](http://pow.cx/), but if you only need the domain resolution and don't use Rails, it is probaly overkill to install a full featured application server just to create some dev domain.   
