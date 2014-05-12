@@ -6,14 +6,14 @@ source-name: MIKAMAYHEM
 source-url: http://dev.mikamai.com/post/85531658709/a-modern-workflow-for-wordpress-using-docker-and-dokku
 ---
 
-Every developer, sooner or later, had to deal with [Wordpress](http://wordpress.org/), given it is one of the most popular Blog/CMS platform, if not **the** most popular.  
+Every developer, sooner or later, had to deal with [WordPress](http://wordpress.org/), given it is one of the most popular Blog/CMS platform, if not **the** most popular.  
 According to Wikipedia, roughly 22% of the web sites run on it, (it means one web site in five) it is widely know by users, [it has a large community](https://wordpress.org/plugins/) (over 30 thousand contributed plugins) and it is easily supported by designers.  
 
 Unfortunately WP was targeted at non-developer people, it had a great success as hosted platform, but working with it from the developer perspective, especially if we look at the workflow, looks clunky and outdated.  
 
 Usually it involves:
 
-- downloading a tar ball of the latest Wordpress stable version
+- downloading a tar ball of the latest WordPress stable version
 - rename `wp-config-sample.php` to `wp-config.php`
 - if you're using `git` (and you should!), add the `wp-config.php` to `.gitignore`
 - open a connection (possibly not FTP, but probably it will be FTP) and (slowly) upload everything on the dest server
@@ -24,10 +24,10 @@ Usually it involves:
 On the other hand, modern workflows are built around some kind of version control system (usually `git`) where the deploy is managed just by pushing a branch on the public server.  
 This is called push-to-deploy and is the one used by [Heroku](http://heroku.com).  
 Fortunately, some smart guys created [Docker](http://www.docker.io) and [Dokku](https://github.com/progrium/dokku), two projects that make possible to build you own personal-heroku-like [PaaS](http://en.wikipedia.org/wiki/Platform_as_a_service) in a matter of minutes (If you want to try it, [Digital Ocean](https://www.digitalocean.com/) offers cloud servers with Dokku preinstalled at a starting price of 5$/month).  
-Let's see how it applies to Wordpress.  
+Let's see how it applies to WordPress.  
 
 > In the rest of the article I'm going to use a few placeholders
-> 
+>
 > - `app` is the application name
 > - `dokku` is the address (or hostanme if configured) of the destination server running Docker & Dokku
 > - `dokku-user` is the user running Dokku on the remote machine
@@ -59,20 +59,20 @@ define('DB_HOST', getenv('WP_DB_HOST'));
 
 ```bash
 git add wp-config.php
-git commit -m 'added Wordpress configuration'
+git commit -m 'added WordPress configuration'
 ```
 
 If you use [Apache](http://apache.org/), you can set the values with [`SetEnv`](http://httpd.apache.org/docs/2.2/mod/mod_env.html), if you're running [Nginx](http://nginx.org/) and [phpf-pm](http://php-fpm.org/), you can use the [`ENV` section](http://www.php.net/manual/it/install.fpm.configuration.php#example-73) of your application pool.  
 You don't need any of that when deploying through Dokku.  
 
-You can work on your local copy, add plugins, create your own theme, and when you're happy with it, you commit all the changes and make yourself ready for the first deploy.  
-We add a new `remote` pointing at the Dokku server
+
+For our first deploy, we need to add a new `remote` pointing at the Dokku  server
 
 ```bash
 git remote add dokku dokku-user@dokku:app
 ```
 
-and push it
+and push the code
 
 ```bash
 git push dokku master
@@ -114,7 +114,7 @@ You can now open up a browser and point to app_url (it can have two formats: htt
 
 Our wp-config is empty right now, the server will reply with  
 
-![WP Error](http://static.tumblr.com/i42k0kc/PkRn5gwq5/wordpress-error.png)
+![WP Error](http://i.imgur.com/JzhJclD.png)
 
 That's good news, it means it is actually responding to our request.  
 
@@ -136,7 +136,7 @@ dokku plugins-install
 
 Some of them don't require the final `plugins-install` step, but it won't hurt if you run it anyway.  
 
-> Tip: you can run dokku commands on your local machine and execute them on the remote one with:   
+> Tip: you can run dokku commands on your local machine and execute them on the remote one with:
 > `ssh dokku-host dokku-command` (i.e. `ssh dokku help`)
 
 
@@ -177,7 +177,9 @@ DATABASE_URL: mysql2://root:VQpzDZRrEUAkUuAI@172.17.42.1:49170/db
  ssh dokku config:set app WP_DB_PASS='VQpzDZRrEUAkUuAI'
  ```
 
-If everything went right, you should now see the standard Wordpress install.  
+If everything went right, you should now see the standard WordPress install.  
 Choose a title, create an admin user and you're ready to go.  
+You can work on your local copy, add plugins, work on your theme, and when you're happy with it, you push all the changes and the app is automatically deployed and configured.  
+
 We just scratched the surface of what is possible with Docker & Dokku.  
 In a next article we'll see how to create a Dokku plugin to automate the entire process.  
