@@ -4,17 +4,21 @@ title: Building web apps with Traffic, the Go micro framework.
 excerpt: In times when software development is moving towards creating services for other applications, micro frameworks serve very well this paradigm by providing an easy way to create the building blocks on top of which larger applications can rely. Traffic is one of them.
 source-name: MIKAMAYHEM
 source-url: http://dev.mikamai.com/post/68453619468/building-web-apps-with-traffic-the-go-micro-framework
+tags:
+- traffic golang microframework
+- golang
+- frameworks inspired by sinatra
 ---
 
-Written by the long time Ruby developer [Andrea Franz][1],  [**Traffic**][5] is a [*micro framework*][4] for Web development inspired by [Sinatra][3].    
-  
+Written by the long time Ruby developer [Andrea Franz][1],  [**Traffic**][5] is a [*micro framework*][4] for Web development inspired by [Sinatra][3].
+
 In times when software development is moving towards creating services for other applications, micro frameworks serve very well this paradigm by providing an easy way to create the building blocks, such as a REST API, on top of which larger applications can rely.  
 
 Micro frameworks do not cover every single aspect of application building, most of them are left to the developer, for example you decide which database to use and how to access it or not to use a DB at all, but the codebase is so compact that a single person can master it in a matter of few days.
 
 Like other popular frameworks, *Traffic* features include
 
-- regexp routing 
+- regexp routing
 - chainable request filters
 - middlewares
 - templates
@@ -30,7 +34,7 @@ We are going to analyze each one of them, by writing a small demo application, a
 As usual, code is available on [github][7].
 
 ###Installing Traffic  
-Assuming you already have a working installation of Go, download Traffic   
+Assuming you already have a working installation of Go, download Traffic
 
 ``` bash
 $ go get github.com/pilu/traffic
@@ -60,10 +64,10 @@ and point your browser to [http://127.0.0.1:7000/](http://127.0.0.1:7000/)
 ### Routing
 
 The first thing we need for our application is a router.  
-Traffic routes are a pair of an HTTP method and a URL pattern that, if matched,   
+Traffic routes are a pair of an HTTP method and a URL pattern that, if matched,
 call a function that act as route-handler.  
 
-Our first route 
+Our first route
 
 ```go
 package main
@@ -78,7 +82,7 @@ func main() {
 	router = traffic.New()
 	router.Get("/", RootHandler)
 	router.Run()
-}	
+}
 ```
 
 Routes are matched in the same order they are declared, the first that match is executed.  
@@ -101,7 +105,7 @@ router.Get(`/:width)/(:height)?`, ImageHandler)
 ```
 
 Route patterns can also include wildcards and regular expressions
-	
+
 ```go
 router.Get(`/:width/*`, ImageHandler)
 
@@ -126,17 +130,17 @@ router.Get(`/:width/?(:height)?/?`, ImageHandler).
 	AddBeforeFilter(GenerateImageCache)
 
 func RequireValidImageParameters(w traffic.ResponseWriter, r *traffic.Request) {
-	width, err := strconv.Atoi(r.Param("width")) 
+	width, err := strconv.Atoi(r.Param("width"))
 	if err != nil { // conversion error, either var is empty or not a number
 		// cannot continue
-		w.WriteHeader(http.StatusNotFound) 
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	height, err := strconv.Atoi(r.Param("height"))
 	if err != nil {
 		// if height is omitted the image is gonna be a square
-		height = width 
+		height = width
 	}
 
 	if (width <= 2560 && width > 0) && (height <= 2560 && height > 0) {
@@ -146,10 +150,10 @@ func RequireValidImageParameters(w traffic.ResponseWriter, r *traffic.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Render("400", nil)
 	}
-}	
+}
 
 func GenerateImageCache(w traffic.ResponseWriter, r *traffic.Request) {
-	// pseudo code	
+	// pseudo code
 	if not cache_folder_exists and create_folder_fails
 		throw error with panic
 
@@ -162,7 +166,7 @@ func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
 
 	// at this point we can safely assume that the image file already exists
 }
-	
+
 // this filter is global to the router and is applied before each request
 router.AddBeforeFilter(PoweredByHandler)
 
@@ -177,7 +181,7 @@ func PoweredByHandler(w traffic.ResponseWriter, r *traffic.Request) {
 
 Traffic supports templates in the standard Go format.  
 Template library documentation can be found [here][8].  
-Traffic Response Writer has a method to render templates called `Render`, that takes the template name (without the extension) and an optional param that contains the data to be rendered.   
+Traffic Response Writer has a method to render templates called `Render`, that takes the template name (without the extension) and an optional param that contains the data to be rendered.
 By default templates are placed in the `/view` folder.  
 Templates can be nested one isnide the other like in our `404` example
 
@@ -187,11 +191,11 @@ Templates can be nested one isnide the other like in our `404` example
 	<div class="error error-404"></div>
 {{ template "includes/footer" }}
 {% endraw %}
-``` 
-If you are writing an API you might find the methods `WriteJSON` and `WriteXML` useful too.   
+```
+If you are writing an API you might find the methods `WriteJSON` and `WriteXML` useful too.
 
 Traffic also support serving static assets: every file placed in the `/public` folder is directly accessible.  
-For example if we put a css inside `/public/css/app.css` it will be automatically accessible as 
+For example if we put a css inside `/public/css/app.css` it will be automatically accessible as
 ```http://address/css/app.css```.  
 
 **Update**:  static files are served through `StaticMiddleware` that is added automatically only if environment is *‘development’*.
@@ -229,7 +233,7 @@ func ErrorHandler(w traffic.ResponseWriter, r *traffic.Request) {
 [Traffic][5] is a young framework specifically crafte for small to medium applications.  
 I was able to create the demo app [Purrraceholder][7] (read it with a japanese accent) in a couple of hours, without previous knowledge of Traffic internals.  
 I know there are people that can write a blog in 15 minutes, but I think hours is a more realistic time frame and, most of all, you are really in control of what's happening.  
-If you wanna play with [Traffic][5], you can start by forking [Purraceholder][7] and adding some features.   
+If you wanna play with [Traffic][5], you can start by forking [Purraceholder][7] and adding some features.
 These are the firsts that come to mind:  
 
 - add more cats, there are never enough cats on the internet

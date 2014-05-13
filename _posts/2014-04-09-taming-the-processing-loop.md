@@ -4,11 +4,16 @@ title: Taming the processing loop
 excerpt: A simple use case for state machines in Processing
 source-name: MIKAMAYHEM
 source-url: http://dev.mikamai.com/post/82178345433/taming-the-processing-loop
+tags:
+- Processing
+- Non conventional interfaces
+- State machines
+- Java interfaces
 ---
 
 In Mikamai we do a lot of reasearch on [non](http://dev.mikamai.com/post/78652180658/how-to-program-an-attiny85-or-attiny45-with-an) [conventional](http://dev.mikamai.com/post/78453410376/let-your-raspberry-pi-see-this-wonderful-world) [hardware](http://dev.mikamai.com/post/69163914657/intel-galileo-getting-started-with-mac-os-x), we make [prototypes](http://dev.mikamai.com/post/76945627390/you-cant-touch-this-an-evil-arduino-based-alarm) or create unsual interfaces that are very domain specific.  
 
-Like this one 
+Like this one
 
 ![image](https://scontent-b-ams.xx.fbcdn.net/hphotos-ash3/t1.0-9/994503_10151525258526336_667825845_n.jpg)  
 
@@ -18,7 +23,7 @@ To quickly sketch ideas, we often rely on [Processing](http://www.processing.org
 The drawback is that it is so fast to get something working, that you will be tempted to make the mistake of creating a [polished prototpe](http://foxdellfolio.com/the-perils-of-a-polished-prototype/).  
 Your prototype code ends up in production and there's no way back from there.  
 
-To resist the temptation of releasing a blob of code, I borrowed [a technique from  one of the Rob Pike's talks](https://www.youtube.com/watch?v=HxaD_trXwRE) to keep things easy, while keeping them clean at the same time.    
+To resist the temptation of releasing a blob of code, I borrowed [a technique from  one of the Rob Pike's talks](https://www.youtube.com/watch?v=HxaD_trXwRE) to keep things easy, while keeping them clean at the same time.
 
 It is basically an implementation of a state machime.  
 We're gonna have a `StateMachine` class that handles the inputs and the state changes, and several state classes that implement the `State` interface.  
@@ -29,7 +34,7 @@ interface State {
 	  public State nextState();  
 }
 ```
-	
+
 The loop of our Processing application is really simple too
 
 ```java
@@ -44,18 +49,18 @@ and this is the most basic implementation possible of the `StateMachine` class
 ```java
 class StateMachine(State initialstate) {
   private State currentstate;
-  
+
   StateMachine(State initialstate) {
     this.currentstate = initialstate;
   }
-  
+
   public StateMachine nextState() {
     this.currentstate = this.currentstate.nextState();
-   	return this; 
+   	return this;
   }
 }
 ```
-	
+
 Each class must implement the `nextState` method and return an istance of the next state that will be executed.  
 With this knowledge in mind, this is how you build an infinite loop inside an inifinite loop
 
@@ -85,7 +90,7 @@ class Pong implements State {
   	}
 }
 ```
-	
+
 We moved the logic of the application out of the central `switch/case` statement in the `draw` function and deconstruted it into smaller pieces, that only know about themselves and the next state they are going to emit.  
 
 As long as your state classes implement the `State` interface you can exapnd the concept to fit your needs.  
@@ -103,7 +108,7 @@ and modify `StateMachine` accordingly
 ```java
 public StateMachine nextState() {
   this.currentstate = this.currentstate.nextState(this.currentstate, this);
- 	return this; 
+ 	return this;
 }
 ```
 

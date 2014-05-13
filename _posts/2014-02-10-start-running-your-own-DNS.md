@@ -4,15 +4,20 @@ title: Start running your own DNS server
 excerpt: Or why you should be running your own instance of a DNS server, it's easier than you think.
 source-name: MIKAMAYHEM
 source-url: http://dev.mikamai.com/post/76415968842/start-running-your-own-dns
+tags:
+- running your private DNS
+- DNS server
+- DnsMasq
+- pow and powder alternatives
 ---
 
 A common problem in web development is simulating the final environment and, specifically, running your apps in their own private domain.  
 One solution is editing the `/etc/hosts` every time you need to add a new domain, but this can quickly become a very tedious process.  
-If you work on OS X, you probably have heard of [Pow](http://pow.cx/), but if you only need the domain resolution and don't use Rails, it is probaly overkill to install a full featured application server just to create some dev domain.   
+If you work on OS X, you probably have heard of [Pow](http://pow.cx/), but if you only need the domain resolution and don't use Rails, it is probaly overkill to install a full featured application server just to create some dev domain.
 [MAMP Pro](http://www.mamp.info/en/mamp-pro/index.html?utm_medium=twitter&utm_source=twitterfeed) offers domain resolution too, but it's not free.  
-  
+
 There is, however, another solution: running your own instance of a DNS server.  
-What you need it's a copy of [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) and *stop worrying and love the shell.*.   
+What you need it's a copy of [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) and *stop worrying and love the shell.*.
 
 First of all install dnsmasq and put it in autostart
 
@@ -21,7 +26,7 @@ brew install dnsmasq
 sudo cp -v $(brew --prefix dnsmasq)/*.plist /Library/LaunchDaemons
 ```
 
-Configure the dns intance 
+Configure the dns intance
 
 ```bash
 cat <<- EOF > $(brew --prefix)/etc/dnsmasq.conf
@@ -33,8 +38,8 @@ listen-address=127.0.0.1
 EOF
 ```
 
-Then we configure the resolvers for all domains and create the one for the `.dev` suffixes 
-	
+Then we configure the resolvers for all domains and create the one for the `.dev` suffixes
+
 
 ```bash
 sudo mkdir -p /etc/resolver
@@ -61,11 +66,11 @@ resolver #8
 domain   : dev
 nameserver[0] : 127.0.0.1
 flags    : Request A records, Request AAAA records
-reach    : Reachable,Local Address  	
+reach    : Reachable,Local Address
 ```
 
-Now you can start dnsmasq 
-	
+Now you can start dnsmasq
+
 ```bash
 # start dnsmasq
 sudo launchctl -w load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
@@ -73,7 +78,7 @@ sudo launchctl -w load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
 # make some tests
 $ ping -c 1 anyhostname.dev
 PING anyhostname.dev (127.0.0.1): 56 data bytes
-64 bytes from 127.0.0.1: icmp_seq=0 ttl=64 time=0.058 ms 
+64 bytes from 127.0.0.1: icmp_seq=0 ttl=64 time=0.058 ms
 
 $ dig anyhostname.dev
 ;; ANSWER SECTION:
@@ -86,7 +91,7 @@ $ dig google-public-dns-a.google.com @127.0.0.1
 ;; ANSWER SECTION:
 google-public-dns-a.google.com.	25451 IN A	8.8.8.8
 ;; Query time: 30 msec
-;; SERVER: 127.0.0.1#53(127.0.0.1)	
+;; SERVER: 127.0.0.1#53(127.0.0.1)
 
 # cache will speedup subsequent DNS queries
 $ dig google-public-dns-a.google.com @127.0.0.1
@@ -114,11 +119,8 @@ For example, `myapp.dev` will point to `~/Sites/myapp`.
 
     <Directory /Users/[your_login]/Sites/*>
         AllowOverride All
-    </Directory>	
+    </Directory>
 </VirtualHost>
 ```
-	
-You can finally reload Apache configuration with `sudo apachectl graceful`.
-	
 
-	
+You can finally reload Apache configuration with `sudo apachectl graceful`.

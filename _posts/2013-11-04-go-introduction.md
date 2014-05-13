@@ -4,11 +4,16 @@ title: I tried Go and I liked it
 excerpt: Created inside Google by Ken Thompson and Rob Pike, fathers of Unix and UTF-8, to overcome the limitations of C++ (compile times being the most annoying), Go is a concurrent, garbage-collected language with fast compilation. This article will introduce you to the main language features and present you real life code snippets.
 source-name: MIKAMAYHEM
 source-url: http://dev.mikamai.com/post/65984358855/i-tried-go-and-i-liked-it
+tags:
+  - golang
+  - go language
+  - golang tutorial
+  - getting started with golang
 ---
 
-![Gopher in all of its glory][1]   
+![Gopher in all of its glory][1]
 
-Say hello to [Gopher][2].   
+Say hello to [Gopher][2].
 Gopher is the mascotte of a new language from [Google][3], called [Go][4], with the capital **G**.  
 Not a very clever name from a search engine company, if you ask me, but that's probably the only bad thing you will hear about it.
 
@@ -19,7 +24,7 @@ Not a very clever name from a search engine company, if you ask me, but that's p
 Created inside Google by [Ken Thompson][5] and [Rob Pike][6], fathers of Unix and UTF-8, to overcome the limitations of C++ (compile times being the most annoying), Go is a *concurrent*, *garbage-collected* language with *fast compilation*.  
 
 Its real strength is just simplicity.  
-As Rob Pike once said, [less is exponentially more](http://commandcenter.blogspot.it/2012/06/less-is-exponentially-more.html) and I strongly agree with him.   
+As Rob Pike once said, [less is exponentially more](http://commandcenter.blogspot.it/2012/06/less-is-exponentially-more.html) and I strongly agree with him.
 
 ### Features
 
@@ -28,14 +33,14 @@ As Rob Pike once said, [less is exponentially more](http://commandcenter.blogspo
  - type safe, statically typed with some type inference support. More errors get caught at compile time, less time is spent debugging
  - [garbage collected][7] with support for pointers, but no pointer arithmetics (for safety and good health of programmers minds).
  - strict compiler: [you can't declare a variable or import a package without using it][8]
- - concurrency and parallelism through [goroutines][9]. Goroutines are one of the peculiarities of Go, they are a cheap, lightweight construct built on top of threads, that run concurrently with other goroutines. If you have more than one core processor, they also run in parallel, in a completely transparent way for the programmer. Communication is managed sending messages through [channels][10] which are basically type safe queues. 
+ - concurrency and parallelism through [goroutines][9]. Goroutines are one of the peculiarities of Go, they are a cheap, lightweight construct built on top of threads, that run concurrently with other goroutines. If you have more than one core processor, they also run in parallel, in a completely transparent way for the programmer. Communication is managed sending messages through [channels][10] which are basically type safe queues.
  - Object orientation but **no** classes. Any type can be an object.
  - **No type inheritance** in favour of *[composition][11]* and *[duck typing][12]*. IS-A relationships are banned!
  - [multiple return values][13]
  - [rich][14] standard library.
  - a powerful set of [command line tools][15] including one to [enforce coding conventions][16] and one for [automatic code documentation][17].  
 Many IDE that support Go, launch `gofmt` just before save, to ensure that every Go file obey the rules.
- - last, but not least, cross compiling. Go compiler can create binaries for platforms/architectures different from the one it is running, provided [the platform is supported][18]. 
+ - last, but not least, cross compiling. Go compiler can create binaries for platforms/architectures different from the one it is running, provided [the platform is supported][18].
 
 ### Installing Go
 You can download Go from the [golang.org website][19].  
@@ -48,14 +53,14 @@ Basically you need to create two environment variables:
    configured automatically by the installer)  
  - `GOPATH` that will
    contain all your code and all the packages you are going to install
- - it is optional, but recommended, to add `$GOPATH/bin` to the `$PATH` variable 
+ - it is optional, but recommended, to add `$GOPATH/bin` to the `$PATH` variable
 
 ### First steps and getting help
 
 You should now have a working installation of the Go development environment, but if you come from Ruby or Python, you might get lost while reading someone else's code or trying to figure out which is the idiomatic way to solve a problem in Go.  
 No worries, Go has an answer for that too.  
 Included in the package there is [godoc][21].  
-When launched with the `-http` param, godoc act as a web server that present the documentation in form of web pages.   
+When launched with the `-http` param, godoc act as a web server that present the documentation in form of web pages.
 This is a typical godoc summoning ritual
 
 ``` bash
@@ -93,7 +98,7 @@ func main() {
 ```
 This is our first Go program.  
 Every client that connects to localhost, port 8080, will receive the *"Hello World!"* message.  
-The example looks a lot like the *Node.js* [hello world web serve example][25], but unlike *Node.js*, this code is already multithreaded. Every new client is served by a `goroutine`, that the `net/http` starts behind the scenes, taking advantage of concurrency and multiple cores, if present.   
+The example looks a lot like the *Node.js* [hello world web serve example][25], but unlike *Node.js*, this code is already multithreaded. Every new client is served by a `goroutine`, that the `net/http` starts behind the scenes, taking advantage of concurrency and multiple cores, if present.
 Talking about simplicity, is there anything simpler than that?  
 
 > **Note:** To run the code you have to save it in a file and then execute `go run <filename>` from the console  
@@ -134,7 +139,7 @@ var b int
 c := "Hello, Wolrd!"  // := operator is available only inside function body
 var s = "a string"    // this pattern is available outside functions
 
-``` 
+```
 
 Of course *statement grouping* is available too
 
@@ -165,8 +170,8 @@ log("Hello World!")
 
 // a more complex example
 
-type logLevel string 
-type logger func(string) // create a new type for a function that takes a string as input 
+type logLevel string
+type logger func(string) // create a new type for a function that takes a string as input
 
 getLogger := func(l logLevel) logger {
 	return func(s string) {
@@ -207,8 +212,8 @@ type Middleware struct {
 }
 
 // implements the ServeHTTP method as requested by Handler's interface
-// notice the syntax: 
-// after the keyword func we declare the type that the method will be attached to 
+// notice the syntax:
+// after the keyword func we declare the type that the method will be attached to
 // and then we pass a parameter m that represents our instance variable
 // in a very similar way to Python's self
 func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -230,15 +235,15 @@ We now pass the new handler to the listener
 http.ListenAndServe(":8080", NewMiddleware())
 ```
 
-Every time a client connects, it doesn't receive any message back, except for the new header.   
+Every time a client connects, it doesn't receive any message back, except for the new header.
 ![X-Powered-By mikamai][27]
 
-Nice, but not very interesting, plus we lost the ability to serve the content to the client, cause 
+Nice, but not very interesting, plus we lost the ability to serve the content to the client, cause
 the handler function we declared before is not getting called.  
 How can we fix that?  
 Before explaining how to forward the call to the default handler, we're going to modify our middleware
 to do something different.  
-In addition to adding the header with the artist's signature, we want to limit the ability to visit 
+In addition to adding the header with the artist's signature, we want to limit the ability to visit
 our web site through one and only one specified host.  
 
 ``` go
@@ -293,7 +298,7 @@ http.ListenAndServe(":8080", NewMiddleware("localhost"))
 et voilà
 
 ![access denied][28]  
-  
+
 ----------
 
 ![access granted][29]
