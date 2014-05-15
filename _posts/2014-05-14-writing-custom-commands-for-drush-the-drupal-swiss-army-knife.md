@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Writing custom commands for Drush: the Drupal swiss army knife.
-excerpt:
+title: "Writing custom commands for Drush: the Drupal swiss army knife."
+excerpt: Recently I worked on a client project based on the Drupal platform. The most important part of the job was automating a data import from a remote source, but instead of writing a script to do the job, I created a command for Drush.
 source-name: MIKAMAYHEM
 source-url: http://dev.mikamai.com/post/85715381049/writing-custom-commands-for-drush-the-drupal-swiss
 tags:
@@ -11,8 +11,7 @@ tags:
 ---
 
 Recently I worked on a client project based on the Drupal platform.  
-The most important part of the job was automating a data import from a remote source,  
-but instead of writing a script to do the job, I created a command for [Drush](https://github.com/drush-ops/drush).  
+The most important part of the job was automating a data import from a remote source, but instead of writing a script to do the job, I created a command for [Drush](https://github.com/drush-ops/drush).
 Quoting from Drush repository site
 
 > Drush is a command-line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those who spend their working hours hacking away at the command prompt.
@@ -54,7 +53,7 @@ We'll use `diceroller` as namespace and `roll-dice` as command name.
 This is the implementation of the main hook function
 
 ```php
-
+<?php
 function diceroller_drush_command() {
   $items = array();
 
@@ -82,6 +81,8 @@ function diceroller_drush_command() {
 The command is easily implementd this way
 
 ```php
+<?php
+
 function drush_diceroller_roll_dice($faces=6) {
   $rolls = 1;
 
@@ -103,6 +104,7 @@ function drush_diceroller_roll_dice($faces=6) {
 In this case we assume that the `--rolls` option contains a number, but we can guarantee that the function parameters are valid implementing the `validate` hook (there are others called just before and after the real command function).
 
 ```php
+<?php
 
 function drush_diceroller_roll_dice_validate($faces=6) {
 
@@ -130,7 +132,7 @@ function drush_diceroller_roll_dice_validate($faces=6) {
 
 If we did our job diligently, running `drush help roll-dice` should give us this ouput
 
-```bash
+```sh
 Roll a dice for your pleasure.
 
 Examples:
