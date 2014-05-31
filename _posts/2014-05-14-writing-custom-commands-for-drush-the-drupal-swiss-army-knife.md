@@ -21,7 +21,8 @@ Drush can handle almost every aspect of a Drupal site, from the mundane [cache m
 [project management](http://www.drushcommands.com/drush-6x/pm) and much more, including a [CLI for running sql queries](http://www.drushcommands.com/drush-6x/sql/sql-cli) an [http server for development](http://www.drushcommands.com/drush-6x/runserver/runserver) and an [rsync wrapper](http://www.drushcommands.com/drush-7x/core/core-rsync).  
 Drush commands can also be executed on remote machines, provided Drush is installed, by specifing the server [alias](http://deeson-online.co.uk/labs/drupal-drush-aliases-and-how-use-them) (e.g. `drush clear-cache @staging`).  
 
-There are different ways of creating Drush scripts:
+There are different ways of creating Drush scripts:  
+
 - prepending the script with the shebang `#!/usr/bin/env drush` or `#!/full/path/to/drush` and using
 [Drush commands](http://www.drushcommands.com/)
 - using Drush php interpreter `#!/full/path/to/drush php-script` and using the [Drush
