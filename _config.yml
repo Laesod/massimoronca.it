@@ -5,3 +5,5 @@ server_port: 4000
 pygments:    true
 markdown: redcarpet-pygments
 permalink:   date
+gems:
+  - jekyll-sitemap
