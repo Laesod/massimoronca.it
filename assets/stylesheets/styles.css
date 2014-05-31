@@ -453,6 +453,11 @@ blockquote .inline-code {
   border: none;
 }
 
+img[alt="graft knife"], 
+img[alt="ronco knives"] {
+  width: 100%;
+}
+
 /*clearfix */
 .clearfix:after {
   content: ".";
