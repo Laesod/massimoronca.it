@@ -6,6 +6,7 @@ body {
   color: #000;
   /*color:#302c22;*/
   background: #fdf6e3;
+  background: #fffff0;
   font-weight:300;
 }
 
@@ -33,7 +34,7 @@ a {
 
   -webkit-transition: color 1s ease-in-out;
   -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;  
+  -webkit-backface-visibility: hidden;
   -moz-transition: color 1s ease-in-out;
   -ms-transition: color 1s ease-in-out;
   -o-transition: color 1s ease-in-out;
@@ -45,7 +46,7 @@ a:hover {
 
   -webkit-transition: color 0.3s ease-in-out;
   -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;  
+  -webkit-backface-visibility: hidden;
   -moz-transition: color 0.3s ease-in-out;
   -ms-transition: color 0.3s ease-in-out;
   -o-transition: color 0.3s ease-in-out;
@@ -262,7 +263,7 @@ footer a:hover {
   opacity: 0;
   -webkit-transition: all 1s cubic-bezier(0.075, 0.820, 0.165, 1.000);
   -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;    
+  -webkit-backface-visibility: hidden;
   -moz-transition: all 1s cubic-bezier(0.075, 0.820, 0.165, 1.000);
   -ms-transition: all 1s cubic-bezier(0.075, 0.820, 0.165, 1.000);
   -o-transition: all 1s cubic-bezier(0.075, 0.820, 0.165, 1.000);
@@ -274,7 +275,7 @@ footer a:hover {
 
   -webkit-transition: all 0.3s ease-out;
   -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;  
+  -webkit-backface-visibility: hidden;
   -moz-transition: all 0.3s ease-out;
   -ms-transition: all 0.3s ease-out;
   -o-transition: all 0.3s ease-out;
@@ -291,7 +292,7 @@ footer a:hover {
   opacity: 1;
   -webkit-transition: all 0.3s ease-in-out;
   -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;  
+  -webkit-backface-visibility: hidden;
   -moz-transition: all 0.3s ease-in-out;
   -ms-transition: all 0.3s ease-in-out;
   -o-transition: all 0.3s ease-in-out;
@@ -304,7 +305,7 @@ footer a:hover {
 
   -webkit-transition: color 1s ease-in-out;
   -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;  
+  -webkit-backface-visibility: hidden;
   -moz-transition: color 1s ease-in-out;
   -ms-transition: color 1s ease-in-out;
   -o-transition: color 1s ease-in-out;
@@ -316,7 +317,7 @@ footer a:hover {
 
   -webkit-transition: color 0.3s ease-in-out;
   -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;  
+  -webkit-backface-visibility: hidden;
   -moz-transition: color 0.3s ease-in-out;
   -ms-transition: color 0.3s ease-in-out;
   -o-transition: color 0.3s ease-in-out;
@@ -333,7 +334,7 @@ footer a:hover {
 
   -webkit-transition: all 1s ease-in-out;
   -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;  
+  -webkit-backface-visibility: hidden;
   -moz-transition: all 1s ease-in-out;
   -ms-transition: all 1s ease-in-out;
   -o-transition: all 1s ease-in-out;
@@ -346,7 +347,7 @@ footer a:hover {
 
   -webkit-transition: all 0.3s ease-in-out;
   -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;  
+  -webkit-backface-visibility: hidden;
   -moz-transition: all 0.3s ease-in-out;
   -ms-transition: all 0.3s ease-in-out;
   -o-transition: all 0.3s ease-in-out;
@@ -423,7 +424,7 @@ article .highlight {
 
 .highlight pre a:last-of-type::before {
   padding-bottom: 10px;
-  border-bottom-left-radius: 0.4em;  
+  border-bottom-left-radius: 0.4em;
 }
 
 .highlight pre a:only-of-type::before {
@@ -453,7 +454,7 @@ blockquote .inline-code {
   border: none;
 }
 
-img[alt="graft knife"], 
+img[alt="graft knife"],
 img[alt="ronco knives"] {
   width: 100%;
 }
