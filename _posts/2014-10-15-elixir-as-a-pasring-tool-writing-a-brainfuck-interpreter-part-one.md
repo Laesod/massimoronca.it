@@ -2,10 +2,13 @@
 layout: post
 title: Writing a Brainfuck interpreter in Elixir, part one
 excerpt: Brainfuck is an tiny, crazy, esoteric, turing complete, programming language made of only 8 instructions. The perfect language to write an interpreter for, the perfect small project to learn about Elixir fun!
+source-name: MIKAMAYHEM
+source-url: http://dev.mikamai.com/post/100075543414/elixir-as-a-parsing-tool-writing-a-brainfuck
 tags:
 - Elixir
 - brainfuck
 - brainfuck interpreter
+- brainfuck interpreter in Elixir
 - parsing in Elixir
 ---
 
