@@ -354,6 +354,11 @@ footer a:hover {
   transition: all 0.3s ease-in-out;
 }
 
+.post-content img {
+  display: block;
+  margin: auto;
+}
+
 .post-meta {
   background: url(../images/clock.png) top left no-repeat;
   padding-left: 20px;
