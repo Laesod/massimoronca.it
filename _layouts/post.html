@@ -7,10 +7,11 @@ layout: default
 	{{content}}
 	</div>
 	<div class='small post-meta'>
-    {% if page.source-url %}
-    posted in <a href="{{page.source-url}}">{{page.source-name}}</a> on
+    posted
+    {% if page.source-url and page.source-name %}
+    in <a href="{{page.source-url}}">{{page.source-name}}</a>
     {% endif %}
-    {{ page.date | date: "%A, %-d %B %Y" }}</div>
+    on {{ page.date | date: "%A, %-d %B %Y" }}</div>
 </article>
 <script>
   location.hash = "#{{page.id}}"

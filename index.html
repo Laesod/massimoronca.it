@@ -9,6 +9,11 @@ title: Massimo Ronca ~ a reckless programmer with a sarcastic wit
     </h2>
     <p class="post-excerpt">{{ post.excerpt }}</p>
     <!-- <div class='small post-tags'>tags {% for tag in post.tags %}#{{tag | downcase }} {% endfor %}</div> -->
-    <div class='small post-meta'>posted in <a href="{{post.source-url}}">{{post.source-name}}</a> on {{ post.date | date: "%A, %-d %B %Y" }}</div>
+    <div class='small post-meta'>posted
+    {% if post.source-url and post.source-name %}
+    in <a href="{{opst.source-url}}">{{post.source-name}}</a>
+    {% endif %}
+    on {{ post.date | date: "%A, %-d %B %Y" }}
+    </div>
   </article>
 {% endfor %}
