@@ -354,6 +354,8 @@ footer a:hover {
   background: url(../images/clock.png) top left no-repeat;
   padding-left: 20px;
   background-position: 0 8px;
+  display: block;
+  clear: both;
 }
 
 .view a {
