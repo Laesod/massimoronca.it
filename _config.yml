@@ -1,8 +1,8 @@
+source: ./
 destination: ./_site
-auto:        true
 lsi:         false
 port: 4000
-url: "http://massimoronca.it"  
+url: "http://massimoronca.it"
 pygments:    true
 markdown: redcarpet-pygments
 permalink:   date
