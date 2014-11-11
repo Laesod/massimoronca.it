@@ -73,7 +73,7 @@ This implementation has several problems:
 
 One of the main selling point of Elixir is pattern matching in function declaration.   
 But pattern matching alone could not be enough, as we've seen in this example.   
-In Elixir you can add conditions to function declarations that act in tandem with pattern marching and limit the range of values a function accept. They are called `guard clauses`, I'll rewrite those two functions to use them:
+In Elixir you can add conditions to function declarations that act in tandem with pattern matching and limit the range of values a function accept. They are called `guard clauses`, I'll rewrite those two functions to use them:
 
 > note the `when` after function declaration
 
@@ -158,7 +158,7 @@ Let's translate this to Elixir
 
 ```elixir
 
-# start the marching loop
+# start the matching loop
 defp match_lend(source), do: match_lend(source, 1, 0)
 
 # if depth is zero, we have reached the other end of the loop
