@@ -207,17 +207,8 @@ hr {
 }
 
 footer {
-  width: 20%;
-  padding: 0 25px;
-  float:left;
-  position:fixed;
-  bottom:20px;
-  background: #002b36;
-
-  font:16px/0.3 "SourceCodePro-Semibold", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #ff6;
-  text-shadow: 2px 2px 0px rgba(0, 0, 0, 1);
-  text-align: center;
+  margin: auto;
+  position: relative;
 }
 
 footer a:hover {
