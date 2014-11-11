@@ -147,12 +147,12 @@ remember that in Elixir `_` means *match everything*.
 
 To match the balanced couples of square brackets, I used this algorithm
 
-1. when a `[` is found, pass the rest to a matcher function with a `depth` parameter with value `1` and a parameter `acc`, to hold the length of the loop body, with a  value of `zero`
-2. every character we find will increment `acc`
+1. when a `[` is found, pass the rest to a matcher function with a `depth` parameter with value `1` and a parameter `acc`, to hold the length of the loop body, initially set to `zero`
+2. for every character we find, we increment `acc`
 3. if we find a `[`, increment `depth` too 
 4. if we find a `]` decrement `depth`
 5. if `depth` is zero, we have found the end of loop, return the length of its body
-6. if we reach the end of the input and `depth` is not zero, square brackets are unbalanced, `raise` an error
+6. if we reach the end of the input and `depth` is non-zero, square brackets are unbalanced, `raise` an error then.  
 
 Let's translate this to Elixir
 
