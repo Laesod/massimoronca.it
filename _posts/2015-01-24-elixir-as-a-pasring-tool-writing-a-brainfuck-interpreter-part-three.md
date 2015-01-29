@@ -63,8 +63,35 @@ Loop body is always a list of instructions.
 
 To write the interpreter, we already wrote a Brainfuck scanner, tokenizer and parser. We'll take advantage of it to emit our `AST`, turns out it can be written in a very compact way
 
-<script src="http://gist-it.appspot.com/https://github.com/wstucco/elixir-brainfuck/blob/master/lib/brainfuck/compiler.ex?footer=minimal">
-</script>
+```elixir
+defmodule Brainfuck.Compiler do
+
+  def compile(program) when is_binary(program) do
+    compile(program |> to_char_list)
+  end
+
+  def compile(program), do: compile(program, [], [])
+
+  defp compile([], _, stack) when length(stack) > 0, do: raise "unmatched '['"
+  defp compile([], ast, stack) when length(stack) == 0, do: ast
+
+  defp compile([ic | tail], ast, stack) do
+    case {[ic], stack} do
+      { '+', _ } -> compile tail, ast ++ [:inc_d], stack
+      { '-', _ } -> compile tail, ast ++ [:dec_d], stack
+      { '>', _ } -> compile tail, ast ++ [:inc_p], stack
+      { '<', _ } -> compile tail, ast ++ [:dec_p], stack
+      { '.', _ } -> compile tail, ast ++ [:put_c], stack
+      { ',', _ } -> compile tail, ast ++ [:get_c], stack
+      { '[', _ } -> compile tail, [], [ast] ++ stack
+      { ']', [] } -> raise "unmatched ']'"
+      { ']', [h | t] } -> compile tail, h ++ [loop: ast], t
+      _ -> compile tail, ast, stack
+    end
+  end
+
+end
+```
 
 Pretty short, pretty easy to follow.  
 First we create a `Brainfuck.Compiler` module, that is our namespace for the compiler, we then put a few conditions: if the input is a string, we convert it to a [char list](http://elixir-lang.org/getting_started/6.html#6.3-char-lists) that is easier to traverse, and we declare that when `compile` is called with an empty list, there are no more instructions to translate, we are done and return the `AST`.  
@@ -74,13 +101,13 @@ Every instruction found, is appended to the `AST` list, every not recognized sym
 
 What it does is take this input
 
-```
+```elixir
 +-><[.,]
 ```
 
 and translate it to
 
-```
+```elixir
 [:inc_d, :dec_d, :inc_p, :dec_p, loop: [:put_c, :get_c]]
 ```
 
@@ -103,8 +130,17 @@ The second one is that having a bytecode, enable us to optimize the code.
 The simpler optimization is that we don't have to scan the code back and forth to find the boundaries of the loops, they are already expresse in the `AST`.  
 Infact to `run` loops the VM we just executes them  
 
-<script src="http://gist-it.appspot.com/https://github.com/wstucco/elixir-brainfuck/blob/master/lib/brainfuck/vm.ex?footer=minimal&slice=51:60">
-</script>
+```elixir
+defp run(program = [{:loop, loop} | tail], addr, mem, input, output) do
+  case mem |> byte_at addr do
+    0 ->
+      run(tail, addr, mem, input, output)
+    _ ->
+      {a, m, i, o} = run(loop, addr, mem, input, output)
+      run(program, a, m, i, o)
+  end
+end
+```
 
 > `keywords` in Elixir are matched with `{:key, value}`
 
@@ -112,8 +148,7 @@ This optimization alone make our programs run up to six times faster.
 Conclusions are based on higly non-scientifical benchmarks  
 
 
-```
-
+```bash
 $ time ./brainfuck test/fixtures/bench_ok.bf
   OK
   
