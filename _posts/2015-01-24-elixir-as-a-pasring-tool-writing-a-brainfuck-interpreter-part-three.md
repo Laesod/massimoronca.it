@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Brainfuck in Elixir, part three, compiling
-excerpt: This is the third in a series of articles on building a brainfuck interpreter in Elixir. In <a href="/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html">the first part</a> we built a minimal brainfuck interpreter that can already run some basic program. In <a href="/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html">the second part</a> we completed it implementing loops. In this third episode we'll write a simple compiler to translate Brainfuck instructions to a machine readable intermediate format (AST) and a VM that executes it.
+excerpt: This is the third in a series of articles on building a brainfuck interpreter in Elixir. In <a href="/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html">the first part</a> we built a minimal brainfuck interpreter that can already run some basic program. In <a href="/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html">the second part</a> we completed it by implementing loops. In this third episode we'll write a simple compiler to translate Brainfuck instructions to a machine readable intermediate format (AST) and a VM that executes it.
 source-name: MIKAMAYHEM
 source-url: http://dev.mikamai.com/post/102283561929/elixir-as-a-parsing-tool-writing-a-brainfuck
 tags:
@@ -14,12 +14,12 @@ tags:
 
 > This is the third in a series of articles on building a brainfuck interpreter in Elixir.  
 In the [first one](http://dev.mikamai.com/post/100075543414/elixir-as-a-parsing-tool-writing-a-brainfuck) we built a minimal brainfuck interpreter that could understand the basic instructions.  
-In [the second](http://dev.mikamai.com/post/102283561929/elixir-as-a-parsing-tool-writing-a-brainfuck), we completed it implementing loops.  
+In [the second](http://dev.mikamai.com/post/102283561929/elixir-as-a-parsing-tool-writing-a-brainfuck), we completed it by implementing loops.  
 In this third episode we'll write a simple compiler to translate Brainfuck instructions to a machine readable intermediate format (AST) and a VM that executes it.   
 
 This post was supposed to be about testing and the command line tools, I changed my mind and I will talk about improving our interpreter and turning it into a compiler. 
    
-Writing a performant compiler is probably one of the most challenging task for a programmer, but the theory behind it is actually quite simple.   
+Writing a performant compiler is probably one of the most challenging tasks for a programmer, but the theory behind it is actually quite simple.   
 Compilers just *transform* a source code written in a programming language to some other code, usually a different programming language (including intermediate languages and machine language).   
 Most of the time, they are built following a common design, this one
 
@@ -35,7 +35,7 @@ Technically, we are writing the frontend of the compiler, which is the starting 
 Brainfuck is already an intermediate language, very similar to assembly. Each symbol is an `opcode`: for example `>` and `<` can be easily mapped to a relative `JMP`, `+` maps to `INC`, `-` to `DEC`, `[` and `]` are `JZ` (jump if zero) and `JNZ` (jump if not zero).   
 `.` and `,` are more complex, there's no single instruction in assembly for reading and writing chars to the screen, but basically they are the `C` equivalent of `putchar` and `getchar`.   
 
-Everybody love assembly, but we will not use those `opcodes`, we will use something more similar to labels, something mnemonic, because, right now, we just need to know which block to eceute, we have very simple instructions, with no parameters, that do just one thing.   
+Everybody loves assembly, but we will not use those `opcodes`, we will use something more similar to labels, something mnemonic, because, right now, we just need to know which block to eceute, we have very simple instructions, with no parameters, that do just one thing.   
 Things will change when we'll get our hands on the optimizer, but for now we'll keep things simple, and map Brainfuck instructions to [Elixir atoms](http://elixir-lang.org/getting_started/2.html#2.3-atoms) (think about them as Ruby's symbols).   
 
 Our instructions set will be the following:  
@@ -127,7 +127,7 @@ It is really not much different from the interpreter, it reads a list of inputs 
 But, it has some advantages.   
 The first one is that the compiler ensures correctness of our code: we can't be sure that the code does what it is supposed to do or that there won't be an nfinite loop, but we can assume it is formally correct (no unbalanced loops, for example).  
 The second one is that having a bytecode, enable us to optimize the code.  
-The simpler optimization is that we don't have to scan the code back and forth to find the boundaries of the loops, they are already expresse in the `AST`.  
+The simpler optimization is that we don't have to scan the code back and forth to find the boundaries of the loops, they are already expressed in the `AST`.  
 Infact to `run` loops the VM we just executes them  
 
 ```elixir
@@ -144,7 +144,7 @@ end
 
 > `keywords` in Elixir are matched with `{:key, value}`
 
-This optimization alone make our programs run up to six times faster.   
+This optimization alone makes our programs run up to six times faster.   
 Conclusions are based on higly non-scientifical benchmarks  
 
 
@@ -170,4 +170,4 @@ You can find all the code [on github](https://github.com/wstucco/elixir-brainfuc
 To run the tests use `mix test`.   
   
 
-And if you find the reason why the interpreter get stuck in an infinite loop running [this brainfuck program](https://github.com/wstucco/elixir-brainfuck/blob/master/test/fixtures/bench.bf), please, [let me know](mailto:massimo@mikamai.com).
+And if you find the reason why the interpreter gets stuck in an infinite loop running [this brainfuck program](https://github.com/wstucco/elixir-brainfuck/blob/master/test/fixtures/bench.bf), please, [let me know](mailto:massimo@mikamai.com).
