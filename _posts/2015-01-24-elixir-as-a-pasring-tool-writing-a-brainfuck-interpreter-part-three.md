@@ -101,7 +101,7 @@ Every instruction found, is appended to the `AST` list, every not recognized sym
 
 What it does is take this input
 
-```elixir
+```brainfuck
 +-><[.,]
 ```
 
