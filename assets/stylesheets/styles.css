@@ -324,6 +324,26 @@ footer a:hover {
     text-align: justify;
 }
 
+.post-excerpt img.fill {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.post-excerpt img.left-side, .post-excerpt img.right-side {
+  /*width: 33.33%;*/
+  max-width: 33.33%;
+  height: auto;
+}
+.post-excerpt img.left-side {
+  float: left;
+  margin: 0 10px 10px 0;
+}
+.post-excerpt img.right-side {
+  float: right;
+  margin: 0 0 10px 10px;
+}
+
 .post-content a, .post-excerpt a, .post-meta a {
 
   border-bottom: 2px solid rgba(00, 43, 54, 0.4);
