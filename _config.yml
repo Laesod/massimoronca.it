@@ -3,8 +3,8 @@ destination: ./_site
 lsi:         false
 port: 4000
 url: "http://massimoronca.it"
-pygments:    true
-markdown: redcarpet-pygments
+highlighter: null
+markdown: redcarpet
 permalink:   date
 gems:
   - jekyll-sitemap
