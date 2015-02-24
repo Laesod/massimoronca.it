@@ -13,8 +13,8 @@ tags:
 ---
 
 > This is the third in a series of articles on building a brainfuck interpreter in Elixir.  
-In the [first one](http://dev.mikamai.com/post/100075543414/elixir-as-a-parsing-tool-writing-a-brainfuck) we built a minimal brainfuck interpreter that could understand the basic instructions.  
-In [the second](http://dev.mikamai.com/post/102283561929/elixir-as-a-parsing-tool-writing-a-brainfuck), we completed it by implementing loops.  
+In the [first one](/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html) we built a minimal brainfuck interpreter that could understand the basic instructions.  
+In [the second](/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html), we completed it by implementing loops.  
 In this third episode we'll write a simple compiler to translate Brainfuck instructions to a machine readable intermediate format (AST) and a VM that executes it.   
 
 This post was supposed to be about testing and the command line tools, I changed my mind and I will talk about improving our interpreter and turning it into a compiler. 
@@ -40,22 +40,29 @@ Things will change when we'll get our hands on the optimizer, but for now we'll 
 
 Our instructions set will be the following:  
 
-`+` -> `:inc_d`  
-`-` -> `:dec_d`  
-`>` -> `:inc_p`  
-`<` -> `:dec_p`  
-`.` -> `:put_c`  
-`,` -> `:get_c`  
+```elixir
++ -> :inc_d
+- -> :dec_d
+> -> :inc_p
+< -> :dec_p
+. -> :put_c
+, -> :get_c
+```
+
 
 Loops are mapped to [Elixir keywords](http://elixir-lang.org/getting_started/7.html#7.1-keyword-lists), we already ignore the end loop instruction `]`, because we unconditionally jump back to `[` when we find one.  
 That leaves `[` as the only complex instruction in the set, the only that carries a parameter (the body of the loop).   
 So loops are defined as  
 
-`[` -> `{:loop, [loop body]}`  
+```elixir
+[ -> {:loop, [loop body]}
+```
 
 or in the condensed form   
 
-`[` -> `[loop: [loop body]]`  
+```
+[ -> [loop: [loop body]]
+```
 
 Loop body is always a list of instructions.  
 
@@ -70,10 +77,17 @@ defmodule Brainfuck.Compiler do
     compile(program |> to_char_list)
   end
 
-  def compile(program), do: compile(program, [], [])
-
-  defp compile([], _, stack) when length(stack) > 0, do: raise "unmatched '['"
-  defp compile([], ast, stack) when length(stack) == 0, do: ast
+  def compile(program) do 
+    compile(program, [], [])  
+  end
+  
+  defp compile([], _, stack) when length(stack) > 0 do 
+    raise "unmatched '['"  
+  end
+  
+  defp compile([], ast, stack) when length(stack) == 0 do 
+    ast  
+  end
 
   defp compile([ic | tail], ast, stack) do
     case {[ic], stack} do
