@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Opal for Meteor
-excerpt: Compile Ruby to Javascript in Meteor
+excerpt: <img src='https://secure.gravatar.com/avatar/88298620949a6534d403da2e356c9339' class='left-side'> Compile Ruby to Javascript in Meteor
 tags:
   - Opal
   - Meteor

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: The strange case of 'Ronca Knives'
-excerpt: Have you ever looked at your webistes stats and found something amusing?   <img src="/assets/images/ronco.jpg">
+excerpt: <img src="/assets/images/ronco.jpg" class="left-side"> Have you ever looked at your webistes stats and found something amusing?   
 tags:
 - Ronca
 - knives
