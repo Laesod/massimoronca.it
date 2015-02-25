@@ -31,8 +31,6 @@ a {
   text-decoration:none;
 
   -webkit-transition: color 1s ease-in-out;
-  -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;
   -moz-transition: color 1s ease-in-out;
   -ms-transition: color 1s ease-in-out;
   -o-transition: color 1s ease-in-out;
@@ -43,8 +41,6 @@ a:hover {
   color: #dc322f;
 
   -webkit-transition: color 0.3s ease-in-out;
-  -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;
   -moz-transition: color 0.3s ease-in-out;
   -ms-transition: color 0.3s ease-in-out;
   -o-transition: color 0.3s ease-in-out;
@@ -242,17 +238,16 @@ footer a:hover {
   -ms-transition: all 1s ease-in-out;
   -o-transition: all 1s ease-in-out;
   transition: all 1s ease-in-out;
-  transition-property: padding, width;
+  transition-property: padding, width, text-indent;
 }
 
 .post-title.jedi {
-  padding-left: 0px;
-  padding-right: 40px;
+  padding: 0 40px 0 0;
   margin-left: 0px;
   left: 0;
 }
 
-.post-title.jedi::before {
+.post-title.jedi:before {
   content: "";
   position: absolute;
   top: 0;
@@ -272,8 +267,25 @@ footer a:hover {
   transition-property: opacity, margin, padding, left;
 }
 
+.post-title.jedi:after {
+  display: block;
+  content: "";
+  height: 2px;
+  width: 100%;
+
+  background-color: #dc322f;
+  margin: 9px 0 0 0;
+  width: 0;
+
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -ms-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+}
+
 .post-title.jedi:hover {
-  border-color: #dc322f;
+  /*border-color: #dc322f;*/
 
   -webkit-transition: all 0.3s ease-out;
   -moz-transition: all 0.3s ease-out;
@@ -281,14 +293,14 @@ footer a:hover {
   -o-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
 
-  padding-left: 40px;
+  text-indent: 40px;
   padding-right: 0;
 
   background-position: 0px 5px;
-  transition-property: padding, width;
+  transition-property: padding, width, text-indent;
 }
 
-.post-title.jedi:hover::before {
+.post-title.jedi:hover:before {
   position: absolute;
   background-position: 0px 5px;
   opacity: 1;
@@ -299,6 +311,18 @@ footer a:hover {
   transition: all 0.3s ease-in-out;
   transition-property: opacity, margin, padding, left;
 }
+
+.post-title.jedi:hover:after {
+  width: 100%;
+
+
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
 
 .post-title a {
   color:#002b36;
@@ -331,7 +355,7 @@ footer a:hover {
 }
 
 .post-excerpt img.left-side, .post-excerpt img.right-side {
-  /*width: 33.33%;*/
+  /*width: 33.33%§;*/
   max-width: 33.33%;
   height: auto;
 }
@@ -349,8 +373,6 @@ footer a:hover {
   border-bottom: 2px solid rgba(00, 43, 54, 0.4);
 
   -webkit-transition: all 1s ease-in-out;
-  -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;
   -moz-transition: all 1s ease-in-out;
   -ms-transition: all 1s ease-in-out;
   -o-transition: all 1s ease-in-out;
@@ -362,8 +384,6 @@ footer a:hover {
   border-bottom-color: #dc322f;
 
   -webkit-transition: all 0.3s ease-in-out;
-  -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;
   -moz-transition: all 0.3s ease-in-out;
   -ms-transition: all 0.3s ease-in-out;
   -o-transition: all 0.3s ease-in-out;
@@ -415,7 +435,7 @@ article .highlight {
   text-decoration: none;
 }
 
-.highlight pre a::before {
+.highlight pre a:before {
   content: counter(line-numbering);
   counter-increment: line-numbering;
   padding: 0 1em 0 0.5em; /* space after numbers */
@@ -438,19 +458,19 @@ article .highlight {
   user-select: none;
 }
 
-.highlight pre a:first-of-type::before {
+.highlight pre a:first-of-type:before {
   padding-top: 10px;
   /*border-top-left-radius: 0.4em;*/
 
   /*box-shadow: rgba(255, 255, 255, 0.9) 0px 1px 1px inset;*/
 }
 
-.highlight pre a:last-of-type::before {
+.highlight pre a:last-of-type:before {
   padding-bottom: 10px;
   /*border-bottom-left-radius: 0.4em;*/
 }
 
-.highlight pre a:only-of-type::before {
+.highlight pre a:only-of-type:before {
     padding: 10px;
 }
 
@@ -563,16 +583,6 @@ html[xmlns] .clearfix {
     margin-top: -17px;
   }
 
-  .post-title.jedi:hover {
-    background-image: none;
-    margin-left: 0;
-    padding-left: 0;
-  }
-
-  .post-title.jedi::before, .post-title.jedi:hover::before {
-    background-image: none;
-    opacity: 1;
-  }
 }
 
 @media print, screen and (max-width: 720px) {
