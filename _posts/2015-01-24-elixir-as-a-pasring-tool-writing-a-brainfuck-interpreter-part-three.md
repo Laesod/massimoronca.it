@@ -3,7 +3,7 @@ layout: post
 title: Brainfuck in Elixir, part three, compiling
 excerpt: This is the third in a series of articles on building a brainfuck interpreter in Elixir. In <a href="/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html">the first part</a> we built a minimal brainfuck interpreter that can already run some basic program. In <a href="/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html">the second part</a> we completed it by implementing loops. In this third episode we'll write a simple compiler to translate Brainfuck instructions to a machine readable intermediate format (AST) and a VM that executes it.
 source-name: MIKAMAYHEM
-source-url: http://dev.mikamai.com/post/102283561929/elixir-as-a-parsing-tool-writing-a-brainfuck
+source-url: http://dev.mikamai.com/post/109477559604/brainfuck-in-elixir-part-three-compiling
 tags:
 - Elixir
 - brainfuck
