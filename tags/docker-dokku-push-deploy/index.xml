@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker Dokku Push Deploy on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://massimoronca.it/tags/docker-dokku-push-deploy.html</link>
+    <description>Recent content in Docker Dokku Push Deploy on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 13 May 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://massimoronca.it/tags/docker-dokku-push-deploy.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A modern workflow for Wordpress using Docker and Dokku</title>
+      <link>http://massimoronca.it/2014/05/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</link>
+      <pubDate>Tue, 13 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/05/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</guid>
+      <description>&lt;p&gt;Every developer, sooner or later, had to deal with &lt;a href=&#34;http://wordpress.org/&#34;&gt;WordPress&lt;/a&gt;, given it is one of the most popular Blog/CMS platform, if not &lt;strong&gt;the&lt;/strong&gt; most popular.&lt;br /&gt;
+According to Wikipedia, roughly 22% of the web sites run on it, (it means one web site in five) it is widely know by users, &lt;a href=&#34;https://wordpress.org/plugins/&#34;&gt;it has a large community&lt;/a&gt; (over 30 thousand contributed plugins) and it is easily supported by designers.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately WP was targeted at non-developer people, it had a great success as hosted platform, but working with it from the developer perspective, especially if we look at the workflow, looks clunky and outdated.&lt;/p&gt;
+
+&lt;p&gt;Usually it involves:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;downloading a tar ball of the latest WordPress stable version&lt;/li&gt;
+&lt;li&gt;rename &lt;code&gt;wp-config-sample.php&lt;/code&gt; to &lt;code&gt;wp-config.php&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;if you&amp;rsquo;re using &lt;code&gt;git&lt;/code&gt; (and you should!), add the &lt;code&gt;wp-config.php&lt;/code&gt; to &lt;code&gt;.gitignore&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;open a connection (possibly not FTP, but probably it will be FTP) and (slowly) upload everything on the dest server&lt;/li&gt;
+&lt;li&gt;create a remote&lt;code&gt;wp-config.php&lt;/code&gt; with the production configuration&lt;/li&gt;
+&lt;li&gt;launch the installer&lt;/li&gt;
+&lt;li&gt;hope nobody will overwrite &lt;code&gt;wp-config.php&lt;/code&gt; with the local copy&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;On the other hand, modern workflows are built around some kind of version control system (usually &lt;code&gt;git&lt;/code&gt;) where the deploy is managed just by pushing a branch on the public server.&lt;br /&gt;
+This is called push-to-deploy and is the one used by &lt;a href=&#34;http://heroku.com&#34;&gt;Heroku&lt;/a&gt;.&lt;br /&gt;
+Fortunately, some smart guys created &lt;a href=&#34;http://www.docker.io&#34;&gt;Docker&lt;/a&gt; and &lt;a href=&#34;https://github.com/progrium/dokku&#34;&gt;Dokku&lt;/a&gt;, two projects that make possible to build you own personal-heroku-like &lt;a href=&#34;http://en.wikipedia.org/wiki/Platform_as_a_service&#34;&gt;PaaS&lt;/a&gt; in a matter of minutes (If you want to try it, &lt;a href=&#34;https://www.digitalocean.com/&#34;&gt;Digital Ocean&lt;/a&gt; offers cloud servers with Dokku preinstalled at a starting price of 5$/month).&lt;br /&gt;
+Let&amp;rsquo;s see how it applies to WordPress.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;In the rest of the article I&amp;rsquo;m going to use a few placeholders&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;app&lt;/code&gt; is the application name&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;dokku&lt;/code&gt; is the address (or hostanme if configured) of the destination server running Docker &amp;amp; Dokku&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;dokku-user&lt;/code&gt; is the user running Dokku on the remote machine&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;First of all we&amp;rsquo;re going to clone WP from &lt;a href=&#34;http://www.github.com&#34;&gt;github&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git clone git@github.com:WordPress/WordPress.git app
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then we create &lt;code&gt;wp-config.php&lt;/code&gt;, replace the configuration parameters with environment variables, and commit it.&lt;br /&gt;
+This way we won&amp;rsquo;t have to hardcode them.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;same technique can be used to configure the &lt;a href=&#34;http://codex.wordpress.org/Editing_wp-config.php#Security_Keys&#34;&gt;security keys&lt;/a&gt;, I didn&amp;rsquo;t, to keep things short.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;define(&#39;DB_NAME&#39;, getenv(&#39;WP_DB_NAME&#39;));
+
+/** MySQL database username */
+define(&#39;DB_USER&#39;, getenv(&#39;WP_DB_USER&#39;));
+
+/** MySQL database password */
+define(&#39;DB_PASSWORD&#39;, getenv(&#39;WP_DB_PASS&#39;));
+
+/** MySQL hostname */
+define(&#39;DB_HOST&#39;, getenv(&#39;WP_DB_HOST&#39;));
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git add wp-config.php
+git commit -m &#39;added WordPress configuration&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you use &lt;a href=&#34;http://apache.org/&#34;&gt;Apache&lt;/a&gt;, you can set the values with &lt;a href=&#34;http://httpd.apache.org/docs/2.2/mod/mod_env.html&#34;&gt;&lt;code&gt;SetEnv&lt;/code&gt;&lt;/a&gt;, if you&amp;rsquo;re running &lt;a href=&#34;http://nginx.org/&#34;&gt;Nginx&lt;/a&gt; and &lt;a href=&#34;http://php-fpm.org/&#34;&gt;phpf-pm&lt;/a&gt;, you can use the &lt;a href=&#34;http://www.php.net/manual/it/install.fpm.configuration.php#example-73&#34;&gt;&lt;code&gt;ENV&lt;/code&gt; section&lt;/a&gt; of your application pool.&lt;br /&gt;
+You don&amp;rsquo;t need any of that when deploying through Dokku.&lt;/p&gt;
+
+&lt;p&gt;For our first deploy, we need to add a new &lt;code&gt;remote&lt;/code&gt; pointing at the Dokku  server&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git remote add dokku dokku-user@dokku:app
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and push the code&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git push dokku master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You will see something like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Counting objects: 163187, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (33726/33726), done.
+Writing objects: 100% (163187/163187), 84.87 MiB | 4.95 MiB/s, done.
+Total 163187 (delta 128758), reused 163156 (delta 128730)
+-----&amp;gt; Building app ...
+       PHP (classic) app detected
+-----&amp;gt; Bundling NGINX 1.4.3
+-----&amp;gt; Bundling PHP 5.5.5
+-----&amp;gt; Bundling extensions
+       phpredis
+       mongo
+-----&amp;gt; Setting up default configuration
+-----&amp;gt; Vendoring binaries into slug
+-----&amp;gt; Discovering process types
+       Default process types for PHP (classic) -&amp;gt; web
+-----&amp;gt; Releasing app ...
+-----&amp;gt; Deploying app ...
+-----&amp;gt; Cleaning up ...
+=====&amp;gt; Application deployed:
+       http://app_url
+
+To dokku@dokku:app
+ * [new branch]      master -&amp;gt; master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, everything is already bundled with the PHP buildpack.&lt;br /&gt;
+Dokku has detected the PHP app and instructed Docker to create an isolated container that could run the application.&lt;/p&gt;
+
+&lt;p&gt;You can now open up a browser and point to app_url (it can have two formats: &lt;a href=&#34;http://ip_adress:port&#34;&gt;http://ip_adress:port&lt;/a&gt; or &lt;a href=&#34;http://app.defaultdomain&#34;&gt;http://app.defaultdomain&lt;/a&gt;. Either way, it should launch your app).&lt;/p&gt;
+
+&lt;p&gt;Our wp-config is empty right now, the server will reply with&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/JzhJclD.png&#34; alt=&#34;WP Error&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s good news, it means it is actually responding to our request.&lt;/p&gt;
+
+&lt;p&gt;To finish our setup we need a couple more things:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;create a database&lt;/li&gt;
+&lt;li&gt;configure the app environment with the credentials&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To create a db in our app container, we&amp;rsquo;ll use the &lt;a href=&#34;https://github.com/Kloadut/dokku-md-plugin&#34;&gt;MariaDB plugin for Dokku&lt;/a&gt;.&lt;br /&gt;
+There&amp;rsquo;s also a &lt;a href=&#34;https://github.com/hughfletcher/dokku-mysql-plugin&#34;&gt;MySQL plugin&lt;/a&gt;, but it has some annoying bug and since MySQL and MariaDB
+are virtually identical, we&amp;rsquo;ll stick with the last one.&lt;br /&gt;
+Installing a plugin for Dokku is as easy as running&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cd /var/lib/dokku/plugins
+git clone https://github.com/Kloadut/dokku-md-plugin mariadb
+dokku plugins-install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Some of them don&amp;rsquo;t require the final &lt;code&gt;plugins-install&lt;/code&gt; step, but it won&amp;rsquo;t hurt if you run it anyway.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Tip: you can run dokku commands on your local machine and execute them on the remote one with:
+&lt;code&gt;ssh dokku-host dokku-command&lt;/code&gt; (i.e. &lt;code&gt;ssh dokku help&lt;/code&gt;)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;We can now create the database&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
+ ssh dokku mariadb:create app
+
+ -----&amp;gt; Creating /home/dokku/app/ENV
+-----&amp;gt; Setting config vars and restarting app
+DATABASE_URL: mysql2://root:VQpzDZRrEUAkUuAI@172.17.42.1:49170/db
+-----&amp;gt; Releasing app ...
+-----&amp;gt; Release complete!
+-----&amp;gt; Deploying app ...
+-----&amp;gt; Deploy complete!
+
+-----&amp;gt; app linked to mariadb/app database
+
+-----&amp;gt; MariaDB container created: mariadb/app
+
+       Host: 172.17.42.1
+       Port: 49170
+       User: &#39;root&#39;
+       Password: &#39;VQpzDZRrEUAkUuAI&#39;
+       Database: &#39;db&#39;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and set set the Environment variables&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt; # the format is dokku config:set app key=value key=value
+ # I splitted up the command on different lines for clarity
+ ssh dokku config:set app WP_DB_HOST=&#39;172.17.42.1:49170&#39;
+ ssh dokku config:set app WP_DB_NAME=&#39;db&#39;
+ ssh dokku config:set app WP_DB_USER=&#39;root&#39;
+ ssh dokku config:set app WP_DB_PASS=&#39;VQpzDZRrEUAkUuAI&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If everything went right, you should now see the standard WordPress install.&lt;br /&gt;
+Choose a title, create an admin user and you&amp;rsquo;re ready to go.&lt;br /&gt;
+You can work on your local copy, add plugins, work on your theme, and when you&amp;rsquo;re happy with it, you push all the changes and the app is automatically deployed and configured.&lt;/p&gt;
+
+&lt;p&gt;We just scratched the surface of what is possible with Docker &amp;amp; Dokku.&lt;br /&gt;
+In a next article we&amp;rsquo;ll see how to create a Dokku plugin to automate the entire process.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

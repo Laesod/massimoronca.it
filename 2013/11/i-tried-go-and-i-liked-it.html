@@ -1,0 +1,385 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title></title>
+
+    <base href="">
+
+    
+    <meta name="description" content="Welcome to Massimo Ronca website. I am a full stack developer, and definitely a tech enthusiast. This is about what I do."/>
+    
+
+    <link rel="stylesheet" href="/assets/stylesheets/fonts.css">
+    <link rel="stylesheet" href="/assets/stylesheets/styles.css">
+    <link rel="stylesheet" href="/assets/stylesheets/highlight/solarized-dark.css">
+    <link rel="stylesheet" href="/assets/stylesheets/gist/line-number-fix.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <link rel="icon" type="image/png" href="/assets/images/icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header-title"><a href="/">Massimo Ronca</a></h1>
+
+        <img src="/assets/images/massimoronca.png" class="logo">
+        <p>This is not</p>
+        <p>the programmer</p>
+        <p>you're looking for</p>
+
+     <footer>
+       <a href="https://github.com/wstucco" title="Github"><img src="/assets/images/github-64.png" alt="Github" class="github-logo"> </a>
+       <a href="https://twitter.com/wstucco" title="Twitter"><img src="/assets/images/twitter-64.png" alt="Twitter" class="twitter-logo"> </a>
+       <a href="https://it.linkedin.com/in/massimoronca" title="Linkedin"><img src="/assets/images/linkedin-64.png" alt="Linkedin" class="linkedin-logo"> </a>
+      </footer>
+    </header>
+
+
+  <section>
+  <article id="content" class="post">
+  <h1 class="post-title">I tried Go and I liked it</h1>
+  <div class="post-content">
+    
+
+<p><img src="http://upload.wikimedia.org/wikipedia/commons/2/23/Golang.png" alt="Gopher in all of its glory" title="Gopher" />
+</p>
+
+<p>Say hello to <a href="http://golang.org/doc/gopher/">Gopher</a>.
+Gopher is the mascotte of a new language from <a href="http://google.com">Google</a>, called <a href="http://golang.org">Go</a>, with the capital <strong>G</strong>.<br />
+Not a very clever name from a search engine company, if you ask me, but that&rsquo;s probably the only bad thing you will hear about it.</p>
+
+<blockquote>
+<p><strong>Hint:</strong> use the word <code>golang</code> to search on Google</p>
+</blockquote>
+
+<h2 id="a-brief-introduction:e3f4998492e6f90831033ef66fcf3463">A brief introduction</h2>
+
+<p>Created inside Google by <a href="http://en.wikipedia.org/wiki/Ken_Thompson" title="Ken Thompson">Ken Thompson</a> and <a href="http://en.wikipedia.org/wiki/Rob_Pike" title="Rob Pike">Rob Pike</a>, fathers of Unix and UTF-8, to overcome the limitations of C++ (compile times being the most annoying), Go is a <em>concurrent</em>, <em>garbage-collected</em> language with <em>fast compilation</em>.</p>
+
+<p>Its real strength is just simplicity.<br />
+As Rob Pike once said, <a href="http://commandcenter.blogspot.it/2012/06/less-is-exponentially-more.html">less is exponentially more</a> and I strongly agree with him.</p>
+
+<h3 id="features:e3f4998492e6f90831033ef66fcf3463">Features</h3>
+
+<ul>
+<li>blazing fast compilation speed</li>
+<li>statically compiled binaries (the result is a single binary with no external dependencies)</li>
+<li>type safe, statically typed with some type inference support. More errors get caught at compile time, less time is spent debugging</li>
+<li><a href="http://talks.golang.org/2012/splash.article#TOC_14.">garbage collected</a> with support for pointers, but no pointer arithmetics (for safety and good health of programmers minds).</li>
+<li>strict compiler: <a href="http://golang.org/doc/effective_go.html#blank_unused">you can&rsquo;t declare a variable or import a package without using it</a></li>
+<li>concurrency and parallelism through <a href="http://golang.org/doc/effective_go.html#goroutines">goroutines</a>. Goroutines are one of the peculiarities of Go, they are a cheap, lightweight construct built on top of threads, that run concurrently with other goroutines. If you have more than one core processor, they also run in parallel, in a completely transparent way for the programmer. Communication is managed sending messages through <a href="http://golang.org/doc/effective_go.html#channels">channels</a> which are basically type safe queues.</li>
+<li>Object orientation but <strong>no</strong> classes. Any type can be an object.</li>
+<li><strong>No type inheritance</strong> in favour of <em><a href="http://talks.golang.org/2012/splash.article#TOC_15.">composition</a></em> and <em><a href="http://en.wikipedia.org/wiki/Duck_typing">duck typing</a></em>. IS-A relationships are banned!</li>
+<li><a href="http://golang.org/doc/effective_go.html#multiple-returns">multiple return values</a></li>
+<li><a href="http://golang.org/pkg/">rich</a> standard library.</li>
+<li>a powerful set of <a href="http://golang.org/doc/cmd">command line tools</a> including one to <a href="http://golang.org/cmd/gofmt/">enforce coding conventions</a> and one for <a href="http://blog.golang.org/godoc-documenting-go-code">automatic code documentation</a>.<br />
+Many IDE that support Go, launch <code>gofmt</code> just before save, to ensure that every Go file obey the rules.</li>
+<li>last, but not least, cross compiling. Go compiler can create binaries for platforms/architectures different from the one it is running, provided <a href="http://golang.org/doc/install#requirements">the platform is supported</a>.</li>
+</ul>
+
+<h3 id="installing-go:e3f4998492e6f90831033ef66fcf3463">Installing Go</h3>
+
+<p>You can download Go from the <a href="https://golang.org">golang.org website</a>.<br />
+There are packages for many different platforms (Linux, Windows, Mac OS, BSD) and architectures (x86, x64, ARM).<br />
+Detailed instructions can be found <a href="http://golang.org/doc/install">here</a>.</p>
+
+<p>Basically you need to create two environment variables:</p>
+
+<ul>
+<li><code>GOROOT</code> which is the system wide Go root folder (it should be
+configured automatically by the installer)<br /></li>
+<li><code>GOPATH</code> that will
+contain all your code and all the packages you are going to install</li>
+<li>it is optional, but recommended, to add <code>$GOPATH/bin</code> to the <code>$PATH</code> variable</li>
+</ul>
+
+<h3 id="first-steps-and-getting-help:e3f4998492e6f90831033ef66fcf3463">First steps and getting help</h3>
+
+<p>You should now have a working installation of the Go development environment, but if you come from Ruby or Python, you might get lost while reading someone else&rsquo;s code or trying to figure out which is the idiomatic way to solve a problem in Go.<br />
+No worries, Go has an answer for that too.<br />
+Included in the package there is <a href="http://godoc.org/code.google.com/p/go.tools/cmd/godoc">godoc</a>.<br />
+When launched with the <code>-http</code> param, godoc act as a web server that present the documentation in form of web pages.
+This is a typical godoc summoning ritual</p>
+
+<pre><code class="language-bash">$ godoc -http=:60666
+$ open http://localhost:60666
+</code></pre>
+
+<p>My advice is to read carefully <a href="http://golang.org/doc/code.html">How to write Go code</a> and <a href="http://golang.org/doc/effective_go.html">Effective Go</a> before starting writing Go code.<br />
+Go does not provide REPL, but you can try your snippets in the <a href="http://play.golang.org/">Playground</a>.</p>
+
+<blockquote>
+<p><strong>NOTE:</strong> every package you install with the go tool or write by yourself, will update the documentation as well.</p>
+</blockquote>
+
+<h2 id="shut-up-show-us-the-code:e3f4998492e6f90831033ef66fcf3463">SHUT UP! SHOW US THE CODE!</h2>
+
+<p>Ok!</p>
+
+<pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;net/http&quot;
+)
+
+func main() {
+
+	http.HandleFunc(&quot;/&quot;, func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, &quot;Hello World!&quot;)
+	})
+
+	fmt.Println(&quot;Server running at http://localhost:8080/&quot;)
+	fmt.Println(&quot;hit CTRL+C to shut it down&quot;)
+	http.ListenAndServe(&quot;:8080&quot;, nil)
+}
+</code></pre>
+
+<p>This is our first Go program.<br />
+Every client that connects to localhost, port 8080, will receive the <em>&ldquo;Hello World!&rdquo;</em> message.<br />
+The example looks a lot like the <em>Node.js</em> <a href="http://nodejs.org/about/">hello world web serve example</a>, but unlike <em>Node.js</em>, this code is already multithreaded. Every new client is served by a <code>goroutine</code>, that the <code>net/http</code> starts behind the scenes, taking advantage of concurrency and multiple cores, if present.
+Talking about simplicity, is there anything simpler than that?</p>
+
+<blockquote>
+<p><strong>Note:</strong> To run the code you have to save it in a file and then execute <code>go run &lt;filename&gt;</code> from the console</p>
+</blockquote>
+
+<p>Let&rsquo;s explore  the code above in more detail:</p>
+
+<h3 id="packages-and-imports:e3f4998492e6f90831033ef66fcf3463">Packages and imports</h3>
+
+<p>The first statement in a Go program must always be</p>
+
+<pre><code class="language-go">package name
+</code></pre>
+
+<p>Executable packages have to reside in a package called <strong><em>main</em></strong>.<br />
+The entry point function is called <strong><em>main</em></strong> as well.</p>
+
+<p>Next we find the import section, you can import packages by declaring your intentions with the <strong><em>import</em></strong> directive.<br />
+This is the first Go idiom we encounter: <em>statement grouping</em>.<br />
+You can import packages (or declare variables) one per line, like in</p>
+
+<pre><code class="language-go">import &quot;fmt&quot;
+import &quot;net/http&quot;
+</code></pre>
+
+<p>or you can group them together, surrounding the imports with parenthesis, like in our example.</p>
+
+<h3 id="variables-and-type-inference:e3f4998492e6f90831033ef66fcf3463">Variables and type inference</h3>
+
+<p>Variables are declared <em>name first, then type</em>.<br />
+If you <em>declare and assign</em>, you can let the compiler infere the type.</p>
+
+<pre><code class="language-go">// when variables are declared without assignment, Go assign them a default value:
+// zero for numbers, empty string for strings, nil for pointers and nullable types
+var a string
+var b int
+
+// type inference
+c := &quot;Hello, Wolrd!&quot;  // := operator is available only inside function body
+var s = &quot;a string&quot;    // this pattern is available outside functions
+
+</code></pre>
+
+<p>Of course <em>statement grouping</em> is available too</p>
+
+<pre><code class="language-go">var (
+    s string
+    i int
+    f float64
+)
+</code></pre>
+
+<p>Don&rsquo;t worry about lining up the elements between the brackets, <code>gofmt</code> will take care of it for you.</p>
+
+<h3 id="anonymous-functions-and-oo:e3f4998492e6f90831033ef66fcf3463">Anonymous functions and OO</h3>
+
+<p>Go support <a href="http://golang.org/ref/spec#Function_literals">anonymous functions</a> and high order functions.<br />
+Functions are first class citizens in Go and can be assigned and carried around like regular variables.</p>
+
+<pre><code class="language-go">log := func(s string) {
+    fmt.Printf(&quot;[%s] %s&quot;, time.Now(), s)
+}
+
+log(&quot;Hello World!&quot;)
+
+// sample output
+// [2009-11-10 23:00:00 +0000 UTC] Hello World!
+
+// a more complex example
+
+type logLevel string
+type logger func(string) // create a new type for a function that takes a string as input
+
+getLogger := func(l logLevel) logger {
+	return func(s string) {
+		fmt.Printf(&quot;[%s] %s: %s\n&quot;, time.Now(), l, s)
+	}
+}
+
+err := getLogger(&quot;Err&quot;)
+warn := getLogger(&quot;Warn&quot;)
+info := getLogger(&quot;Info&quot;)
+
+err(&quot;File not found&quot;)
+warn(&quot;Timezone is not set&quot;)
+info(&quot;loggin' some stuff&quot;)
+
+// sample output
+// [2009-11-10 23:00:00 +0000 UTC] Err: File not found
+// [2009-11-10 23:00:00 +0000 UTC] Warn: Timezone is not set
+// [2009-11-10 23:00:00 +0000 UTC] Info: loggin' some stuff
+
+</code></pre>
+
+<p>Let&rsquo;s now improve our web server with new functionalities.<br />
+We want to send out an <code>X-Powered-By</code> header with the name of our web server.<br />
+What we need to do is define a new <strong><em>type</em></strong> that  act as handler for the requests and will append the new header to the default set of headers.<br />
+In Go, an http handler is any object that implements the Handler&rsquo;s <em>interface</em>, and the Handler&rsquo;s <em>interface</em> contains only one method: <code>ServeHTTP</code>.<br />
+So we are going to create a new object that implements the <code>ServeHTTP</code> method and pass it to <code>ListenAndServe</code>.<br />
+Instead of classes, Go uses <strong>structs</strong>.<br />
+In this case it is an empty struct, but it can contain any other type as member variables (more on this later).</p>
+
+<pre><code class="language-go">// declare the new type Middleware.
+// Note: the type can be literally **any** type
+// type seq []int is a perfectly legal declaration
+// it creates a new type (not an alias) seq that represents a slice of ints
+type Middleware struct {
+}
+
+// implements the ServeHTTP method as requested by Handler's interface
+// notice the syntax:
+// after the keyword func we declare the type that the method will be attached to
+// and then we pass a parameter m that represents our instance variable
+// in a very similar way to Python's self
+func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf(&quot;Request to %s is being handled by our middleware\n&quot;, r.URL.Path)
+	w.Header().Set(&quot;X-Powered-By&quot;, &quot;mikamai-web-server&quot;)
+}
+
+// initialize and return a new object literal of type Middleware
+// in Go we also declare the return type, after the parameters of the function
+// in this case a pointer, denoted by the *, to Middleware type
+func NewMiddleware() *Middleware {
+	return &amp;Middleware{}
+}
+</code></pre>
+
+<p>We now pass the new handler to the listener</p>
+
+<pre><code class="language-go">http.ListenAndServe(&quot;:8080&quot;, NewMiddleware())
+</code></pre>
+
+<p>Every time a client connects, it doesn&rsquo;t receive any message back, except for the new header.
+<img src="http://31.media.tumblr.com/83ea05b44971684313f8d6d1c535b2d9/tumblr_mvhrpwaNvX1rhmakfo1_r1_500.png" alt="X-Powered-By mikamai" />
+</p>
+
+<p>Nice, but not very interesting, plus we lost the ability to serve the content to the client, cause
+the handler function we declared before is not getting called.<br />
+How can we fix that?<br />
+Before explaining how to forward the call to the default handler, we&rsquo;re going to modify our middleware
+to do something different.<br />
+In addition to adding the header with the artist&rsquo;s signature, we want to limit the ability to visit
+our web site through one and only one specified host.</p>
+
+<pre><code class="language-go">// we expand our middleware to contain the definition of the single allowed host
+type Middleware struct {
+    allowedHost string
+}
+
+// we modify the initializer function (our constructor) as well
+func NewMiddleware(host string) *Middleware {
+	return &amp;Middleware{
+	    allowedHost: host, // trailing comma is required by Go compiler
+	}
+}
+</code></pre>
+
+<p>Rewrite <code>ServeHTTP</code> to check for the host validity</p>
+
+<pre><code class="language-go">func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	// strip the port from hostname
+	host := strings.Split(r.Host, &quot;:&quot;)[0] // import &quot;strings&quot; in order to use Split
+
+    // the signature is sent anyway
+	w.Header().Set(&quot;X-Powered-By&quot;, &quot;mikamai-web-server&quot;)
+
+	if host == m.allowedHost {
+		fmt.Printf(&quot;Request for host %s is being handled by our middleware\n&quot;, host)
+
+		// net/http has a default handler called DefaultServerMux
+		// we feeded it with an handler for &quot;/&quot; in the first example
+		// forward the call to the default handler and send &quot;Hello World!&quot; to the client
+		http.DefaultServeMux.ServeHTTP(w, r)
+	} else {
+		// request is denied, wrong hostname
+		fmt.Printf(&quot;Request for host %s is strictly forbidden by our middleware\n&quot;, host)
+
+		// order is important.If we send data before the header, the server assumes the return code is 200 OK
+		w.WriteHeader(403)
+		fmt.Fprintf(w, &quot;&lt;h1&gt;Forbidden&lt;/h1&gt;you don't have permission to access host %s&quot;, host)
+	}
+}
+</code></pre>
+
+<p>update the handler&rsquo;s initialization</p>
+
+<pre><code class="language-go">http.ListenAndServe(&quot;:8080&quot;, NewMiddleware(&quot;localhost&quot;))
+</code></pre>
+
+<p>et voilà</p>
+
+<p><img src="http://24.media.tumblr.com/aedc0f5dd849aae18ef022f7d10f3dad/tumblr_mvhrpwaNvX1rhmakfo2_r1_1280.png" alt="access denied" />
+</p>
+
+<hr />
+
+<p><img src="http://31.media.tumblr.com/d3cd5cabdc9bb2a83f12923093d6581f/tumblr_mvhrpwaNvX1rhmakfo3_r1_1280.png" alt="access granted" />
+</p>
+
+<hr />
+
+<p><img src="http://25.media.tumblr.com/a472850a96238d71194c7fbb23909ae7/tumblr_mvhrpwaNvX1rhmakfo4_r2_1280.png" alt="console output" />
+</p>
+
+<p>All the code presented in this article can be downlaoded from <a href="https://gist.github.com/wstucco/7248624">github</a></p>
+
+  </div>
+  <div class='small post-meta'>
+    posted 
+    in <a href="http://dev.mikamai.com/post/65984358855/i-tried-go-and-i-liked-it">MIKAMAYHEM</a>
+    
+    on Monday, Nov 4 2013
+  </div>
+</article>
+
+  </section>
+
+
+    </div>
+    <script src="/assets/javascripts/scale.fix.js"></script>
+    <script src="/assets/javascripts/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1218157-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+  </body>
+</html>

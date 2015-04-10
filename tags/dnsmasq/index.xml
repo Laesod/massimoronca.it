@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dnsmasq on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://massimoronca.it/tags/dnsmasq.html</link>
+    <description>Recent content in Dnsmasq on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 10 Feb 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://massimoronca.it/tags/dnsmasq.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Start running your own DNS server</title>
+      <link>http://massimoronca.it/2014/02/start-running-your-own-dns-server.html</link>
+      <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/02/start-running-your-own-dns-server.html</guid>
+      <description>&lt;p&gt;A common problem in web development is simulating the final environment and, specifically, running your apps in their own private domain.&lt;br /&gt;
+One solution is editing the &lt;code&gt;/etc/hosts&lt;/code&gt; every time you need to add a new domain, but this can quickly become a very tedious process.&lt;br /&gt;
+If you work on OS X, you probably have heard of &lt;a href=&#34;http://pow.cx/&#34;&gt;Pow&lt;/a&gt;, but if you only need the domain resolution and don&amp;rsquo;t use Rails, it is probaly overkill to install a full featured application server just to create some dev domain.
+&lt;a href=&#34;http://www.mamp.info/en/mamp-pro/index.html?utm_medium=twitter&amp;amp;utm_source=twitterfeed&#34;&gt;MAMP Pro&lt;/a&gt; offers domain resolution too, but it&amp;rsquo;s not free.&lt;/p&gt;
+
+&lt;p&gt;There is, however, another solution: running your own instance of a DNS server.&lt;br /&gt;
+What you need it&amp;rsquo;s a copy of &lt;a href=&#34;http://www.thekelleys.org.uk/dnsmasq/doc.html&#34;&gt;dnsmasq&lt;/a&gt; and &lt;em&gt;stop worrying and love the shell.&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;First of all install dnsmasq and put it in autostart&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;brew install dnsmasq  
+sudo cp -v $(brew --prefix dnsmasq)/*.plist /Library/LaunchDaemons
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Configure the dns intance&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat &amp;lt;&amp;lt;- EOF &amp;gt; $(brew --prefix)/etc/dnsmasq.conf
+# IPV4
+address=/dev/127.0.0.1
+# IPV6, otherwise virtual hosts in Maverick won&#39;t work
+address=/dev/::1
+listen-address=127.0.0.1
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then we configure the resolvers for all domains and create the one for the &lt;code&gt;.dev&lt;/code&gt; suffixes&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo mkdir -p /etc/resolver
+# .dev domains
+sudo bash -c &#39;echo &amp;quot;nameserver 127.0.0.1&amp;quot; &amp;gt; /etc/resolver/dev&#39;
+# universal catcher
+sudo bash -c &#39;echo &amp;quot;nameserver 127.0.0.1&amp;quot; &amp;gt; /etc/resolver/catchall&#39;
+sudo bash -c &#39;echo &amp;quot;domain .&amp;quot; &amp;gt;&amp;gt; /etc/resolver/catchall&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Set localhost as main DNS server, unfortunately you can&amp;rsquo;t automatically prepend localhost to the list of DNSs your DHCP assigned to you.&lt;br /&gt;
+You have to change it manually and put 127.0.0.1 on top of the list.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;networksetup -setdnsservers Ethernet 127.0.0.1
+networksetup -setdnsservers Wi-Fi 127.0.0.1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If everything&amp;rsquo;s ok, running &lt;code&gt;scutil --dns&lt;/code&gt; should return something like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;resolver #8
+domain   : dev
+nameserver[0] : 127.0.0.1
+flags    : Request A records, Request AAAA records
+reach    : Reachable,Local Address
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now you can start dnsmasq&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# start dnsmasq
+sudo launchctl -w load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
+
+# make some tests
+$ ping -c 1 anyhostname.dev
+PING anyhostname.dev (127.0.0.1): 56 data bytes
+64 bytes from 127.0.0.1: icmp_seq=0 ttl=64 time=0.058 ms
+
+$ dig anyhostname.dev
+;; ANSWER SECTION:
+anyhostname.dev.	0	IN	A	127.0.0.1
+;; Query time: 3 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+
+
+$ dig google-public-dns-a.google.com @127.0.0.1
+;; ANSWER SECTION:
+google-public-dns-a.google.com.	25451 IN A	8.8.8.8
+;; Query time: 30 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+
+# cache will speedup subsequent DNS queries
+$ dig google-public-dns-a.google.com @127.0.0.1
+;; Query time: 0 msec
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Bonus: if you run Apache on your dev machine, you can easily setup the &lt;em&gt;one virtual host to rule them all&lt;/em&gt; through &lt;a href=&#34;http://httpd.apache.org/docs/2.4/vhosts/mass.html&#34;&gt;mass vistrual hosting&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Edit &lt;code&gt;/etc/apache2/extra/httpd-vhosts.conf&lt;/code&gt; and add this configuration, every &lt;code&gt;.dev&lt;/code&gt; domain will point to a folder with the same name, but without the extension, in &lt;code&gt;~/Sites&lt;/code&gt; folder.&lt;br /&gt;
+For example, &lt;code&gt;myapp.dev&lt;/code&gt; will point to &lt;code&gt;~/Sites/myapp&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-apache&#34;&gt;&amp;lt;VirtualHost *:80&amp;gt;
+    ServerAdmin you@localhost
+    ServerName anyhostname.dev
+    ServerAlias *.dev
+
+    UseCanonicalName Off
+    # %1.0 is the domain without the extension, in this case
+    # everything before .dev
+    # more info: http://httpd.apache.org/docs/2.4/mod/mod_vhost_alias.html
+    VirtualDocumentRoot /Users/[your_login]/Sites/%1.0
+    ErrorLog &amp;quot;/var/log/apache2/dev_hosts_error_log&amp;quot;
+    CustomLog &amp;quot;/var/log/apache2/dev_hosts_access_log&amp;quot; common
+
+    &amp;lt;Directory /Users/[your_login]/Sites/*&amp;gt;
+        AllowOverride All
+    &amp;lt;/Directory&amp;gt;
+&amp;lt;/VirtualHost&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can finally reload Apache configuration with &lt;code&gt;sudo apachectl graceful&lt;/code&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

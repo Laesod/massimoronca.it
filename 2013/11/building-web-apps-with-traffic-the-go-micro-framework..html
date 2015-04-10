@@ -1,0 +1,303 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title></title>
+
+    <base href="">
+
+    
+    <meta name="description" content="Welcome to Massimo Ronca website. I am a full stack developer, and definitely a tech enthusiast. This is about what I do."/>
+    
+
+    <link rel="stylesheet" href="/assets/stylesheets/fonts.css">
+    <link rel="stylesheet" href="/assets/stylesheets/styles.css">
+    <link rel="stylesheet" href="/assets/stylesheets/highlight/solarized-dark.css">
+    <link rel="stylesheet" href="/assets/stylesheets/gist/line-number-fix.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <link rel="icon" type="image/png" href="/assets/images/icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header-title"><a href="/">Massimo Ronca</a></h1>
+
+        <img src="/assets/images/massimoronca.png" class="logo">
+        <p>This is not</p>
+        <p>the programmer</p>
+        <p>you're looking for</p>
+
+     <footer>
+       <a href="https://github.com/wstucco" title="Github"><img src="/assets/images/github-64.png" alt="Github" class="github-logo"> </a>
+       <a href="https://twitter.com/wstucco" title="Twitter"><img src="/assets/images/twitter-64.png" alt="Twitter" class="twitter-logo"> </a>
+       <a href="https://it.linkedin.com/in/massimoronca" title="Linkedin"><img src="/assets/images/linkedin-64.png" alt="Linkedin" class="linkedin-logo"> </a>
+      </footer>
+    </header>
+
+
+  <section>
+  <article id="content" class="post">
+  <h1 class="post-title">Building web apps with Traffic, the Go micro framework.</h1>
+  <div class="post-content">
+    
+
+<p>Written by the long time Ruby developer <a href="http://gravityblast.com/">Andrea Franz</a>,  <a href="https://github.com/pilu/traffic/"><strong>Traffic</strong></a> is a <a href="http://flask.pocoo.org/docs/foreword/#what-does-micro-mean"><em>micro framework</em></a> for Web development inspired by <a href="http://www.sinatrarb.com">Sinatra</a>.</p>
+
+<p>In times when software development is moving towards creating services for other applications, micro frameworks serve very well this paradigm by providing an easy way to create the building blocks, such as a REST API, on top of which larger applications can rely.</p>
+
+<p>Micro frameworks do not cover every single aspect of application building, most of them are left to the developer, for example you decide which database to use and how to access it or not to use a DB at all, but the codebase is so compact that a single person can master it in a matter of few days.</p>
+
+<p>Like other popular frameworks, <em>Traffic</em> features include</p>
+
+<ul>
+<li>regexp routing</li>
+<li>chainable request filters</li>
+<li>middlewares</li>
+<li>templates</li>
+<li>serving of static files</li>
+<li>custom error handlers</li>
+<li>facilities to render in various format (HTML, JSON and XML)</li>
+<li>errors and stacktraces in the browser</li>
+<li>command line utility to generate new projects (although very basic)</li>
+</ul>
+
+<p>Documentation is a little bit scarce at the moment, but there are many <a href="https://github.com/pilu/traffic/blob/master/examples/">examples</a> that make it easy to figure out how to use the various components.</p>
+
+<p>We are going to analyze each one of them, by writing a small demo application, a simple clone of the placehold.it service powered by the Grumpy cat, instead of gray boxes.<br />
+As usual, code is available on <a href="https://github.com/wstucco/purrraceholder">github</a>.</p>
+
+<p>###Installing Traffic<br />
+Assuming you already have a working installation of Go, download Traffic</p>
+
+<pre><code class="language-bash">$ go get github.com/pilu/traffic
+</code></pre>
+
+<p>and the command line tool</p>
+
+<pre><code class="language-bash">$ go get github.com/pilu/traffic/traffic
+</code></pre>
+
+<p>create a new project</p>
+
+<pre><code class="language-bash">$ traffic new demo_project
+</code></pre>
+
+<p>run it</p>
+
+<pre><code class="language-bash">$ cd demo_project  
+$ go build &amp;&amp; ./demo_project
+</code></pre>
+
+<p>and point your browser to <a href="http://127.0.0.1:7000/">http://127.0.0.1:7000/</a></p>
+
+<h3 id="routing:c0e6095a1875dedd0808509e8b75160b">Routing</h3>
+
+<p>The first thing we need for our application is a router.<br />
+Traffic routes are a pair of an HTTP method and a URL pattern that, if matched,
+call a function that act as route-handler.</p>
+
+<p>Our first route</p>
+
+<pre><code class="language-go">package main
+
+import (
+	&quot;github.com/pilu/traffic&quot;
+)
+
+var router *traffic.Router
+
+func main() {
+	router = traffic.New()
+	router.Get(&quot;/&quot;, RootHandler)
+	router.Run()
+}
+</code></pre>
+
+<p>Routes are matched in the same order they are declared, the first that match is executed.</p>
+
+<p>Routes can contain named parameters that are accesible using the <code>Param</code> function.</p>
+
+<pre><code class="language-go">router.Get(`/:width/:height/?`, ImageHandler)
+
+func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
+	width := r.Param(&quot;width&quot;)
+	height := r.Param(&quot;height&quot;)
+}
+</code></pre>
+
+<p>and parameters can be optional</p>
+
+<pre><code class="language-go">router.Get(`/:width)/(:height)?`, ImageHandler)
+</code></pre>
+
+<p>Route patterns can also include wildcards and regular expressions</p>
+
+<pre><code class="language-go">router.Get(`/:width/*`, ImageHandler)
+
+// match (width)x(height) format
+router.Get(`/(?P&lt;width&gt;\d+)(x(?P&lt;height&gt;\d+)?)?/?`, ImageHandler)
+
+</code></pre>
+
+<h3 id="before-filters:c0e6095a1875dedd0808509e8b75160b">Before filters</h3>
+
+<p>Traffic allows to prepend the request handler with filters, which are like regular request handlers that get executed before the real handler.<br />
+Before fitlers can be chained and can be attached to all routes or just some of them.<br />
+If a before filters write something in the Response Body, the request chain is interrupted.</p>
+
+<pre><code class="language-go">// if route match, before executing ImageHandler, Traffic executes the two filters
+// RequireValidImageParameters and GenerateImageCache in order  
+// If one of them fails and write to the response body, the execution stops
+// before reaching the actual handler
+router.Get(`/:width/?(:height)?/?`, ImageHandler).
+	AddBeforeFilter(RequireValidImageParameters).
+	AddBeforeFilter(GenerateImageCache)
+
+func RequireValidImageParameters(w traffic.ResponseWriter, r *traffic.Request) {
+	width, err := strconv.Atoi(r.Param(&quot;width&quot;))
+	if err != nil { // conversion error, either var is empty or not a number
+		// cannot continue
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	height, err := strconv.Atoi(r.Param(&quot;height&quot;))
+	if err != nil {
+		// if height is omitted the image is gonna be a square
+		height = width
+	}
+
+	if (width &lt;= 2560 &amp;&amp; width &gt; 0) &amp;&amp; (height &lt;= 2560 &amp;&amp; height &gt; 0) {
+		// set vars for the next filter
+	} else {
+		// bad request
+		w.WriteHeader(http.StatusBadRequest)
+		w.Render(&quot;400&quot;, nil)
+	}
+}
+
+func GenerateImageCache(w traffic.ResponseWriter, r *traffic.Request) {
+	// pseudo code
+	if not cache_folder_exists and create_folder_fails
+		throw error with panic
+
+	write_image_file_according_to_parameters
+}
+
+func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
+	// output the image with the correct content-type
+	w.Header().Set(&quot;Content-Type&quot;, &quot;image/jpeg&quot;)
+
+	// at this point we can safely assume that the image file already exists
+}
+
+// this filter is global to the router and is applied before each request
+router.AddBeforeFilter(PoweredByHandler)
+
+func PoweredByHandler(w traffic.ResponseWriter, r *traffic.Request) {
+	w.Header().Set(&quot;X-Powered-By&quot;, &quot;Grumpy cat&quot;)
+}
+</code></pre>
+
+<h3 id="templates-and-static-files:c0e6095a1875dedd0808509e8b75160b">Templates and static files</h3>
+
+<p>Traffic supports templates in the standard Go format.<br />
+Template library documentation can be found <a href="http://golang.org/pkg/html/template/">here</a>.<br />
+Traffic Response Writer has a method to render templates called <code>Render</code>, that takes the template name (without the extension) and an optional param that contains the data to be rendered.
+By default templates are placed in the <code>/view</code> folder.<br />
+Templates can be nested one isnide the other like in our <code>404</code> example</p>
+
+<pre><code class="language-django">{% raw %}
+{{ template &quot;includes/header&quot; }}
+	&lt;div class=&quot;error error-404&quot;&gt;&lt;/div&gt;
+{{ template &quot;includes/footer&quot; }}
+{% endraw %}
+</code></pre>
+
+<p>If you are writing an API you might find the methods <code>WriteJSON</code> and <code>WriteXML</code> useful too.</p>
+
+<p>Traffic also support serving static assets: every file placed in the <code>/public</code> folder is directly accessible.<br />
+For example if we put a css inside <code>/public/css/app.css</code> it will be automatically accessible as</p>
+
+<pre><code class="language-http://address/css/app.css```.">
+**Update**:  static files are served through `StaticMiddleware` that is added automatically only if environment is *‘development’*.
+Environment is set using the `TRAFFIC_ENV` variable, so if you set it to`production`, you have to manually add the `StaticMiddleware`  
+
+```go  
+if traffic.Env() == &quot;production&quot; {
+    router.Use(traffic.NewStaticMiddleware(traffic.PublicPath()))
+}
+</code></pre>
+
+<h3 id="custom-error-handlers:c0e6095a1875dedd0808509e8b75160b">Custom error handlers</h3>
+
+<p>The Traffic router has builtin handlers for <code>404</code> and <code>500</code> erros that can be customized.</p>
+
+<pre><code class="language-go">// Custom not found handler
+router.NotFoundHandler = NotFoundHandler
+
+func NotFoundHandler(w traffic.ResponseWriter, r *traffic.Request) {
+	w.Render(&quot;404&quot;)
+}
+
+// Custom error handler
+router.ErrorHandler = ErrorHandler
+
+func ErrorHandler(w traffic.ResponseWriter, r *traffic.Request) {
+	w.Render(&quot;500&quot;)
+}
+</code></pre>
+
+<h3 id="conclusions:c0e6095a1875dedd0808509e8b75160b">Conclusions</h3>
+
+<p><a href="https://github.com/pilu/traffic/">Traffic</a> is a young framework specifically crafte for small to medium applications.<br />
+I was able to create the demo app <a href="https://github.com/wstucco/purrraceholder">Purrraceholder</a> (read it with a japanese accent) in a couple of hours, without previous knowledge of Traffic internals.<br />
+I know there are people that can write a blog in 15 minutes, but I think hours is a more realistic time frame and, most of all, you are really in control of what&rsquo;s happening.<br />
+If you wanna play with <a href="https://github.com/pilu/traffic/">Traffic</a>, you can start by forking <a href="https://github.com/wstucco/purrraceholder">Purraceholder</a> and adding some features.
+These are the firsts that come to mind:</p>
+
+<ul>
+<li>add more cats, there are never enough cats on the internet</li>
+<li>treat special cases with special cats: longcat for vertical images, monorail cat for horizontal ones</li>
+<li>add support for text overlay</li>
+</ul>
+
+<p>happy coding with <a href="https://github.com/pilu/traffic/">Traffic</a>.</p>
+
+  </div>
+  <div class='small post-meta'>
+    posted 
+    in <a href="http://dev.mikamai.com/post/68453619468/building-web-apps-with-traffic-the-go-micro-framework">MIKAMAYHEM</a>
+    
+    on Friday, Nov 29 2013
+  </div>
+</article>
+
+  </section>
+
+
+    </div>
+    <script src="/assets/javascripts/scale.fix.js"></script>
+    <script src="/assets/javascripts/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1218157-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+  </body>
+</html>

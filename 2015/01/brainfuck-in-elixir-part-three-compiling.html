@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title></title>
+
+    <base href="">
+
+    
+    <meta name="description" content="Welcome to Massimo Ronca website. I am a full stack developer, and definitely a tech enthusiast. This is about what I do."/>
+    
+
+    <link rel="stylesheet" href="/assets/stylesheets/fonts.css">
+    <link rel="stylesheet" href="/assets/stylesheets/styles.css">
+    <link rel="stylesheet" href="/assets/stylesheets/highlight/solarized-dark.css">
+    <link rel="stylesheet" href="/assets/stylesheets/gist/line-number-fix.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <link rel="icon" type="image/png" href="/assets/images/icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header-title"><a href="/">Massimo Ronca</a></h1>
+
+        <img src="/assets/images/massimoronca.png" class="logo">
+        <p>This is not</p>
+        <p>the programmer</p>
+        <p>you're looking for</p>
+
+     <footer>
+       <a href="https://github.com/wstucco" title="Github"><img src="/assets/images/github-64.png" alt="Github" class="github-logo"> </a>
+       <a href="https://twitter.com/wstucco" title="Twitter"><img src="/assets/images/twitter-64.png" alt="Twitter" class="twitter-logo"> </a>
+       <a href="https://it.linkedin.com/in/massimoronca" title="Linkedin"><img src="/assets/images/linkedin-64.png" alt="Linkedin" class="linkedin-logo"> </a>
+      </footer>
+    </header>
+
+
+  <section>
+  <article id="content" class="post">
+  <h1 class="post-title">Brainfuck in Elixir, part three, compiling</h1>
+  <div class="post-content">
+    
+
+<blockquote>
+<p>This is the third in a series of articles on building a brainfuck interpreter in Elixir.<br />
+In the <a href="/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html">first one</a> we built a minimal brainfuck interpreter that could understand the basic instructions.<br />
+In <a href="/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html">the second</a>, we completed it by implementing loops.<br />
+In this third episode we&rsquo;ll write a simple compiler to translate Brainfuck instructions to a machine readable intermediate format (AST) and a VM that executes it.</p>
+</blockquote>
+
+<p>This post was supposed to be about testing and the command line tools, I changed my mind and I will talk about improving our interpreter and turning it into a compiler.</p>
+
+<p>Writing a performant compiler is probably one of the most challenging tasks for a programmer, but the theory behind it is actually quite simple.<br />
+Compilers just <em>transform</em> a source code written in a programming language to some other code, usually a different programming language (including intermediate languages and machine language).<br />
+Most of the time, they are built following a common design, this one</p>
+
+<p><img src="http://twimgs.com/ddj/images/article/2012/0512/latfig1.gif" alt="Compiler design" />
+
+&gt; copyright <a href="http://www.drdobbs.com/architecture-and-design/the-design-of-llvm/240001128">Dr. Dobb&rsquo;s</a></p>
+
+<p>Our compiler will be much simpler: we will completely skip the optimizer (for now) and will directly execute the output of the fronted (AST or abstract syntax tree, from now on).</p>
+
+<p>Technically, we are writing the frontend of the compiler, which is the starting point for everything else to come.</p>
+
+<h4 id="the-intermediate-language:dd48d43642e3d093e06d51cccfdccdcc">The intermediate language</h4>
+
+<p>Brainfuck is already an intermediate language, very similar to assembly. Each symbol is an <code>opcode</code>: for example <code>&gt;</code> and <code>&lt;</code> can be easily mapped to a relative <code>JMP</code>, <code>+</code> maps to <code>INC</code>, <code>-</code> to <code>DEC</code>, <code>[</code> and <code>]</code> are <code>JZ</code> (jump if zero) and <code>JNZ</code> (jump if not zero).<br />
+<code>.</code> and <code>,</code> are more complex, there&rsquo;s no single instruction in assembly for reading and writing chars to the screen, but basically they are the <code>C</code> equivalent of <code>putchar</code> and <code>getchar</code>.</p>
+
+<p>Everybody loves assembly, but we will not use those <code>opcodes</code>, we will use something more similar to labels, something mnemonic, because, right now, we just need to know which block to eceute, we have very simple instructions, with no parameters, that do just one thing.<br />
+Things will change when we&rsquo;ll get our hands on the optimizer, but for now we&rsquo;ll keep things simple, and map Brainfuck instructions to <a href="http://elixir-lang.org/getting_started/2.html#2.3-atoms">Elixir atoms</a> (think about them as Ruby&rsquo;s symbols).</p>
+
+<p>Our instructions set will be the following:</p>
+
+<pre><code class="language-elixir">+ -&gt; :inc_d
+- -&gt; :dec_d
+&gt; -&gt; :inc_p
+&lt; -&gt; :dec_p
+. -&gt; :put_c
+, -&gt; :get_c
+</code></pre>
+
+<p>Loops are mapped to <a href="http://elixir-lang.org/getting_started/7.html#7.1-keyword-lists">Elixir keywords</a>, we already ignore the end loop instruction <code>]</code>, because we unconditionally jump back to <code>[</code> when we find one.<br />
+That leaves <code>[</code> as the only complex instruction in the set, the only that carries a parameter (the body of the loop).<br />
+So loops are defined as</p>
+
+<pre><code class="language-elixir">[ -&gt; {:loop, [loop body]}
+</code></pre>
+
+<p>or in the condensed form</p>
+
+<pre><code>[ -&gt; [loop: [loop body]]
+</code></pre>
+
+<p>Loop body is always a list of instructions.</p>
+
+<h4 id="the-compiler-implementation:dd48d43642e3d093e06d51cccfdccdcc">The compiler implementation</h4>
+
+<p>To write the interpreter, we already wrote a Brainfuck scanner, tokenizer and parser. We&rsquo;ll take advantage of it to emit our <code>AST</code>, turns out it can be written in a very compact way</p>
+
+<pre><code class="language-elixir">defmodule Brainfuck.Compiler do
+
+  def compile(program) when is_binary(program) do
+    compile(program |&gt; to_char_list)
+  end
+
+  def compile(program) do 
+    compile(program, [], [])  
+  end
+  
+  defp compile([], _, stack) when length(stack) &gt; 0 do 
+    raise &quot;unmatched '['&quot;  
+  end
+  
+  defp compile([], ast, stack) when length(stack) == 0 do 
+    ast  
+  end
+
+  defp compile([ic | tail], ast, stack) do
+    case {[ic], stack} do
+      { '+', _ } -&gt; compile tail, ast ++ [:inc_d], stack
+      { '-', _ } -&gt; compile tail, ast ++ [:dec_d], stack
+      { '&gt;', _ } -&gt; compile tail, ast ++ [:inc_p], stack
+      { '&lt;', _ } -&gt; compile tail, ast ++ [:dec_p], stack
+      { '.', _ } -&gt; compile tail, ast ++ [:put_c], stack
+      { ',', _ } -&gt; compile tail, ast ++ [:get_c], stack
+      { '[', _ } -&gt; compile tail, [], [ast] ++ stack
+      { ']', [] } -&gt; raise &quot;unmatched ']'&quot;
+      { ']', [h | t] } -&gt; compile tail, h ++ [loop: ast], t
+      _ -&gt; compile tail, ast, stack
+    end
+  end
+
+end
+</code></pre>
+
+<p>Pretty short, pretty easy to follow.<br />
+First we create a <code>Brainfuck.Compiler</code> module, that is our namespace for the compiler, we then put a few conditions: if the input is a string, we convert it to a <a href="http://elixir-lang.org/getting_started/6.html#6.3-char-lists">char list</a> that is easier to traverse, and we declare that when <code>compile</code> is called with an empty list, there are no more instructions to translate, we are done and return the <code>AST</code>.<br />
+Unless the stack is not empty, which is an error condition, we&rsquo;ll se why in a moment.</p>
+
+<p>Every instruction found, is appended to the <code>AST</code> list, every not recognized symbol, is ignored and discarded.</p>
+
+<p>What it does is take this input</p>
+
+<pre><code class="language-brainfuck">+-&gt;&lt;[.,]
+</code></pre>
+
+<p>and translate it to</p>
+
+<pre><code class="language-elixir">[:inc_d, :dec_d, :inc_p, :dec_p, loop: [:put_c, :get_c]]
+</code></pre>
+
+<p>Loops are handled recursively: once we find a <code>[</code>, we save in a <code>stack</code> the current <code>AST</code>.<br />
+We use the stack as a FIFO queue, we prepend the <code>AST</code> to the actual value of the stack, because the loop could be nested, we then execute the body of the loop like it was a standalone program.<br />
+When we find a <code>]</code>, we pop from the head of the stack and prepend it to the loop <code>AST</code> and keep popping until we have emptied the stack.<br />
+This way we can track unbalanced pairs of <code>[</code> and <code>]</code>.<br />
+If we pop and the stack is empty, we popped once too often.<br />
+If we get to the end, where no instruction is left to be picked up, and the stack is not empty, we haven&rsquo;t popped enough.</p>
+
+<h3 id="the-virtual-machine:dd48d43642e3d093e06d51cccfdccdcc">The Virtual Machine</h3>
+
+<p>Our virtual machine is not really a virtual machine, in the strict sense of the term, it is more a runtime that knows our bytecode and how to execute it.<br />
+It is really not much different from the interpreter, it reads a list of inputs and decide what to do with them.<br />
+But, it has some advantages.<br />
+The first one is that the compiler ensures correctness of our code: we can&rsquo;t be sure that the code does what it is supposed to do or that there won&rsquo;t be an nfinite loop, but we can assume it is formally correct (no unbalanced loops, for example).<br />
+The second one is that having a bytecode, enable us to optimize the code.<br />
+The simpler optimization is that we don&rsquo;t have to scan the code back and forth to find the boundaries of the loops, they are already expressed in the <code>AST</code>.<br />
+Infact to <code>run</code> loops the VM we just executes them</p>
+
+<pre><code class="language-elixir">defp run(program = [{:loop, loop} | tail], addr, mem, input, output) do
+  case mem |&gt; byte_at addr do
+    0 -&gt;
+      run(tail, addr, mem, input, output)
+    _ -&gt;
+      {a, m, i, o} = run(loop, addr, mem, input, output)
+      run(program, a, m, i, o)
+  end
+end
+</code></pre>
+
+<blockquote>
+<p><code>keywords</code> in Elixir are matched with <code>{:key, value}</code></p>
+</blockquote>
+
+<p>This optimization alone makes our programs run up to six times faster.<br />
+Conclusions are based on higly non-scientifical benchmarks</p>
+
+<pre><code class="language-bash">$ time ./brainfuck test/fixtures/bench_ok.bf
+  OK
+  
+  real  1m10.399s
+  user  1m9.483s
+  sys 0m0.391s
+
+$ time ./brainfuck -i test/fixtures/bench_ok.bf
+  OK
+  
+  real  6m2.453s
+  user  5m57.601s
+  sys 0m1.704s 
+</code></pre>
+
+<p>The more loops there are in the Brainfuck code, the more it should benefit from the compilation.</p>
+
+<p>You can find all the code <a href="https://github.com/wstucco/elixir-brainfuck/">on github</a>, to create the brainfuck executable run <code>mix escript.build</code>, if you run it with the <code>-i</code> flag, it will use the interpreter written in the previous two articles, otherwise it will use the compiler.<br />
+To run the tests use <code>mix test</code>.</p>
+
+<p>And if you find the reason why the interpreter gets stuck in an infinite loop running <a href="https://github.com/wstucco/elixir-brainfuck/blob/master/test/fixtures/bench.bf">this brainfuck program</a>, please, <a href="mailto:massimo@mikamai.com">let me know</a>.</p>
+
+  </div>
+  <div class='small post-meta'>
+    posted 
+    in <a href="http://dev.mikamai.com/post/109477559604/brainfuck-in-elixir-part-three-compiling">MIKAMAYHEM</a>
+    
+    on Saturday, Jan 24 2015
+  </div>
+</article>
+
+  </section>
+
+
+    </div>
+    <script src="/assets/javascripts/scale.fix.js"></script>
+    <script src="/assets/javascripts/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1218157-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+  </body>
+</html>

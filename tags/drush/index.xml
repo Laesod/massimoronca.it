@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Drush on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://massimoronca.it/tags/drush.html</link>
+    <description>Recent content in Drush on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 14 May 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://massimoronca.it/tags/drush.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Writing custom commands for Drush: the Drupal swiss army knife.</title>
+      <link>http://massimoronca.it/2014/05/writing-custom-commands-for-drush-the-drupal-swiss-army-knife..html</link>
+      <pubDate>Wed, 14 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/05/writing-custom-commands-for-drush-the-drupal-swiss-army-knife..html</guid>
+      <description>&lt;p&gt;Recently I worked on a client project based on the Drupal platform.&lt;br /&gt;
+The most important part of the job was automating a data import from a remote source, but instead of writing a script to do the job, I created a command for &lt;a href=&#34;https://github.com/drush-ops/drush&#34;&gt;Drush&lt;/a&gt;.
+Quoting from Drush repository site&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Drush is a command-line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those who spend their working hours hacking away at the command prompt.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Drush can handle almost every aspect of a Drupal site, from the mundane &lt;a href=&#34;http://www.drushcommands.com/drush-7x/cache&#34;&gt;cache management&lt;/a&gt; to
+&lt;a href=&#34;http://www.drushcommands.com/drush-6x/user&#34;&gt;user management&lt;/a&gt;, from &lt;a href=&#34;http://www.drushcommands.com/drush-6x/make&#34;&gt;packaging a Drupal install into a makefile&lt;/a&gt; to
+&lt;a href=&#34;http://www.drushcommands.com/drush-6x/pm&#34;&gt;project management&lt;/a&gt; and much more, including a &lt;a href=&#34;http://www.drushcommands.com/drush-6x/sql/sql-cli&#34;&gt;CLI for running sql queries&lt;/a&gt; an &lt;a href=&#34;http://www.drushcommands.com/drush-6x/runserver/runserver&#34;&gt;http server for development&lt;/a&gt; and an &lt;a href=&#34;http://www.drushcommands.com/drush-7x/core/core-rsync&#34;&gt;rsync wrapper&lt;/a&gt;.&lt;br /&gt;
+Drush commands can also be executed on remote machines, provided Drush is installed, by specifing the server &lt;a href=&#34;http://deeson-online.co.uk/labs/drupal-drush-aliases-and-how-use-them&#34;&gt;alias&lt;/a&gt; (e.g. &lt;code&gt;drush clear-cache @staging&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;There are different ways of creating Drush scripts:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;prepending the script with the shebang &lt;code&gt;#!/usr/bin/env drush&lt;/code&gt; or &lt;code&gt;#!/full/path/to/drush&lt;/code&gt; and using
+&lt;a href=&#34;http://www.drushcommands.com/&#34;&gt;Drush commands&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;using Drush php interpreter &lt;code&gt;#!/full/path/to/drush php-script&lt;/code&gt; and using the &lt;a href=&#34;http://api.drush.org/&#34;&gt;Drush
+PHP api&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;writing custom commands&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This guide is about the last case.&lt;br /&gt;
+Drush commands are much like Rake or Grunt tasks, you give them a name (more like a namespace) and Drush figures out what function must be called.
+To create a Drush command, follow these simple steps&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;create a &lt;code&gt;namespace.drush.inc&lt;/code&gt; in one of the standard import path&lt;/li&gt;
+&lt;li&gt;implement the &lt;code&gt;namespace_drush_command&lt;/code&gt; entry point function&lt;/li&gt;
+&lt;li&gt;implement the command functions. By conventions the command functions are called &lt;code&gt;drush_namespace_commandname&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Drush search for commandfiles in the following locations:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/path/to/drush/commands&lt;/code&gt; folder&lt;/li&gt;
+&lt;li&gt;system-wide drush commands folder, e.g. &lt;code&gt;/usr/share/drush/commands&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;.drush folder in &lt;code&gt;$HOME&lt;/code&gt; folder.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sites/all/drush&lt;/code&gt; in the current Drupal installation&lt;/li&gt;
+&lt;li&gt;all enabled modules folders in the current Drupal installation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;##Implementing the command&lt;/p&gt;
+
+&lt;p&gt;To implement a Drush command, the script must implement the drush_command hook.
+This function must return a data structure containing all the informations that define your custom command.&lt;br /&gt;
+As an example we will develop a command that rolls a dice and prints the result.&lt;br /&gt;
+We&amp;rsquo;ll use &lt;code&gt;diceroller&lt;/code&gt; as namespace and &lt;code&gt;roll-dice&lt;/code&gt; as command name.&lt;br /&gt;
+This is the implementation of the main hook function&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;&amp;lt;?php
+function diceroller_drush_command() {
+  $items = array();
+
+  $items[&#39;roll-dice&#39;] = array(
+    &#39;description&#39; =&amp;gt; &amp;quot;Roll a dice for your pleasure.&amp;quot;,
+    &#39;arguments&#39; =&amp;gt; array(
+      &#39;faces&#39; =&amp;gt; &#39;How many faces the dice has? Default is 6, max is 100.&#39;,
+    ),
+    &#39;options&#39; =&amp;gt; array(
+      &#39;rolls&#39; =&amp;gt; &#39;How many times the dice is rolled, default is 1 max is 100&#39;,
+    ),
+    &#39;examples&#39; =&amp;gt; array(
+      &#39;drush drrd 6 --rolls=2&#39; =&amp;gt; &#39;Rolls a 6 faced dice 2 times&#39;,
+    ),
+    &#39;aliases&#39; =&amp;gt; array(&#39;drrd&#39;),
+    &#39;bootstrap&#39; =&amp;gt; DRUSH_BOOTSTRAP_DRUSH,
+    // see http://drush.ws/docs/bootstrap.html for detailed informations
+    // about the bootstrap values
+  );
+
+  return $items;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The command is easily implementd this way&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;&amp;lt;?php
+
+function drush_diceroller_roll_dice($faces=6) {
+  $rolls = 1;
+
+  if ($tmp = drush_get_option(&#39;rolls&#39;)) {
+    $rolls = $tmp;
+  }  
+
+  drush_print(dt(&#39;Rolling a !faces faced dice !n time(s)&#39;, array(
+    &#39;!faces&#39; =&amp;gt; $faces,
+    &#39;!n&#39; =&amp;gt; $rolls
+  )));
+  // for n=0..$rolls
+    // roll the nth dice
+    // print the result
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this case we assume that the &lt;code&gt;--rolls&lt;/code&gt; option contains a number, but we can guarantee that the function parameters are valid implementing the &lt;code&gt;validate&lt;/code&gt; hook (there are others called just before and after the real command function).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;&amp;lt;?php
+
+function drush_diceroller_roll_dice_validate($faces=6) {
+
+  if($faces &amp;lt;= 0) {
+    return drush_set_error(&#39;DICE_WITH_NO_FACES&#39;, dt(&#39;Cannot roll a dice with no faces!&#39;));
+  }
+  if($faces &amp;gt; 100) {
+    return drush_set_error(&#39;DICE_WITH_TOO_MANY_FACES&#39;, dt(&#39;Cannot roll a sphere!&#39;));
+  }
+
+  $rolls = drush_get_option(&#39;rolls&#39;);
+  if(isset($rolls)) {
+    if(!is_numeric($rolls))
+      return drush_set_error(&#39;ROLLS_MUST_BE_INT&#39;, dt(&#39;rolls value must be a number!&#39;));
+
+    if($rolls &amp;lt;= 0)
+      return drush_set_error(&#39;NOT_ENOUGH_ROLLS&#39;, dt(&#39;What you\&#39;re asking cannot be done!&#39;));
+
+    if($rolls &amp;gt; 100)
+      return drush_set_error(&#39;TOO_MANY_ROLLS&#39;, dt(&#39;I\&#39;m not your slave, roll it by yourself!&#39;));
+  }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If we did our job diligently, running &lt;code&gt;drush help roll-dice&lt;/code&gt; should give us this ouput&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;Roll a dice for your pleasure.
+
+Examples:
+ drush drrd 6 --rolls=2                    Rolls a 6 faced dice 2 times
+
+Arguments:
+ faces                                     How many faces the dice has? Default is 6, max is 100.
+
+Options:
+ --rolls                                   How many times the dice is rolled, default is 1 max is 100
+
+Aliases: drrd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Consult the &lt;a href=&#34;http://api.drush.org/&#34;&gt;Drush api&lt;/a&gt; for a complete list of hooks &lt;a href=&#34;http://api.drush.org/api/drush/functions/6.x&#34;&gt;functions&lt;/a&gt; and &lt;a href=&#34;http://api.drush.org/api/drush/constants/6.x&#34;&gt;constants&lt;/a&gt; or launch &lt;code&gt;drush topic docs-api&lt;/code&gt; from the command line.&lt;br /&gt;
+For a complete implementation of a command example, see &lt;code&gt;drush topic docs-examplecommand&lt;/code&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

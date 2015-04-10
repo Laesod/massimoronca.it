@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Opal Javascript Transpiler on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://massimoronca.it/tags/opal-javascript-transpiler.html</link>
+    <description>Recent content in Opal Javascript Transpiler on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 27 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://massimoronca.it/tags/opal-javascript-transpiler.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Bootstap Opal for Meteor</title>
+      <link>http://massimoronca.it/2015/02/bootstap-opal-for-meteor.html</link>
+      <pubDate>Fri, 27 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/02/bootstap-opal-for-meteor.html</guid>
+      <description>&lt;p&gt;If you wanna use the &lt;a href=&#34;https://atmospherejs.com/massimoronca/opal&#34;&gt;Opal build plugin&lt;/a&gt; for Meteor I&amp;rsquo;ve recently published, but don&amp;rsquo;t know how, here it is &lt;a href=&#34;https://gist.github.com/wstucco/42392ee21b76dfa3ef83&#34;&gt;a Gist showing how to integrate Opal with Meteor builtin functionalities&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;script src=&#34;https://gist.github.com/wstucco/42392ee21b76dfa3ef83.js?file=user.rb&#34;&gt; &lt;/script&gt;
+&lt;script src=&#34;https://gist.github.com/wstucco/42392ee21b76dfa3ef83.js?file=meteor.rb&#34;&gt; &lt;/script&gt;
+&lt;script src=&#34;https://gist.github.com/wstucco/42392ee21b76dfa3ef83.js?file=main.rb&#34;&gt; &lt;/script&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Opal for Meteor</title>
+      <link>http://massimoronca.it/2015/02/opal-for-meteor.html</link>
+      <pubDate>Wed, 18 Feb 2015 00:00:01 +0200</pubDate>
+      
+      <guid>http://massimoronca.it/2015/02/opal-for-meteor.html</guid>
+      <description>&lt;p&gt;I present you the result of my weekend project: an &lt;a href=&#34;https://atmospherejs.com/massimoronca/opal&#34;&gt;Opal build plugin&lt;/a&gt; for Meteor that compiles Ruby files down to Javascript, both on the client and the server.&lt;/p&gt;
+
+&lt;p&gt;Installation is as easy as running&lt;/p&gt;
+
+&lt;p&gt;&lt;del&gt;&lt;code&gt;meteor add massimoronca:opal&lt;/code&gt;&lt;/del&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;meteor add mikamai:opal&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Files anding in &lt;code&gt;.rb&lt;/code&gt; or &lt;code&gt;.js.rb&lt;/code&gt; will be autoatically compiled and loaded.&lt;/p&gt;
+
+&lt;p&gt;For those who don&amp;rsquo;t know what Opal is, I reccomend to visit the &lt;a href=&#34;http://opalrb.org&#34;&gt;Opal website&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

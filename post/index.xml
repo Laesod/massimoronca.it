@@ -1,0 +1,1950 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://massimoronca.it/post.html</link>
+    <description>Recent content in Posts on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 27 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://massimoronca.it/post.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Bootstap Opal for Meteor</title>
+      <link>http://massimoronca.it/2015/02/bootstap-opal-for-meteor.html</link>
+      <pubDate>Fri, 27 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/02/bootstap-opal-for-meteor.html</guid>
+      <description>&lt;p&gt;If you wanna use the &lt;a href=&#34;https://atmospherejs.com/massimoronca/opal&#34;&gt;Opal build plugin&lt;/a&gt; for Meteor I&amp;rsquo;ve recently published, but don&amp;rsquo;t know how, here it is &lt;a href=&#34;https://gist.github.com/wstucco/42392ee21b76dfa3ef83&#34;&gt;a Gist showing how to integrate Opal with Meteor builtin functionalities&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;script src=&#34;https://gist.github.com/wstucco/42392ee21b76dfa3ef83.js?file=user.rb&#34;&gt; &lt;/script&gt;
+&lt;script src=&#34;https://gist.github.com/wstucco/42392ee21b76dfa3ef83.js?file=meteor.rb&#34;&gt; &lt;/script&gt;
+&lt;script src=&#34;https://gist.github.com/wstucco/42392ee21b76dfa3ef83.js?file=main.rb&#34;&gt; &lt;/script&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Opal for Meteor</title>
+      <link>http://massimoronca.it/2015/02/opal-for-meteor.html</link>
+      <pubDate>Wed, 18 Feb 2015 00:00:01 +0200</pubDate>
+      
+      <guid>http://massimoronca.it/2015/02/opal-for-meteor.html</guid>
+      <description>&lt;p&gt;I present you the result of my weekend project: an &lt;a href=&#34;https://atmospherejs.com/massimoronca/opal&#34;&gt;Opal build plugin&lt;/a&gt; for Meteor that compiles Ruby files down to Javascript, both on the client and the server.&lt;/p&gt;
+
+&lt;p&gt;Installation is as easy as running&lt;/p&gt;
+
+&lt;p&gt;&lt;del&gt;&lt;code&gt;meteor add massimoronca:opal&lt;/code&gt;&lt;/del&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;meteor add mikamai:opal&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Files anding in &lt;code&gt;.rb&lt;/code&gt; or &lt;code&gt;.js.rb&lt;/code&gt; will be autoatically compiled and loaded.&lt;/p&gt;
+
+&lt;p&gt;For those who don&amp;rsquo;t know what Opal is, I reccomend to visit the &lt;a href=&#34;http://opalrb.org&#34;&gt;Opal website&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Brainfuck in Elixir, part three, compiling</title>
+      <link>http://massimoronca.it/2015/01/brainfuck-in-elixir-part-three-compiling.html</link>
+      <pubDate>Sat, 24 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/01/brainfuck-in-elixir-part-three-compiling.html</guid>
+      <description>
+
+&lt;blockquote&gt;
+&lt;p&gt;This is the third in a series of articles on building a brainfuck interpreter in Elixir.&lt;br /&gt;
+In the &lt;a href=&#34;http://massimoronca.it/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html&#34;&gt;first one&lt;/a&gt; we built a minimal brainfuck interpreter that could understand the basic instructions.&lt;br /&gt;
+In &lt;a href=&#34;http://massimoronca.it/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html&#34;&gt;the second&lt;/a&gt;, we completed it by implementing loops.&lt;br /&gt;
+In this third episode we&amp;rsquo;ll write a simple compiler to translate Brainfuck instructions to a machine readable intermediate format (AST) and a VM that executes it.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This post was supposed to be about testing and the command line tools, I changed my mind and I will talk about improving our interpreter and turning it into a compiler.&lt;/p&gt;
+
+&lt;p&gt;Writing a performant compiler is probably one of the most challenging tasks for a programmer, but the theory behind it is actually quite simple.&lt;br /&gt;
+Compilers just &lt;em&gt;transform&lt;/em&gt; a source code written in a programming language to some other code, usually a different programming language (including intermediate languages and machine language).&lt;br /&gt;
+Most of the time, they are built following a common design, this one&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://twimgs.com/ddj/images/article/2012/0512/latfig1.gif&#34; alt=&#34;Compiler design&#34; /&gt;
+
+&amp;gt; copyright &lt;a href=&#34;http://www.drdobbs.com/architecture-and-design/the-design-of-llvm/240001128&#34;&gt;Dr. Dobb&amp;rsquo;s&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Our compiler will be much simpler: we will completely skip the optimizer (for now) and will directly execute the output of the fronted (AST or abstract syntax tree, from now on).&lt;/p&gt;
+
+&lt;p&gt;Technically, we are writing the frontend of the compiler, which is the starting point for everything else to come.&lt;/p&gt;
+
+&lt;h4 id=&#34;the-intermediate-language:dd48d43642e3d093e06d51cccfdccdcc&#34;&gt;The intermediate language&lt;/h4&gt;
+
+&lt;p&gt;Brainfuck is already an intermediate language, very similar to assembly. Each symbol is an &lt;code&gt;opcode&lt;/code&gt;: for example &lt;code&gt;&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;&lt;/code&gt; can be easily mapped to a relative &lt;code&gt;JMP&lt;/code&gt;, &lt;code&gt;+&lt;/code&gt; maps to &lt;code&gt;INC&lt;/code&gt;, &lt;code&gt;-&lt;/code&gt; to &lt;code&gt;DEC&lt;/code&gt;, &lt;code&gt;[&lt;/code&gt; and &lt;code&gt;]&lt;/code&gt; are &lt;code&gt;JZ&lt;/code&gt; (jump if zero) and &lt;code&gt;JNZ&lt;/code&gt; (jump if not zero).&lt;br /&gt;
+&lt;code&gt;.&lt;/code&gt; and &lt;code&gt;,&lt;/code&gt; are more complex, there&amp;rsquo;s no single instruction in assembly for reading and writing chars to the screen, but basically they are the &lt;code&gt;C&lt;/code&gt; equivalent of &lt;code&gt;putchar&lt;/code&gt; and &lt;code&gt;getchar&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Everybody loves assembly, but we will not use those &lt;code&gt;opcodes&lt;/code&gt;, we will use something more similar to labels, something mnemonic, because, right now, we just need to know which block to eceute, we have very simple instructions, with no parameters, that do just one thing.&lt;br /&gt;
+Things will change when we&amp;rsquo;ll get our hands on the optimizer, but for now we&amp;rsquo;ll keep things simple, and map Brainfuck instructions to &lt;a href=&#34;http://elixir-lang.org/getting_started/2.html#2.3-atoms&#34;&gt;Elixir atoms&lt;/a&gt; (think about them as Ruby&amp;rsquo;s symbols).&lt;/p&gt;
+
+&lt;p&gt;Our instructions set will be the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;+ -&amp;gt; :inc_d
+- -&amp;gt; :dec_d
+&amp;gt; -&amp;gt; :inc_p
+&amp;lt; -&amp;gt; :dec_p
+. -&amp;gt; :put_c
+, -&amp;gt; :get_c
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Loops are mapped to &lt;a href=&#34;http://elixir-lang.org/getting_started/7.html#7.1-keyword-lists&#34;&gt;Elixir keywords&lt;/a&gt;, we already ignore the end loop instruction &lt;code&gt;]&lt;/code&gt;, because we unconditionally jump back to &lt;code&gt;[&lt;/code&gt; when we find one.&lt;br /&gt;
+That leaves &lt;code&gt;[&lt;/code&gt; as the only complex instruction in the set, the only that carries a parameter (the body of the loop).&lt;br /&gt;
+So loops are defined as&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;[ -&amp;gt; {:loop, [loop body]}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;or in the condensed form&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[ -&amp;gt; [loop: [loop body]]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Loop body is always a list of instructions.&lt;/p&gt;
+
+&lt;h4 id=&#34;the-compiler-implementation:dd48d43642e3d093e06d51cccfdccdcc&#34;&gt;The compiler implementation&lt;/h4&gt;
+
+&lt;p&gt;To write the interpreter, we already wrote a Brainfuck scanner, tokenizer and parser. We&amp;rsquo;ll take advantage of it to emit our &lt;code&gt;AST&lt;/code&gt;, turns out it can be written in a very compact way&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule Brainfuck.Compiler do
+
+  def compile(program) when is_binary(program) do
+    compile(program |&amp;gt; to_char_list)
+  end
+
+  def compile(program) do 
+    compile(program, [], [])  
+  end
+  
+  defp compile([], _, stack) when length(stack) &amp;gt; 0 do 
+    raise &amp;quot;unmatched &#39;[&#39;&amp;quot;  
+  end
+  
+  defp compile([], ast, stack) when length(stack) == 0 do 
+    ast  
+  end
+
+  defp compile([ic | tail], ast, stack) do
+    case {[ic], stack} do
+      { &#39;+&#39;, _ } -&amp;gt; compile tail, ast ++ [:inc_d], stack
+      { &#39;-&#39;, _ } -&amp;gt; compile tail, ast ++ [:dec_d], stack
+      { &#39;&amp;gt;&#39;, _ } -&amp;gt; compile tail, ast ++ [:inc_p], stack
+      { &#39;&amp;lt;&#39;, _ } -&amp;gt; compile tail, ast ++ [:dec_p], stack
+      { &#39;.&#39;, _ } -&amp;gt; compile tail, ast ++ [:put_c], stack
+      { &#39;,&#39;, _ } -&amp;gt; compile tail, ast ++ [:get_c], stack
+      { &#39;[&#39;, _ } -&amp;gt; compile tail, [], [ast] ++ stack
+      { &#39;]&#39;, [] } -&amp;gt; raise &amp;quot;unmatched &#39;]&#39;&amp;quot;
+      { &#39;]&#39;, [h | t] } -&amp;gt; compile tail, h ++ [loop: ast], t
+      _ -&amp;gt; compile tail, ast, stack
+    end
+  end
+
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Pretty short, pretty easy to follow.&lt;br /&gt;
+First we create a &lt;code&gt;Brainfuck.Compiler&lt;/code&gt; module, that is our namespace for the compiler, we then put a few conditions: if the input is a string, we convert it to a &lt;a href=&#34;http://elixir-lang.org/getting_started/6.html#6.3-char-lists&#34;&gt;char list&lt;/a&gt; that is easier to traverse, and we declare that when &lt;code&gt;compile&lt;/code&gt; is called with an empty list, there are no more instructions to translate, we are done and return the &lt;code&gt;AST&lt;/code&gt;.&lt;br /&gt;
+Unless the stack is not empty, which is an error condition, we&amp;rsquo;ll se why in a moment.&lt;/p&gt;
+
+&lt;p&gt;Every instruction found, is appended to the &lt;code&gt;AST&lt;/code&gt; list, every not recognized symbol, is ignored and discarded.&lt;/p&gt;
+
+&lt;p&gt;What it does is take this input&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-brainfuck&#34;&gt;+-&amp;gt;&amp;lt;[.,]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and translate it to&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;[:inc_d, :dec_d, :inc_p, :dec_p, loop: [:put_c, :get_c]]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Loops are handled recursively: once we find a &lt;code&gt;[&lt;/code&gt;, we save in a &lt;code&gt;stack&lt;/code&gt; the current &lt;code&gt;AST&lt;/code&gt;.&lt;br /&gt;
+We use the stack as a FIFO queue, we prepend the &lt;code&gt;AST&lt;/code&gt; to the actual value of the stack, because the loop could be nested, we then execute the body of the loop like it was a standalone program.&lt;br /&gt;
+When we find a &lt;code&gt;]&lt;/code&gt;, we pop from the head of the stack and prepend it to the loop &lt;code&gt;AST&lt;/code&gt; and keep popping until we have emptied the stack.&lt;br /&gt;
+This way we can track unbalanced pairs of &lt;code&gt;[&lt;/code&gt; and &lt;code&gt;]&lt;/code&gt;.&lt;br /&gt;
+If we pop and the stack is empty, we popped once too often.&lt;br /&gt;
+If we get to the end, where no instruction is left to be picked up, and the stack is not empty, we haven&amp;rsquo;t popped enough.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-virtual-machine:dd48d43642e3d093e06d51cccfdccdcc&#34;&gt;The Virtual Machine&lt;/h3&gt;
+
+&lt;p&gt;Our virtual machine is not really a virtual machine, in the strict sense of the term, it is more a runtime that knows our bytecode and how to execute it.&lt;br /&gt;
+It is really not much different from the interpreter, it reads a list of inputs and decide what to do with them.&lt;br /&gt;
+But, it has some advantages.&lt;br /&gt;
+The first one is that the compiler ensures correctness of our code: we can&amp;rsquo;t be sure that the code does what it is supposed to do or that there won&amp;rsquo;t be an nfinite loop, but we can assume it is formally correct (no unbalanced loops, for example).&lt;br /&gt;
+The second one is that having a bytecode, enable us to optimize the code.&lt;br /&gt;
+The simpler optimization is that we don&amp;rsquo;t have to scan the code back and forth to find the boundaries of the loops, they are already expressed in the &lt;code&gt;AST&lt;/code&gt;.&lt;br /&gt;
+Infact to &lt;code&gt;run&lt;/code&gt; loops the VM we just executes them&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(program = [{:loop, loop} | tail], addr, mem, input, output) do
+  case mem |&amp;gt; byte_at addr do
+    0 -&amp;gt;
+      run(tail, addr, mem, input, output)
+    _ -&amp;gt;
+      {a, m, i, o} = run(loop, addr, mem, input, output)
+      run(program, a, m, i, o)
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;keywords&lt;/code&gt; in Elixir are matched with &lt;code&gt;{:key, value}&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This optimization alone makes our programs run up to six times faster.&lt;br /&gt;
+Conclusions are based on higly non-scientifical benchmarks&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ time ./brainfuck test/fixtures/bench_ok.bf
+  OK
+  
+  real  1m10.399s
+  user  1m9.483s
+  sys 0m0.391s
+
+$ time ./brainfuck -i test/fixtures/bench_ok.bf
+  OK
+  
+  real  6m2.453s
+  user  5m57.601s
+  sys 0m1.704s 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The more loops there are in the Brainfuck code, the more it should benefit from the compilation.&lt;/p&gt;
+
+&lt;p&gt;You can find all the code &lt;a href=&#34;https://github.com/wstucco/elixir-brainfuck/&#34;&gt;on github&lt;/a&gt;, to create the brainfuck executable run &lt;code&gt;mix escript.build&lt;/code&gt;, if you run it with the &lt;code&gt;-i&lt;/code&gt; flag, it will use the interpreter written in the previous two articles, otherwise it will use the compiler.&lt;br /&gt;
+To run the tests use &lt;code&gt;mix test&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;And if you find the reason why the interpreter gets stuck in an infinite loop running &lt;a href=&#34;https://github.com/wstucco/elixir-brainfuck/blob/master/test/fixtures/bench.bf&#34;&gt;this brainfuck program&lt;/a&gt;, please, &lt;a href=&#34;mailto:massimo@mikamai.com&#34;&gt;let me know&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Writing a Brainfuck interpreter in Elixir, part two</title>
+      <link>http://massimoronca.it/2014/11/writing-a-brainfuck-interpreter-in-elixir-part-two.html</link>
+      <pubDate>Mon, 10 Nov 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/11/writing-a-brainfuck-interpreter-in-elixir-part-two.html</guid>
+      <description>
+
+&lt;blockquote&gt;
+&lt;p&gt;This is the second in a series of articles on building a brainfuck interpreter in Elixir&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In the &lt;a href=&#34;http://dev.mikamai.com/post/100075543414/elixir-as-a-parsing-tool-writing-a-brainfuck&#34;&gt;first part&lt;/a&gt; we built a minimal brainfuck interpreter that can already run some basic program.
+For example&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-brainfuck&#34;&gt;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+# prints A
+
+,-.
+# prints the ASCII character preceding the one taken as input
+# in &amp;quot;B&amp;quot; -&amp;gt; out &amp;quot;A&amp;quot; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But honestly we can&amp;rsquo;t do anything more with it.&lt;br /&gt;
+The first missing feature is &lt;em&gt;memory management&lt;/em&gt;. We have implemented the functions that move the pointer to memory cells left and right, but we&amp;rsquo;re still stuck with a non expanding memory tape of one cell only.&lt;br /&gt;
+Let&amp;rsquo;s implement memory auto expansion, turns out it is gonna be very easy.&lt;/p&gt;
+
+&lt;h3 id=&#34;memory-management:b2ed223dec99eecb4254f6d99c79a103&#34;&gt;Memory management&lt;/h3&gt;
+
+&lt;p&gt;The functions that handle the &lt;code&gt;&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;&lt;/code&gt; operators are&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_pinc &amp;lt;&amp;gt; rest, addr, mem, output) do
+  run(rest, addr+1, mem, output)
+end
+
+defp run(@op_pdec &amp;lt;&amp;gt; rest, addr, mem, output) do
+  run(rest, addr-1, mem, output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;One easy way to try to implement an auto expanding memory would be to check if we are accessing a cell past the end of the tape or before the initial one and handling those edge cases.
+Something like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_pinc &amp;lt;&amp;gt; rest, addr, mem, output) do
+  if length(mem) == addr+1 do
+    mem = mem ++ [0]
+  end
+  run(rest, addr+1, mem, output)
+end
+
+defp run(@op_pdec &amp;lt;&amp;gt; rest, addr, mem, output) do
+  if addr == 0 do
+    mem = [0] ++ mem
+  end
+  run(rest, addr-1, mem, output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This implementation has several problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;the second function does not work, it keeps decrementing the memory pointer and can go negative, which is an unwanted behaviour (it should be &lt;code&gt;zero&lt;/code&gt;). We should add another &lt;code&gt;if&lt;/code&gt; to make it work, not so good.&lt;/li&gt;
+&lt;li&gt;We are shadowing the original &lt;code&gt;mem&lt;/code&gt; variable by reassigning its value.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;we are modifying code that already works (we&amp;rsquo;ll talk about testing Elixir code in the next article) introducing branching and making it harder to mantain&lt;/li&gt;
+&lt;li&gt;we&amp;rsquo;re not &lt;em&gt;taking advantage of Elixir features&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;One of the main selling point of Elixir is pattern matching in function declaration.&lt;br /&gt;
+But pattern matching alone could not be enough, as we&amp;rsquo;ve seen in this example.&lt;br /&gt;
+In Elixir you can add conditions to function declarations that act in tandem with pattern matching and limit the range of values a function accept. They are called &lt;code&gt;guard clauses&lt;/code&gt;, I&amp;rsquo;ll rewrite those two functions to use them:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;note the &lt;code&gt;when&lt;/code&gt; after function declaration&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;# we are moving past the end of the memory tape
+defp run(@op_pinc &amp;lt;&amp;gt; rest, addr, mem, output) when length(mem) == addr + 1 do
+  # append a new cell, initialize its value to zero, return the next address
+  run(rest, addr+1, mem ++ [0], output)
+end
+
+# we are moving to the left of the first cell of the memory tape
+defp run(@op_pdec &amp;lt;&amp;gt; rest, addr, mem, output) when addr == 0 do
+  # prepend a new empty cell, initialize its value to zero, return zero as address
+  run(rest, 0, [0] ++ mem, output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is much better,  requires no branching, can be added without modifying the existing code and by looking at the definition we can easily guess when the function is going to be called.&lt;br /&gt;
+The only limitation is that Erlang VM only allows &lt;a href=&#34;http://elixir-lang.org/getting_started/5.html#5.2-expressions-in-guard-clauses.&#34;&gt;a limited set of expressions in guards&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;With this simple addition, we have created a complete memory management system, that can automatically expand on both sides, in a virtually unlimited way.&lt;/p&gt;
+
+&lt;h3 id=&#34;loops-and-jumps:b2ed223dec99eecb4254f6d99c79a103&#34;&gt;Loops and jumps&lt;/h3&gt;
+
+&lt;p&gt;Implementing brainfuck operators has been quite linear until now.
+We just had to follow the language specs and we obtained a working implementation.&lt;/p&gt;
+
+&lt;p&gt;Loops are a bit harder task though.&lt;br /&gt;
+The following are the representations of the two ways to define loops&lt;/p&gt;
+
+&lt;p&gt;the &lt;code&gt;while&lt;/code&gt; loop
+&lt;img src=&#34;http://i.imgur.com/IiIEPo8.jpg&#34; alt=&#34;flow chart of while loop&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;the &lt;code&gt;do until&lt;/code&gt; loop
+&lt;img src=&#34;http://i.imgur.com/Joke2ar.jpg&#34; alt=&#34;do until loop&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In Elixir specs they are defined as&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;[&lt;/code&gt; if the current cell value is zero, jump to the next matching &lt;code&gt;]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;]&lt;/code&gt; if the current cell value is non-zero jump back to the matching &lt;code&gt;[&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Looks like brainfuck author overengineered the loops, making it possible to have both.
+But when it&amp;rsquo;s time to implement them, we can choose to check the loop condition only one time (at the beginning or at the end) and treat the other end of the loop as an &lt;em&gt;unconditional&lt;/em&gt; jump.
+I&amp;rsquo;ve chosen to implement the &lt;code&gt;while&lt;/code&gt; loop.&lt;/p&gt;
+
+&lt;p&gt;To implement the loop in brainfuck, we need a function that matches &lt;em&gt;balanced couples&lt;/em&gt; of &lt;code&gt;[&lt;/code&gt; and &lt;code&gt;]&lt;/code&gt; first (did someone say s-expressions?).&lt;br /&gt;
+We cannot simply match &lt;code&gt;]&lt;/code&gt; when we find a &lt;code&gt;[&lt;/code&gt; and the reason is fairly obvious: we could not have nested loops (&lt;code&gt;[[-]-]&lt;/code&gt; would not work).&lt;/p&gt;
+
+&lt;p&gt;The algorithm we are using is the following:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;when we match a &lt;code&gt;[&lt;/code&gt; we check the value at the current memory address, if it is zero, we jump past the end of the loop&lt;/li&gt;
+&lt;li&gt;if it is not zero, we extract the loop&amp;rsquo;s body and execute it, like it is a stand alone program, then collect the results and jump (&lt;em&gt;unconditionally&lt;/em&gt;) to the beginning of the loop&lt;/li&gt;
+&lt;li&gt;go back to 1.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In code it is&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_lbeg &amp;lt;&amp;gt; rest, addr, mem, output) do
+  case mem |&amp;gt; byte_at addr do
+    0 -&amp;gt;
+      run(rest |&amp;gt; jump_to_lend, addr,  mem, output)
+    _ -&amp;gt;
+      {a, m, o} = run(rest |&amp;gt; loop_body, addr,  mem, output)
+      # prepend [ to the input, to make sure we call this function again
+      run(@op_lbeg &amp;lt;&amp;gt; rest, a, m, o)
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;remember that in Elixir &lt;code&gt;_&lt;/code&gt; means &lt;em&gt;match everything&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;To match the balanced couples of square brackets, I used this algorithm&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;when a &lt;code&gt;[&lt;/code&gt; is found, pass the rest to a matcher function with a &lt;code&gt;depth&lt;/code&gt; parameter with value &lt;code&gt;1&lt;/code&gt; and a parameter &lt;code&gt;acc&lt;/code&gt;, to hold the length of the loop body, initially set to &lt;code&gt;zero&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;for every character we find, we increment &lt;code&gt;acc&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;if we find a &lt;code&gt;[&lt;/code&gt;, increment &lt;code&gt;depth&lt;/code&gt; too&lt;/li&gt;
+&lt;li&gt;if we find a &lt;code&gt;]&lt;/code&gt; decrement &lt;code&gt;depth&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;if &lt;code&gt;depth&lt;/code&gt; is zero, we have found the end of loop, return the length of its body&lt;/li&gt;
+&lt;li&gt;if we reach the end of the input and &lt;code&gt;depth&lt;/code&gt; is non-zero, square brackets are unbalanced, &lt;code&gt;raise&lt;/code&gt; an error then.&lt;br /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Let&amp;rsquo;s translate this to Elixir&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;
+# start the matching loop
+defp match_lend(source), do: match_lend(source, 1, 0)
+
+# if depth is zero, we have reached the other end of the loop
+# return the body length
+defp match_lend(_, 0, acc), do: acc
+
+# if we reached the end of the input, but depth is not zero, the
+# sequence is unbalanced, raise an error
+defp match_lend(@empty, _, _), do: raise &amp;quot;unbalanced loop&amp;quot;
+
+# [ increment the depth
+defp match_lend(@op_lbeg &amp;lt;&amp;gt; rest, depth, acc), do: match_lend(rest, depth+1, acc+1)
+# ] decrement the depth
+defp match_lend(@op_lend &amp;lt;&amp;gt; rest, depth, acc), do: match_lend(rest, depth-1, acc+1)
+# every other character just increment acc (loop body length)
+defp match_lend(&amp;lt;&amp;lt;_&amp;gt;&amp;gt; &amp;lt;&amp;gt; rest, depth, acc), do: match_lend(rest, depth, acc+1)
+
+# returns the slice of the input program starting from the end of the loop after ]
+defp jump_to_lend(source), do: source |&amp;gt; String.slice (source |&amp;gt; match_lend)..-1
+# return the slice of the input that represent the loop&#39;s body 
+# between 0 and the body length-1 (everything but the last ])
+defp loop_body(source), do: source |&amp;gt; String.slice 0..(source |&amp;gt; match_lend)-1
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This implementation automatically works for nested loops of any depth.
+Every time a &lt;code&gt;[&lt;/code&gt; command is found,  the program is split in a smaller one and executed until the loop condition is met (this does not save you from infinite loops).&lt;/p&gt;
+
+&lt;p&gt;We have now a complete implementation of a brainfuck interpreter that can run any brainfuck program.&lt;br /&gt;
+To test it let&amp;rsquo;s run it inside &lt;code&gt;iex&lt;/code&gt; the Elixir shell&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/1lTQqee.gif&#34; alt=&#34;iex brainfuck session&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In the next post I&amp;rsquo;ll talk about testing the code, creating a project and compiling down to an executable and the command line tools.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://gist.github.com/wstucco/3064b6d01f1f8cf1292c&#34;&gt;As usual, I&amp;rsquo;ve created a gist with all the code presented in this post&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Create an animated GIF of your console sessions</title>
+      <link>http://massimoronca.it/2014/11/create-an-animated-gif-of-your-console-sessions.html</link>
+      <pubDate>Wed, 05 Nov 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/11/create-an-animated-gif-of-your-console-sessions.html</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://s2.quickmeme.com/img/32/325fc351053e41d230961a71308d37937e68192130d11a82308ae619571ef942.jpg&#34; alt=&#34;animate all the things&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;More often than not, our job involves opening up a console, typing some command and waiting for the output.&lt;br /&gt;
+When I write articles, sometimes I feel the need to show how the commands behave interactively, not only the sequence of commands you have to type.&lt;br /&gt;
+It&amp;rsquo;s easier to understand by looking at an animation, than reading&lt;br /&gt;
+&amp;ldquo;when you hit TAB &amp;lt;this happen&amp;gt;&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;For example, can you explain how the emmet plugin for VIM works, better than this, using only words?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://qiita-image-store.s3.amazonaws.com/0/38647/86b91c27-f894-c969-89b0-5846408ad1db.gif&#34; alt=&#34;emmet plugin for VIM&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Fortunately, the solution is pretty easy.&lt;br /&gt;
+You need a few open source tools, if you&amp;rsquo;re on a Mac, like me, you should already have installed &lt;a href=&#34;http://brew.sh/&#34;&gt;Homebrew&lt;/a&gt;, and Imagemagick (&lt;code&gt;brew install imagemagick&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;To record your sessions, you need &lt;code&gt;ttyrec&lt;/code&gt; (&lt;code&gt;brew install ttyrec&lt;/code&gt; on Mac).&lt;br /&gt;
+The usage is very simlpe&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;usage: ttyrec [-u] [-e command] [-a] [file]
+
+OPTIONS
+       -a     Append the output to file or ttyrecord, rather than overwriting it.
+
+       -u     With this option, ttyrec automatically calls uudecode(1) and  saves  its  output  when  uuencoded  data
+              appear on the session.  It allow you to transfer files from remote host.  You can call ttyrec with this
+              option, login to the remote host and invoke uuencode(1) on it for the file you want to transfer.
+
+       -e command
+              Invoke command when ttyrec starts.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;file&lt;/code&gt; is the name of the file that will be used to record the session. If no file name is given, &lt;code&gt;ttyrecord&lt;/code&gt; will be used.&lt;/p&gt;
+
+&lt;p&gt;A new session is started as soon as you launch &lt;code&gt;ttyrec&lt;/code&gt; and is automatically saved when you close the session with &lt;code&gt;CTRL+D&lt;/code&gt; or &lt;code&gt;exit&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To replay an already saved session, use&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ttyplay [-s SPEED] [-n] [-p] file
+
+OPTIONS
+       -s SPEED
+              multiple the playing speed by SPEED (default is 1).
+
+       -n     no wait mode.  Ignore the timing information in file.
+
+       -p     peek another person&#39;s tty session.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see how it looks&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/q7NHxN0.gif&#34; alt=&#34;ttyrec session&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Now that we have a recorded sessions, we need to convert it to an animated GIF.&lt;br /&gt;
+We&amp;rsquo;ll use &lt;a href=&#34;https://github.com/icholy/ttygif&#34;&gt;&lt;code&gt;ttygif&lt;/code&gt;&lt;/a&gt; for the task.&lt;br /&gt;
+There&amp;rsquo;s no installer for it, you must compile it from the sources&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ git clone https://github.com/icholy/ttygif.git
+$ cd ttygif
+$ make
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once make is done, you will find some executable files in the folder&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;-rwxr-xr-x   1 maks  staff    881 Nov  5 16:08 concat.sh
+-rwxr-xr-x   1 maks  staff    829 Nov  5 16:08 concat_osx.sh
+-rwxr-xr-x   1 maks  staff  14836 Nov  5 16:08 ttygif
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In my setup I&amp;rsquo;ve linked &lt;code&gt;ttygif&lt;/code&gt; to &lt;code&gt;/usr/local/bin&lt;/code&gt;  and &lt;code&gt;concat.sh&lt;/code&gt; (&lt;code&gt;concat_osx.sh&lt;/code&gt; in case you&amp;rsquo;re on a Mac) to &lt;code&gt;/usr/local/bin/ttyconcat&lt;/code&gt; to avoid name clash.&lt;br /&gt;
+Creating the gif is a two steps process: first you launch &lt;code&gt;ttygif &amp;lt;recfile&amp;gt;&lt;/code&gt; to genearet a sequence of PNGs, then you launch the &lt;code&gt;ttyconcat&lt;/code&gt; script we linked before and it automatically creates the animated GIF for you.&lt;br /&gt;
+Optionally you can pass an output filename to &lt;code&gt;ttyconcat&lt;/code&gt;, if omitted the image will be saved as &lt;code&gt;output.gif&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you are a prefectionist, there&amp;rsquo;s an optional final step, install &lt;a href=&#34;http://www.lcdf.org/gifsicle/&#34;&gt;&lt;code&gt;gifsicle&lt;/code&gt;&lt;/a&gt; (&lt;code&gt;brew install gifsicle&lt;/code&gt;) and give your animation the final touches.&lt;br /&gt;
+I usually add a fixed delay between frames, make it loop forever and optimize the size with this command line&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;gifsicle --delay=10 --loop=0 -O3 &amp;lt; in.gif &amp;gt; out.gif
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;More otpions can be found on the &lt;a href=&#34;http://www.lcdf.org/gifsicle/man.html&#34;&gt;&lt;code&gt;gifsicle&lt;/code&gt; man page&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Writing a Brainfuck interpreter in Elixir, part one</title>
+      <link>http://massimoronca.it/2014/10/writing-a-brainfuck-interpreter-in-elixir-part-one.html</link>
+      <pubDate>Wed, 15 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/10/writing-a-brainfuck-interpreter-in-elixir-part-one.html</guid>
+      <description>
+
+&lt;blockquote&gt;
+&lt;p&gt;For instructions on how to install the Elixir environment you can take a look at the &lt;a href=&#34;http://elixir-lang.org/getting_started/1.html#1.1-installers&#34;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;To get used to the language and try some of the code in this post, you can start &lt;code&gt;iex&lt;/code&gt;, the Elixir shell.
+One of its best features are autocompletion of module and function names and the integrated documentation accessible with the command &lt;code&gt;h&lt;/code&gt;.
+This is an example of an &lt;code&gt;iex&lt;/code&gt; session:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/IigY3j3.jpg&#34; alt=&#34;image&#34; /&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;brainfuck-the-language:5e8426109aae4353298eac2be50da78b&#34;&gt;Brainfuck, the language&lt;/h3&gt;
+
+&lt;p&gt;Brainfuck is an esoteric, turing complete, programming language with a very small set of instructions: there are only 8 of them.
+.
+A typical implementation requires a memory of at least 30 thousand cells, but ideally infinite on both sides (we&amp;rsquo;ll see this is very easy to implement in Elixir), each initially set to zero and a data pointer that points to the first memory cell.
+The available commands are:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&amp;gt;&lt;/code&gt; increment the data pointer (point to the cell on the right)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;&lt;/code&gt; decrement the data pointer (point to the cell on the left)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;+&lt;/code&gt; increment the value at the data pointer location&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-&lt;/code&gt; decrement the value at the data pointer location&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.&lt;/code&gt; output the value at the data pointer as byte&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;,&lt;/code&gt; read a byte into the cell at pointer location&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;[&lt;/code&gt; if the current cell value is zero, jump to the next matching &lt;code&gt;]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;]&lt;/code&gt; if the current cell value is non-zero jump back to the matching &lt;code&gt;[&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All other characters are considered comments, hence ignored.&lt;/p&gt;
+
+&lt;h3 id=&#34;implementation-details:5e8426109aae4353298eac2be50da78b&#34;&gt;Implementation details&lt;/h3&gt;
+
+&lt;p&gt;We are going to write an Elixir module that only export one public function &lt;code&gt;run&lt;/code&gt; that accept a brainfuck program as string and scan it, character by character, until we reach the end.
+As a result it returns a triplet containing the final data pointer address, the memory state and the output generated.
+I assumed that each memory cell is an unsigned byte, that overlap on overflow (255+1 becomes zero again).
+Input and output operations work on bytes too.&lt;/p&gt;
+
+&lt;p&gt;In Elixir pattern matching is a fundamental feature for controlling the program flow, there are no loop instructions, so we are forced to use recursion.
+The condition of our loops are expressed in the function definition.&lt;/p&gt;
+
+&lt;p&gt;The logic of our interpreter is very simple: we are going to consume the program string char by char by using the pattern below
+&amp;gt; &lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt; is the operator for string concatenation, it work on bitstring, but since strings in Elixir are binaries, it works on strings too&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;run(first_char &amp;lt;&amp;gt; rest_of_the_program, ... ) do
+  ...
+  run(rest_of_the_program, ...)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As an example, the simple program &lt;code&gt;++.&lt;/code&gt;, which increment the location zero two times, and then output the result will flow like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;# step 1
+run(&amp;quot;+&amp;quot; &amp;lt;&amp;gt; &amp;quot;+.&amp;quot;, 0, [0], &amp;quot;&amp;quot;)
+  # inc the value at zero
+  run(&amp;quot;+.&amp;quot;, 0, [0+1], &amp;quot;&amp;quot;)
+
+# step 2
+run(&amp;quot;+&amp;quot; &amp;lt;&amp;gt; &amp;quot;.&amp;quot;, 0, [1], &amp;quot;&amp;quot;)
+  # inc the value at zero
+  run(&amp;quot;.&amp;quot;, 0, [1+1], &amp;quot;&amp;quot;)
+
+# step 3
+run(&amp;quot;.&amp;quot; &amp;lt;&amp;gt; &amp;quot;&amp;quot;, 0, [2], &amp;quot;&amp;quot;)
+  # append the value at zero to output
+  run(&amp;quot;&amp;quot;, 0, [2], &amp;quot;&amp;quot; &amp;lt;&amp;gt; &amp;lt;&amp;lt;2&amp;gt;&amp;gt;)
+
+# final step
+run(&amp;quot;&amp;quot;, 0, [2], &amp;lt;&amp;lt;2&amp;gt;&amp;gt;)
+  # return {addr, memory, output} -&amp;gt; {0, [2], &amp;lt;&amp;lt;2&amp;gt;&amp;gt;}
+
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;first-steps:5e8426109aae4353298eac2be50da78b&#34;&gt;First steps&lt;/h3&gt;
+
+&lt;p&gt;Let&amp;rsquo;s begin with the definition of our module, we are going to define our instruction set and the run function&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule Brainfuck do
+
+    # opcodes
+    @op_vinc &amp;quot;+&amp;quot; # increment value at memory address
+    @op_vdec &amp;quot;-&amp;quot; # decrement value at memory address
+    @op_pinc &amp;quot;&amp;gt;&amp;quot; # increment memory address
+    @op_pdec &amp;quot;&amp;lt;&amp;quot; # decrement memory address
+    @op_putc &amp;quot;.&amp;quot; # output byte at memory address
+    @op_getc &amp;quot;,&amp;quot; # input byte into memory address
+    @op_lbeg &amp;quot;[&amp;quot; # loop begin
+    @op_lend &amp;quot;]&amp;quot; # loop end
+
+    def run(program), do: run(program, 0, [0], &amp;quot;&amp;quot;)
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You may have noticed that run doesn&amp;rsquo;t really do anything, except call another run function with different parameters.
+This is a common pattern in Elixir programs: functions are defined as name/arity (the arity is the number of parameters a function takes), so for example the first &lt;code&gt;run&lt;/code&gt; function is &lt;code&gt;run/1&lt;/code&gt; and the one we are calling is &lt;code&gt;run/4&lt;/code&gt;, for Elixir they are two completely different functions, even if they share the same name.
+Elixir have strictly immutable types, we need to carry the state around by passing it in parameters, we&amp;rsquo;ll see in a minute what the parameters are for.&lt;/p&gt;
+
+&lt;h3 id=&#34;with-a-little-help-from-my-friends:5e8426109aae4353298eac2be50da78b&#34;&gt;With a little help from my friends&lt;/h3&gt;
+
+&lt;p&gt;Before getting our hands dirty (they&amp;rsquo;re not gonna be that dirty, I promise) I&amp;rsquo;m going to show you some helper functions I created to keep code as clean as possible.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp inc_at(list, addr), do: List.update_at(list, addr, &amp;amp;(&amp;amp;1+1 |&amp;gt; rem 255))
+defp dec_at(list, addr), do: List.update_at(list, addr, &amp;amp;(&amp;amp;1-1 |&amp;gt; rem 255))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;First thing to notice is that they start with a &lt;code&gt;defp&lt;/code&gt; not &lt;code&gt;def&lt;/code&gt;.
+It means they are private to the module and not visible from the outside.
+Both of them take two parameters, a list and an address that represent the position inside the list, and update the corresponding value.
+It&amp;rsquo;s easy to guess by their name what they do: &lt;code&gt;inc_at&lt;/code&gt; increment the value of &lt;code&gt;list&lt;/code&gt; at position &lt;code&gt;adrr&lt;/code&gt; and &lt;code&gt;dec_at&lt;/code&gt; decrement it.
+We use the facilities provided by the core &lt;code&gt;List&lt;/code&gt; module by calling &lt;code&gt;update_at&lt;/code&gt;, that takes a list, an address and a function that update the value.
+As we said in Elixir data types are immutable, so &lt;code&gt;update_at&lt;/code&gt; is returning a copy of the list with the modified value, it is not modifying the value in place.
+The only tricky part is understanding the third parameter, the update function.
+The &lt;code&gt;&amp;amp;()&lt;/code&gt; is called &lt;a href=&#34;http://elixir-lang.org/getting_started/8.html#8.4-function-capturing&#34;&gt;capture syntax&lt;/a&gt; in Elixir and is basically a shorthand for creating anonymous functions.
+Rewriting the same function without it would look like this &lt;code&gt;fn(a) -&amp;gt; a+1 |&amp;gt; rem 255 end&lt;/code&gt;, the capture syntax is more concise and allows us to get rid of the function parameter and use params placeholders (&lt;code&gt;&amp;amp;1&lt;/code&gt; represent the first parameter, &lt;code&gt;&amp;amp;2&lt;/code&gt; the second and so on).&lt;/p&gt;
+
+&lt;p&gt;The other thing you might have noticed, if you are new to Elixir, is the &lt;code&gt;|&amp;gt;&lt;/code&gt; symbol. That&amp;rsquo;s called the pipe operator and act much like a unix pipe, it &lt;code&gt;cat&lt;/code&gt;s the argument(s) on left as &lt;strong&gt;first parameter&lt;/strong&gt; of the function on the right.
+So &lt;code&gt;rem &amp;amp;1+1, 255&lt;/code&gt; can be rewritten as &lt;code&gt;&amp;amp;1+1 |&amp;gt; rem 255&lt;/code&gt;.
+It has no advantage in this case as number of characters typed, but it makes clearer what we are doing: we are taking the value of the first parameter, adding (or subtracting) 1 to it and then piping the result on the function &lt;code&gt;rem&lt;/code&gt; with the parameter 255.
+&lt;code&gt;rem&lt;/code&gt; returns the remainder of the int division, that&amp;rsquo;s how we keep memory values in the byte size range, by going back to zero when the value overflows 255.&lt;/p&gt;
+
+&lt;p&gt;In the same family, but with a different purpose, I created &lt;code&gt;put_at&lt;/code&gt;, that completely replace a value in a list at a speicified address.
+Of course this function takes a third parameter, the new value we are putting into the list.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp put_at(list, addr, val), do: List.replace_at(list, addr, val)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;the-real-run-function:5e8426109aae4353298eac2be50da78b&#34;&gt;The real &lt;code&gt;run&lt;/code&gt; function&lt;/h3&gt;
+
+&lt;p&gt;So what are those parameters we pass to our internal function for?
+I&amp;rsquo;ll explain by showing you the final step of our interpreter&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(&amp;quot;&amp;quot;, addr, mem, output), do: {addr, mem, output}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The first parameter is the program string &lt;em&gt;at this point&lt;/em&gt; of the execution, second is the pointer to the memory cell currently active, third is the current state of the memory tape and the last is the output string we are going to return.
+We know our program has ended when the run function is called with and empty string as first parameter.
+We then return the triplet containing the current data pointer, the memory cells and the output string.&lt;/p&gt;
+
+&lt;p&gt;Without the previous function our program would not end and it will give us an error like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;** (FunctionClauseError) no function clause matching in Brainfuck.run/4
+    iex:25: Brainfuck.run(&amp;quot;&amp;quot;, 0, [0], &amp;quot;&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;because there is no function matching the pattern with the empty string as first param.&lt;/p&gt;
+
+&lt;p&gt;The second basic function is the generic one that matches a string starting with some character, no matter which,  skips it, and calls run again with the rest of the string.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(&amp;lt;&amp;lt;_&amp;gt;&amp;gt; &amp;lt;&amp;gt; rest, addr, mem, output), do: run(rest, addr, mem, output)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With this two functions in place we already have a scanner, a completely useless scanner, that skips everything and then returns the initial state.The complete code for this is just a few lines long&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule Brainfuck do
+    def run(program), do: run(program, 0, [0], &amp;quot;&amp;quot;)
+    # exit program
+    defp run(&amp;quot;&amp;quot;, addr, mem, output), do: {addr, mem, output}
+    # skip everything
+    defp run(&amp;lt;&amp;lt;_&amp;gt;&amp;gt; &amp;lt;&amp;gt; rest, addr, mem, output), do: run(rest, addr, mem, output)
+end
+
+Brainfuck.run(&amp;quot;hello world&amp;quot;)
+# output: {0, [0], &amp;quot;&amp;quot;}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Note that Elixir matches patterns from top to bottom, so we need to put the function that skips unrecognized commands at the end, otherwise more specific patterns would be ignored.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;basics-strings-and-the-i-o:5e8426109aae4353298eac2be50da78b&#34;&gt;Basics, strings and the I/O&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;m gonna start implementing commands, by defining the functions that handle the &lt;code&gt;I\O&lt;/code&gt; operations, basically they output a byte and read a byte from input (in our case &lt;code&gt;stdin&lt;/code&gt;).
+To do that, first we need to introduce two more helper functions&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp byte_at(list, addr), do: list |&amp;gt; Enum.at addr
+defp char_at(list, addr), do: [list |&amp;gt; byte_at addr] |&amp;gt; to_string
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;byte_at&lt;/code&gt; extracts the byte at position &lt;code&gt;addr&lt;/code&gt; in &lt;code&gt;list&lt;/code&gt; (AKA our memory cells), while &lt;code&gt;char_at&lt;/code&gt; returns the same byte as string value.
+In Elixir strings are binaries, or, in other words, strings of bits.
+To convert a byte value to a string, we cannot simply use &lt;code&gt;to_string&lt;/code&gt; function, because it will convert the byte to its string representation, not to the character rapresented by its value, so we need to wrap it inside [] and make it a byte list (the internal representartion of ASCII strings).
+As an experiment, you can start &lt;code&gt;iex&lt;/code&gt; and try this code&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;65 |&amp;gt; to_string # print &amp;quot;65&amp;quot;
+[65] |&amp;gt; to_string # print &amp;quot;A&amp;quot;
+[65, 66, 67] |&amp;gt; to_string # print &amp;quot;ABC&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Handle @op_putc opcode, that appends one byte to &lt;code&gt;output&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_putc &amp;lt;&amp;gt; rest, addr, mem, output) do
+    run(rest, addr, mem, output &amp;lt;&amp;gt; (mem |&amp;gt; char_at addr))
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When @op_putc is at the beginning of the program, this function call &lt;code&gt;run&lt;/code&gt; with the new output formed by appending the character at the current memory location to the old output.
+Rest becomes the new program, while address and memory are unchanged.&lt;/p&gt;
+
+&lt;p&gt;Next is @op_getc, which reads a byte from &lt;code&gt;stdin&lt;/code&gt; and puts it in the current memory location.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_getc &amp;lt;&amp;gt; rest, addr, mem, output) do
+    val = case IO.getn(&amp;quot;Input\n&amp;quot;, 1) do
+        :eof -&amp;gt; 0
+        c    -&amp;gt; c
+    end
+    run(rest, addr, mem |&amp;gt; put_at(addr, val), output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It&amp;rsquo;s a bit trickier than the previous, but gives us the opportunity to introduce the &lt;code&gt;case&lt;/code&gt; statement.
+In Elixir everything is an expression, and returns a value.
+We use this feature to assign to &lt;code&gt;val&lt;/code&gt; the result of the &lt;code&gt;case&lt;/code&gt; expression.
+Inside the case we use pattern matching to match the return value of &lt;code&gt;IO.getn&lt;/code&gt;, which, straight from the Elixir interactive help&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;Gets a number of bytes from the io device. If the io device is a unicode
+device, count implies the number of unicode codepoints to be retrieved.
+Otherwise, count is the number of raw bytes to be retrieved. It returns:
+
+  • data - the input characters
+  • :eof - end of file was encountered
+  • {:error, reason} - other (rare) error condition; for instance, {:error,
+    :estale} if reading from an NFS volume
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We read one byte from the input, if it returns &lt;code&gt;:eof&lt;/code&gt;, return 0, if it returns some &lt;code&gt;data&lt;/code&gt;, we return it (it is guaranteed to be one byte long).
+We ignore error conditions, since they are very rare, especially in our simple case.
+The new memory will have &lt;code&gt;val&lt;/code&gt; value at &lt;code&gt;addr&lt;/code&gt; position.&lt;/p&gt;
+
+&lt;p&gt;Not hard at all until now.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/6oA7eED.png&#34; alt=&#34;very easy&#34; /&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;let-s-talk-about-memory:5e8426109aae4353298eac2be50da78b&#34;&gt;Let&amp;rsquo;s talk about memory&lt;/h3&gt;
+
+&lt;p&gt;There are two opcodes in brainfuck that operates on memory values, &lt;code&gt;+&lt;/code&gt; and &lt;code&gt;-&lt;/code&gt;.
+The implementation is very straightforward&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_vinc &amp;lt;&amp;gt; rest, addr, mem, output) do
+    run(rest, addr, mem |&amp;gt; inc_at(addr), output)
+end
+
+defp run(@op_vdec &amp;lt;&amp;gt; rest, addr, mem, output) do
+    run(rest, addr,  mem |&amp;gt; dec_at(addr), output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now that we (hopefully) grasped the basics of the Elixir syntax and how pattern matching is used, it should be pretty easy to understand how these two functions work.&lt;/p&gt;
+
+&lt;p&gt;Last two functions we meet today handle the data pointer.
+I&amp;rsquo;ll just show you the two basic cases, when the pointer moves inside the memory length, we&amp;rsquo;ll keep handling the auto expansion of the tape to the left and right for the next part.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_pinc &amp;lt;&amp;gt; rest, addr, mem, output) do
+    run(rest, addr+1, mem, output)
+end
+
+defp run(@op_pdec &amp;lt;&amp;gt; rest, addr, mem, output) do
+    run(rest, addr-1, mem, output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Almost no need to explain what it is going on, the data pointer is simply incremented or decremented and the new value is passed to &lt;code&gt;run&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In the next post I&amp;rsquo;ll talk about how to handle expanding the memory tape when needed and, the most fun part, where Elixir capabilities really shine, handling loops and jumps in a very easy way.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://gist.github.com/wstucco/bc6a5037fe8b1fbf1cf0&#34;&gt;I&amp;rsquo;ve created a gist with all the code presented in this post&lt;/a&gt;, of course it misses loops, but you can use it as a starting point for your own experiments&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The strange case of &#39;Ronca Knives&#39;</title>
+      <link>http://massimoronca.it/2014/05/the-strange-case-of-ronca-knives.html</link>
+      <pubDate>Tue, 20 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/05/the-strange-case-of-ronca-knives.html</guid>
+      <description>&lt;p&gt;The other day I was looking at my websites stats and I found a spike in visits coming from search engines.&lt;br /&gt;
+It is always good news when something catch search engines attention and traffic get redirected to your website.&lt;br /&gt;
+Well actually not always &amp;hellip;&lt;br /&gt;
+The keywords used to get to me were definitely a bit OT.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/ronca-knives-stats.png&#34; alt=&#34;Ronca Knives&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;My name&amp;rsquo;s Ronca, I wrote an article about &lt;a href=&#34;http://massimoronca.it/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife.html&#34;&gt;Drush, the swiss army knife for Drupal&lt;/a&gt;, but this is totally not my line of work :)&lt;/p&gt;
+
+&lt;p&gt;To be honest, I love knives and I always carry a small one with me.
+My grandfather taught me how to recognize them, he used to be a tailor, but he also lived in the country, so he was competent in the fieldwork and had a superb collection of working knives, like this baby here&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/coltello-da-innesto-6.png&#34; alt=&#34;graft knife&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;I imagine that I would have loved to sell knives, maybe not on TV, I don&amp;rsquo;t really like showing myself to big audiences, but I also seriously think that you guys where looking for this knives, not the metaphorical ones I wrote about&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/44356.jpg&#34; alt=&#34;ronco knives&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;I invite you to go to &lt;a href=&#34;https://www.roncocutlery.com/&#34;&gt;their website&lt;/a&gt; and buy everything! those knives look great, as seen on TV!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Writing custom commands for Drush: the Drupal swiss army knife.</title>
+      <link>http://massimoronca.it/2014/05/writing-custom-commands-for-drush-the-drupal-swiss-army-knife..html</link>
+      <pubDate>Wed, 14 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/05/writing-custom-commands-for-drush-the-drupal-swiss-army-knife..html</guid>
+      <description>&lt;p&gt;Recently I worked on a client project based on the Drupal platform.&lt;br /&gt;
+The most important part of the job was automating a data import from a remote source, but instead of writing a script to do the job, I created a command for &lt;a href=&#34;https://github.com/drush-ops/drush&#34;&gt;Drush&lt;/a&gt;.
+Quoting from Drush repository site&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Drush is a command-line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those who spend their working hours hacking away at the command prompt.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Drush can handle almost every aspect of a Drupal site, from the mundane &lt;a href=&#34;http://www.drushcommands.com/drush-7x/cache&#34;&gt;cache management&lt;/a&gt; to
+&lt;a href=&#34;http://www.drushcommands.com/drush-6x/user&#34;&gt;user management&lt;/a&gt;, from &lt;a href=&#34;http://www.drushcommands.com/drush-6x/make&#34;&gt;packaging a Drupal install into a makefile&lt;/a&gt; to
+&lt;a href=&#34;http://www.drushcommands.com/drush-6x/pm&#34;&gt;project management&lt;/a&gt; and much more, including a &lt;a href=&#34;http://www.drushcommands.com/drush-6x/sql/sql-cli&#34;&gt;CLI for running sql queries&lt;/a&gt; an &lt;a href=&#34;http://www.drushcommands.com/drush-6x/runserver/runserver&#34;&gt;http server for development&lt;/a&gt; and an &lt;a href=&#34;http://www.drushcommands.com/drush-7x/core/core-rsync&#34;&gt;rsync wrapper&lt;/a&gt;.&lt;br /&gt;
+Drush commands can also be executed on remote machines, provided Drush is installed, by specifing the server &lt;a href=&#34;http://deeson-online.co.uk/labs/drupal-drush-aliases-and-how-use-them&#34;&gt;alias&lt;/a&gt; (e.g. &lt;code&gt;drush clear-cache @staging&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;There are different ways of creating Drush scripts:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;prepending the script with the shebang &lt;code&gt;#!/usr/bin/env drush&lt;/code&gt; or &lt;code&gt;#!/full/path/to/drush&lt;/code&gt; and using
+&lt;a href=&#34;http://www.drushcommands.com/&#34;&gt;Drush commands&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;using Drush php interpreter &lt;code&gt;#!/full/path/to/drush php-script&lt;/code&gt; and using the &lt;a href=&#34;http://api.drush.org/&#34;&gt;Drush
+PHP api&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;writing custom commands&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This guide is about the last case.&lt;br /&gt;
+Drush commands are much like Rake or Grunt tasks, you give them a name (more like a namespace) and Drush figures out what function must be called.
+To create a Drush command, follow these simple steps&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;create a &lt;code&gt;namespace.drush.inc&lt;/code&gt; in one of the standard import path&lt;/li&gt;
+&lt;li&gt;implement the &lt;code&gt;namespace_drush_command&lt;/code&gt; entry point function&lt;/li&gt;
+&lt;li&gt;implement the command functions. By conventions the command functions are called &lt;code&gt;drush_namespace_commandname&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Drush search for commandfiles in the following locations:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/path/to/drush/commands&lt;/code&gt; folder&lt;/li&gt;
+&lt;li&gt;system-wide drush commands folder, e.g. &lt;code&gt;/usr/share/drush/commands&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;.drush folder in &lt;code&gt;$HOME&lt;/code&gt; folder.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sites/all/drush&lt;/code&gt; in the current Drupal installation&lt;/li&gt;
+&lt;li&gt;all enabled modules folders in the current Drupal installation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;##Implementing the command&lt;/p&gt;
+
+&lt;p&gt;To implement a Drush command, the script must implement the drush_command hook.
+This function must return a data structure containing all the informations that define your custom command.&lt;br /&gt;
+As an example we will develop a command that rolls a dice and prints the result.&lt;br /&gt;
+We&amp;rsquo;ll use &lt;code&gt;diceroller&lt;/code&gt; as namespace and &lt;code&gt;roll-dice&lt;/code&gt; as command name.&lt;br /&gt;
+This is the implementation of the main hook function&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;&amp;lt;?php
+function diceroller_drush_command() {
+  $items = array();
+
+  $items[&#39;roll-dice&#39;] = array(
+    &#39;description&#39; =&amp;gt; &amp;quot;Roll a dice for your pleasure.&amp;quot;,
+    &#39;arguments&#39; =&amp;gt; array(
+      &#39;faces&#39; =&amp;gt; &#39;How many faces the dice has? Default is 6, max is 100.&#39;,
+    ),
+    &#39;options&#39; =&amp;gt; array(
+      &#39;rolls&#39; =&amp;gt; &#39;How many times the dice is rolled, default is 1 max is 100&#39;,
+    ),
+    &#39;examples&#39; =&amp;gt; array(
+      &#39;drush drrd 6 --rolls=2&#39; =&amp;gt; &#39;Rolls a 6 faced dice 2 times&#39;,
+    ),
+    &#39;aliases&#39; =&amp;gt; array(&#39;drrd&#39;),
+    &#39;bootstrap&#39; =&amp;gt; DRUSH_BOOTSTRAP_DRUSH,
+    // see http://drush.ws/docs/bootstrap.html for detailed informations
+    // about the bootstrap values
+  );
+
+  return $items;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The command is easily implementd this way&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;&amp;lt;?php
+
+function drush_diceroller_roll_dice($faces=6) {
+  $rolls = 1;
+
+  if ($tmp = drush_get_option(&#39;rolls&#39;)) {
+    $rolls = $tmp;
+  }  
+
+  drush_print(dt(&#39;Rolling a !faces faced dice !n time(s)&#39;, array(
+    &#39;!faces&#39; =&amp;gt; $faces,
+    &#39;!n&#39; =&amp;gt; $rolls
+  )));
+  // for n=0..$rolls
+    // roll the nth dice
+    // print the result
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this case we assume that the &lt;code&gt;--rolls&lt;/code&gt; option contains a number, but we can guarantee that the function parameters are valid implementing the &lt;code&gt;validate&lt;/code&gt; hook (there are others called just before and after the real command function).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;&amp;lt;?php
+
+function drush_diceroller_roll_dice_validate($faces=6) {
+
+  if($faces &amp;lt;= 0) {
+    return drush_set_error(&#39;DICE_WITH_NO_FACES&#39;, dt(&#39;Cannot roll a dice with no faces!&#39;));
+  }
+  if($faces &amp;gt; 100) {
+    return drush_set_error(&#39;DICE_WITH_TOO_MANY_FACES&#39;, dt(&#39;Cannot roll a sphere!&#39;));
+  }
+
+  $rolls = drush_get_option(&#39;rolls&#39;);
+  if(isset($rolls)) {
+    if(!is_numeric($rolls))
+      return drush_set_error(&#39;ROLLS_MUST_BE_INT&#39;, dt(&#39;rolls value must be a number!&#39;));
+
+    if($rolls &amp;lt;= 0)
+      return drush_set_error(&#39;NOT_ENOUGH_ROLLS&#39;, dt(&#39;What you\&#39;re asking cannot be done!&#39;));
+
+    if($rolls &amp;gt; 100)
+      return drush_set_error(&#39;TOO_MANY_ROLLS&#39;, dt(&#39;I\&#39;m not your slave, roll it by yourself!&#39;));
+  }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If we did our job diligently, running &lt;code&gt;drush help roll-dice&lt;/code&gt; should give us this ouput&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;Roll a dice for your pleasure.
+
+Examples:
+ drush drrd 6 --rolls=2                    Rolls a 6 faced dice 2 times
+
+Arguments:
+ faces                                     How many faces the dice has? Default is 6, max is 100.
+
+Options:
+ --rolls                                   How many times the dice is rolled, default is 1 max is 100
+
+Aliases: drrd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Consult the &lt;a href=&#34;http://api.drush.org/&#34;&gt;Drush api&lt;/a&gt; for a complete list of hooks &lt;a href=&#34;http://api.drush.org/api/drush/functions/6.x&#34;&gt;functions&lt;/a&gt; and &lt;a href=&#34;http://api.drush.org/api/drush/constants/6.x&#34;&gt;constants&lt;/a&gt; or launch &lt;code&gt;drush topic docs-api&lt;/code&gt; from the command line.&lt;br /&gt;
+For a complete implementation of a command example, see &lt;code&gt;drush topic docs-examplecommand&lt;/code&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A modern workflow for Wordpress using Docker and Dokku</title>
+      <link>http://massimoronca.it/2014/05/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</link>
+      <pubDate>Tue, 13 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/05/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</guid>
+      <description>&lt;p&gt;Every developer, sooner or later, had to deal with &lt;a href=&#34;http://wordpress.org/&#34;&gt;WordPress&lt;/a&gt;, given it is one of the most popular Blog/CMS platform, if not &lt;strong&gt;the&lt;/strong&gt; most popular.&lt;br /&gt;
+According to Wikipedia, roughly 22% of the web sites run on it, (it means one web site in five) it is widely know by users, &lt;a href=&#34;https://wordpress.org/plugins/&#34;&gt;it has a large community&lt;/a&gt; (over 30 thousand contributed plugins) and it is easily supported by designers.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately WP was targeted at non-developer people, it had a great success as hosted platform, but working with it from the developer perspective, especially if we look at the workflow, looks clunky and outdated.&lt;/p&gt;
+
+&lt;p&gt;Usually it involves:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;downloading a tar ball of the latest WordPress stable version&lt;/li&gt;
+&lt;li&gt;rename &lt;code&gt;wp-config-sample.php&lt;/code&gt; to &lt;code&gt;wp-config.php&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;if you&amp;rsquo;re using &lt;code&gt;git&lt;/code&gt; (and you should!), add the &lt;code&gt;wp-config.php&lt;/code&gt; to &lt;code&gt;.gitignore&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;open a connection (possibly not FTP, but probably it will be FTP) and (slowly) upload everything on the dest server&lt;/li&gt;
+&lt;li&gt;create a remote&lt;code&gt;wp-config.php&lt;/code&gt; with the production configuration&lt;/li&gt;
+&lt;li&gt;launch the installer&lt;/li&gt;
+&lt;li&gt;hope nobody will overwrite &lt;code&gt;wp-config.php&lt;/code&gt; with the local copy&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;On the other hand, modern workflows are built around some kind of version control system (usually &lt;code&gt;git&lt;/code&gt;) where the deploy is managed just by pushing a branch on the public server.&lt;br /&gt;
+This is called push-to-deploy and is the one used by &lt;a href=&#34;http://heroku.com&#34;&gt;Heroku&lt;/a&gt;.&lt;br /&gt;
+Fortunately, some smart guys created &lt;a href=&#34;http://www.docker.io&#34;&gt;Docker&lt;/a&gt; and &lt;a href=&#34;https://github.com/progrium/dokku&#34;&gt;Dokku&lt;/a&gt;, two projects that make possible to build you own personal-heroku-like &lt;a href=&#34;http://en.wikipedia.org/wiki/Platform_as_a_service&#34;&gt;PaaS&lt;/a&gt; in a matter of minutes (If you want to try it, &lt;a href=&#34;https://www.digitalocean.com/&#34;&gt;Digital Ocean&lt;/a&gt; offers cloud servers with Dokku preinstalled at a starting price of 5$/month).&lt;br /&gt;
+Let&amp;rsquo;s see how it applies to WordPress.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;In the rest of the article I&amp;rsquo;m going to use a few placeholders&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;app&lt;/code&gt; is the application name&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;dokku&lt;/code&gt; is the address (or hostanme if configured) of the destination server running Docker &amp;amp; Dokku&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;dokku-user&lt;/code&gt; is the user running Dokku on the remote machine&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;First of all we&amp;rsquo;re going to clone WP from &lt;a href=&#34;http://www.github.com&#34;&gt;github&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git clone git@github.com:WordPress/WordPress.git app
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then we create &lt;code&gt;wp-config.php&lt;/code&gt;, replace the configuration parameters with environment variables, and commit it.&lt;br /&gt;
+This way we won&amp;rsquo;t have to hardcode them.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;same technique can be used to configure the &lt;a href=&#34;http://codex.wordpress.org/Editing_wp-config.php#Security_Keys&#34;&gt;security keys&lt;/a&gt;, I didn&amp;rsquo;t, to keep things short.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;define(&#39;DB_NAME&#39;, getenv(&#39;WP_DB_NAME&#39;));
+
+/** MySQL database username */
+define(&#39;DB_USER&#39;, getenv(&#39;WP_DB_USER&#39;));
+
+/** MySQL database password */
+define(&#39;DB_PASSWORD&#39;, getenv(&#39;WP_DB_PASS&#39;));
+
+/** MySQL hostname */
+define(&#39;DB_HOST&#39;, getenv(&#39;WP_DB_HOST&#39;));
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git add wp-config.php
+git commit -m &#39;added WordPress configuration&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you use &lt;a href=&#34;http://apache.org/&#34;&gt;Apache&lt;/a&gt;, you can set the values with &lt;a href=&#34;http://httpd.apache.org/docs/2.2/mod/mod_env.html&#34;&gt;&lt;code&gt;SetEnv&lt;/code&gt;&lt;/a&gt;, if you&amp;rsquo;re running &lt;a href=&#34;http://nginx.org/&#34;&gt;Nginx&lt;/a&gt; and &lt;a href=&#34;http://php-fpm.org/&#34;&gt;phpf-pm&lt;/a&gt;, you can use the &lt;a href=&#34;http://www.php.net/manual/it/install.fpm.configuration.php#example-73&#34;&gt;&lt;code&gt;ENV&lt;/code&gt; section&lt;/a&gt; of your application pool.&lt;br /&gt;
+You don&amp;rsquo;t need any of that when deploying through Dokku.&lt;/p&gt;
+
+&lt;p&gt;For our first deploy, we need to add a new &lt;code&gt;remote&lt;/code&gt; pointing at the Dokku  server&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git remote add dokku dokku-user@dokku:app
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and push the code&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git push dokku master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You will see something like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Counting objects: 163187, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (33726/33726), done.
+Writing objects: 100% (163187/163187), 84.87 MiB | 4.95 MiB/s, done.
+Total 163187 (delta 128758), reused 163156 (delta 128730)
+-----&amp;gt; Building app ...
+       PHP (classic) app detected
+-----&amp;gt; Bundling NGINX 1.4.3
+-----&amp;gt; Bundling PHP 5.5.5
+-----&amp;gt; Bundling extensions
+       phpredis
+       mongo
+-----&amp;gt; Setting up default configuration
+-----&amp;gt; Vendoring binaries into slug
+-----&amp;gt; Discovering process types
+       Default process types for PHP (classic) -&amp;gt; web
+-----&amp;gt; Releasing app ...
+-----&amp;gt; Deploying app ...
+-----&amp;gt; Cleaning up ...
+=====&amp;gt; Application deployed:
+       http://app_url
+
+To dokku@dokku:app
+ * [new branch]      master -&amp;gt; master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, everything is already bundled with the PHP buildpack.&lt;br /&gt;
+Dokku has detected the PHP app and instructed Docker to create an isolated container that could run the application.&lt;/p&gt;
+
+&lt;p&gt;You can now open up a browser and point to app_url (it can have two formats: &lt;a href=&#34;http://ip_adress:port&#34;&gt;http://ip_adress:port&lt;/a&gt; or &lt;a href=&#34;http://app.defaultdomain&#34;&gt;http://app.defaultdomain&lt;/a&gt;. Either way, it should launch your app).&lt;/p&gt;
+
+&lt;p&gt;Our wp-config is empty right now, the server will reply with&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/JzhJclD.png&#34; alt=&#34;WP Error&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s good news, it means it is actually responding to our request.&lt;/p&gt;
+
+&lt;p&gt;To finish our setup we need a couple more things:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;create a database&lt;/li&gt;
+&lt;li&gt;configure the app environment with the credentials&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To create a db in our app container, we&amp;rsquo;ll use the &lt;a href=&#34;https://github.com/Kloadut/dokku-md-plugin&#34;&gt;MariaDB plugin for Dokku&lt;/a&gt;.&lt;br /&gt;
+There&amp;rsquo;s also a &lt;a href=&#34;https://github.com/hughfletcher/dokku-mysql-plugin&#34;&gt;MySQL plugin&lt;/a&gt;, but it has some annoying bug and since MySQL and MariaDB
+are virtually identical, we&amp;rsquo;ll stick with the last one.&lt;br /&gt;
+Installing a plugin for Dokku is as easy as running&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cd /var/lib/dokku/plugins
+git clone https://github.com/Kloadut/dokku-md-plugin mariadb
+dokku plugins-install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Some of them don&amp;rsquo;t require the final &lt;code&gt;plugins-install&lt;/code&gt; step, but it won&amp;rsquo;t hurt if you run it anyway.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Tip: you can run dokku commands on your local machine and execute them on the remote one with:
+&lt;code&gt;ssh dokku-host dokku-command&lt;/code&gt; (i.e. &lt;code&gt;ssh dokku help&lt;/code&gt;)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;We can now create the database&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
+ ssh dokku mariadb:create app
+
+ -----&amp;gt; Creating /home/dokku/app/ENV
+-----&amp;gt; Setting config vars and restarting app
+DATABASE_URL: mysql2://root:VQpzDZRrEUAkUuAI@172.17.42.1:49170/db
+-----&amp;gt; Releasing app ...
+-----&amp;gt; Release complete!
+-----&amp;gt; Deploying app ...
+-----&amp;gt; Deploy complete!
+
+-----&amp;gt; app linked to mariadb/app database
+
+-----&amp;gt; MariaDB container created: mariadb/app
+
+       Host: 172.17.42.1
+       Port: 49170
+       User: &#39;root&#39;
+       Password: &#39;VQpzDZRrEUAkUuAI&#39;
+       Database: &#39;db&#39;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and set set the Environment variables&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt; # the format is dokku config:set app key=value key=value
+ # I splitted up the command on different lines for clarity
+ ssh dokku config:set app WP_DB_HOST=&#39;172.17.42.1:49170&#39;
+ ssh dokku config:set app WP_DB_NAME=&#39;db&#39;
+ ssh dokku config:set app WP_DB_USER=&#39;root&#39;
+ ssh dokku config:set app WP_DB_PASS=&#39;VQpzDZRrEUAkUuAI&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If everything went right, you should now see the standard WordPress install.&lt;br /&gt;
+Choose a title, create an admin user and you&amp;rsquo;re ready to go.&lt;br /&gt;
+You can work on your local copy, add plugins, work on your theme, and when you&amp;rsquo;re happy with it, you push all the changes and the app is automatically deployed and configured.&lt;/p&gt;
+
+&lt;p&gt;We just scratched the surface of what is possible with Docker &amp;amp; Dokku.&lt;br /&gt;
+In a next article we&amp;rsquo;ll see how to create a Dokku plugin to automate the entire process.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Taming the processing loop</title>
+      <link>http://massimoronca.it/2014/04/taming-the-processing-loop.html</link>
+      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/04/taming-the-processing-loop.html</guid>
+      <description>&lt;p&gt;In Mikamai we do a lot of reasearch on &lt;a href=&#34;http://dev.mikamai.com/post/78652180658/how-to-program-an-attiny85-or-attiny45-with-an&#34;&gt;non&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/78453410376/let-your-raspberry-pi-see-this-wonderful-world&#34;&gt;conventional&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/69163914657/intel-galileo-getting-started-with-mac-os-x&#34;&gt;hardware&lt;/a&gt;, we make &lt;a href=&#34;http://dev.mikamai.com/post/76945627390/you-cant-touch-this-an-evil-arduino-based-alarm&#34;&gt;prototypes&lt;/a&gt; or create unsual interfaces that are very domain specific.&lt;/p&gt;
+
+&lt;p&gt;Like this one&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://scontent-b-ams.xx.fbcdn.net/hphotos-ash3/t1.0-9/994503_10151525258526336_667825845_n.jpg&#34; alt=&#34;image&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Seriously, we did it.&lt;/p&gt;
+
+&lt;p&gt;To quickly sketch ideas, we often rely on &lt;a href=&#34;http://www.processing.org/&#34;&gt;Processing&lt;/a&gt;, it&amp;rsquo;s super easy and its loop based execution model gives the feeling of programming a video game.&lt;br /&gt;
+The drawback is that it is so fast to get something working, that you will be tempted to make the mistake of creating a &lt;a href=&#34;http://foxdellfolio.com/the-perils-of-a-polished-prototype/&#34;&gt;polished prototpe&lt;/a&gt;.&lt;br /&gt;
+Your prototype code ends up in production and there&amp;rsquo;s no way back from there.&lt;/p&gt;
+
+&lt;p&gt;To resist the temptation of releasing a blob of code, I borrowed &lt;a href=&#34;https://www.youtube.com/watch?v=HxaD_trXwRE&#34;&gt;a technique from  one of the Rob Pike&amp;rsquo;s talks&lt;/a&gt; to keep things easy, while keeping them clean at the same time.&lt;/p&gt;
+
+&lt;p&gt;It is basically an implementation of a state machime.&lt;br /&gt;
+We&amp;rsquo;re gonna have a &lt;code&gt;StateMachine&lt;/code&gt; class that handles the inputs and the state changes, and several state classes that implement the &lt;code&gt;State&lt;/code&gt; interface.&lt;br /&gt;
+The interface is very simple and contains only one method&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;interface State {
+	  public State nextState();  
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The loop of our Processing application is really simple too&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;StateMachine sm = new StateMachine(initialstate);
+void draw() {
+  sm = sm.nextState();  
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and this is the most basic implementation possible of the &lt;code&gt;StateMachine&lt;/code&gt; class&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class StateMachine(State initialstate) {
+  private State currentstate;
+
+  StateMachine(State initialstate) {
+    this.currentstate = initialstate;
+  }
+
+  public StateMachine nextState() {
+    this.currentstate = this.currentstate.nextState();
+   	return this;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Each class must implement the &lt;code&gt;nextState&lt;/code&gt; method and return an istance of the next state that will be executed.&lt;br /&gt;
+With this knowledge in mind, this is how you build an infinite loop inside an inifinite loop&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class InfiniteLoopState implements State {
+	public State nextState() {
+	    return this;
+  	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But we can do better!&lt;br /&gt;
+How about a ping pong?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class Ping implements State {
+	public State nextState() {
+		println(&amp;quot;ping?&amp;quot;);
+	    return new PongState();
+  	}
+}
+
+class Pong implements State {
+	public State nextState() {
+		println(&amp;quot;pong!&amp;quot;);
+	    return new PingState();
+  	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We moved the logic of the application out of the central &lt;code&gt;switch/case&lt;/code&gt; statement in the &lt;code&gt;draw&lt;/code&gt; function and deconstruted it into smaller pieces, that only know about themselves and the next state they are going to emit.&lt;/p&gt;
+
+&lt;p&gt;As long as your state classes implement the &lt;code&gt;State&lt;/code&gt; interface you can exapnd the concept to fit your needs.&lt;br /&gt;
+For example, if you need to keep track of the environment and/or the previous state, you can adjust the &lt;code&gt;State&lt;/code&gt; interface to support it.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;interface State {
+	  public State nextState(State previousstate, StateMachine sm);  
+	  // StateMachine holds the environment for us
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and modify &lt;code&gt;StateMachine&lt;/code&gt; accordingly&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public StateMachine nextState() {
+  this.currentstate = this.currentstate.nextState(this.currentstate, this);
+ 	return this;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR:&lt;/strong&gt; state machines are easy, use them!&lt;/p&gt;
+
+&lt;p&gt;You can find examples on how to use this pattern and how to add more features in the &lt;a href=&#34;https://github.com/wstucco/processing_state_machine&#34;&gt;github repository&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Le email di Tumblr le scrive Beppe Grillo</title>
+      <link>http://massimoronca.it/2014/04/le-email-di-tumblr-le-scrive-beppe-grillo.html</link>
+      <pubDate>Tue, 08 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/04/le-email-di-tumblr-le-scrive-beppe-grillo.html</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/tumblr-email.jpg&#34; alt=&#34;LOL&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;LOL&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Start running your own DNS server</title>
+      <link>http://massimoronca.it/2014/02/start-running-your-own-dns-server.html</link>
+      <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/02/start-running-your-own-dns-server.html</guid>
+      <description>&lt;p&gt;A common problem in web development is simulating the final environment and, specifically, running your apps in their own private domain.&lt;br /&gt;
+One solution is editing the &lt;code&gt;/etc/hosts&lt;/code&gt; every time you need to add a new domain, but this can quickly become a very tedious process.&lt;br /&gt;
+If you work on OS X, you probably have heard of &lt;a href=&#34;http://pow.cx/&#34;&gt;Pow&lt;/a&gt;, but if you only need the domain resolution and don&amp;rsquo;t use Rails, it is probaly overkill to install a full featured application server just to create some dev domain.
+&lt;a href=&#34;http://www.mamp.info/en/mamp-pro/index.html?utm_medium=twitter&amp;amp;utm_source=twitterfeed&#34;&gt;MAMP Pro&lt;/a&gt; offers domain resolution too, but it&amp;rsquo;s not free.&lt;/p&gt;
+
+&lt;p&gt;There is, however, another solution: running your own instance of a DNS server.&lt;br /&gt;
+What you need it&amp;rsquo;s a copy of &lt;a href=&#34;http://www.thekelleys.org.uk/dnsmasq/doc.html&#34;&gt;dnsmasq&lt;/a&gt; and &lt;em&gt;stop worrying and love the shell.&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;First of all install dnsmasq and put it in autostart&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;brew install dnsmasq  
+sudo cp -v $(brew --prefix dnsmasq)/*.plist /Library/LaunchDaemons
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Configure the dns intance&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat &amp;lt;&amp;lt;- EOF &amp;gt; $(brew --prefix)/etc/dnsmasq.conf
+# IPV4
+address=/dev/127.0.0.1
+# IPV6, otherwise virtual hosts in Maverick won&#39;t work
+address=/dev/::1
+listen-address=127.0.0.1
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then we configure the resolvers for all domains and create the one for the &lt;code&gt;.dev&lt;/code&gt; suffixes&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo mkdir -p /etc/resolver
+# .dev domains
+sudo bash -c &#39;echo &amp;quot;nameserver 127.0.0.1&amp;quot; &amp;gt; /etc/resolver/dev&#39;
+# universal catcher
+sudo bash -c &#39;echo &amp;quot;nameserver 127.0.0.1&amp;quot; &amp;gt; /etc/resolver/catchall&#39;
+sudo bash -c &#39;echo &amp;quot;domain .&amp;quot; &amp;gt;&amp;gt; /etc/resolver/catchall&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Set localhost as main DNS server, unfortunately you can&amp;rsquo;t automatically prepend localhost to the list of DNSs your DHCP assigned to you.&lt;br /&gt;
+You have to change it manually and put 127.0.0.1 on top of the list.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;networksetup -setdnsservers Ethernet 127.0.0.1
+networksetup -setdnsservers Wi-Fi 127.0.0.1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If everything&amp;rsquo;s ok, running &lt;code&gt;scutil --dns&lt;/code&gt; should return something like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;resolver #8
+domain   : dev
+nameserver[0] : 127.0.0.1
+flags    : Request A records, Request AAAA records
+reach    : Reachable,Local Address
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now you can start dnsmasq&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# start dnsmasq
+sudo launchctl -w load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
+
+# make some tests
+$ ping -c 1 anyhostname.dev
+PING anyhostname.dev (127.0.0.1): 56 data bytes
+64 bytes from 127.0.0.1: icmp_seq=0 ttl=64 time=0.058 ms
+
+$ dig anyhostname.dev
+;; ANSWER SECTION:
+anyhostname.dev.	0	IN	A	127.0.0.1
+;; Query time: 3 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+
+
+$ dig google-public-dns-a.google.com @127.0.0.1
+;; ANSWER SECTION:
+google-public-dns-a.google.com.	25451 IN A	8.8.8.8
+;; Query time: 30 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+
+# cache will speedup subsequent DNS queries
+$ dig google-public-dns-a.google.com @127.0.0.1
+;; Query time: 0 msec
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Bonus: if you run Apache on your dev machine, you can easily setup the &lt;em&gt;one virtual host to rule them all&lt;/em&gt; through &lt;a href=&#34;http://httpd.apache.org/docs/2.4/vhosts/mass.html&#34;&gt;mass vistrual hosting&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Edit &lt;code&gt;/etc/apache2/extra/httpd-vhosts.conf&lt;/code&gt; and add this configuration, every &lt;code&gt;.dev&lt;/code&gt; domain will point to a folder with the same name, but without the extension, in &lt;code&gt;~/Sites&lt;/code&gt; folder.&lt;br /&gt;
+For example, &lt;code&gt;myapp.dev&lt;/code&gt; will point to &lt;code&gt;~/Sites/myapp&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-apache&#34;&gt;&amp;lt;VirtualHost *:80&amp;gt;
+    ServerAdmin you@localhost
+    ServerName anyhostname.dev
+    ServerAlias *.dev
+
+    UseCanonicalName Off
+    # %1.0 is the domain without the extension, in this case
+    # everything before .dev
+    # more info: http://httpd.apache.org/docs/2.4/mod/mod_vhost_alias.html
+    VirtualDocumentRoot /Users/[your_login]/Sites/%1.0
+    ErrorLog &amp;quot;/var/log/apache2/dev_hosts_error_log&amp;quot;
+    CustomLog &amp;quot;/var/log/apache2/dev_hosts_access_log&amp;quot; common
+
+    &amp;lt;Directory /Users/[your_login]/Sites/*&amp;gt;
+        AllowOverride All
+    &amp;lt;/Directory&amp;gt;
+&amp;lt;/VirtualHost&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can finally reload Apache configuration with &lt;code&gt;sudo apachectl graceful&lt;/code&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Building web apps with Traffic, the Go micro framework.</title>
+      <link>http://massimoronca.it/2013/11/building-web-apps-with-traffic-the-go-micro-framework..html</link>
+      <pubDate>Fri, 29 Nov 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2013/11/building-web-apps-with-traffic-the-go-micro-framework..html</guid>
+      <description>
+
+&lt;p&gt;Written by the long time Ruby developer &lt;a href=&#34;http://gravityblast.com/&#34;&gt;Andrea Franz&lt;/a&gt;,  &lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;&lt;strong&gt;Traffic&lt;/strong&gt;&lt;/a&gt; is a &lt;a href=&#34;http://flask.pocoo.org/docs/foreword/#what-does-micro-mean&#34;&gt;&lt;em&gt;micro framework&lt;/em&gt;&lt;/a&gt; for Web development inspired by &lt;a href=&#34;http://www.sinatrarb.com&#34;&gt;Sinatra&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In times when software development is moving towards creating services for other applications, micro frameworks serve very well this paradigm by providing an easy way to create the building blocks, such as a REST API, on top of which larger applications can rely.&lt;/p&gt;
+
+&lt;p&gt;Micro frameworks do not cover every single aspect of application building, most of them are left to the developer, for example you decide which database to use and how to access it or not to use a DB at all, but the codebase is so compact that a single person can master it in a matter of few days.&lt;/p&gt;
+
+&lt;p&gt;Like other popular frameworks, &lt;em&gt;Traffic&lt;/em&gt; features include&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;regexp routing&lt;/li&gt;
+&lt;li&gt;chainable request filters&lt;/li&gt;
+&lt;li&gt;middlewares&lt;/li&gt;
+&lt;li&gt;templates&lt;/li&gt;
+&lt;li&gt;serving of static files&lt;/li&gt;
+&lt;li&gt;custom error handlers&lt;/li&gt;
+&lt;li&gt;facilities to render in various format (HTML, JSON and XML)&lt;/li&gt;
+&lt;li&gt;errors and stacktraces in the browser&lt;/li&gt;
+&lt;li&gt;command line utility to generate new projects (although very basic)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Documentation is a little bit scarce at the moment, but there are many &lt;a href=&#34;https://github.com/pilu/traffic/blob/master/examples/&#34;&gt;examples&lt;/a&gt; that make it easy to figure out how to use the various components.&lt;/p&gt;
+
+&lt;p&gt;We are going to analyze each one of them, by writing a small demo application, a simple clone of the placehold.it service powered by the Grumpy cat, instead of gray boxes.&lt;br /&gt;
+As usual, code is available on &lt;a href=&#34;https://github.com/wstucco/purrraceholder&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;###Installing Traffic&lt;br /&gt;
+Assuming you already have a working installation of Go, download Traffic&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ go get github.com/pilu/traffic
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and the command line tool&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ go get github.com/pilu/traffic/traffic
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;create a new project&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ traffic new demo_project
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;run it&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd demo_project  
+$ go build &amp;amp;&amp;amp; ./demo_project
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and point your browser to &lt;a href=&#34;http://127.0.0.1:7000/&#34;&gt;http://127.0.0.1:7000/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;routing:c0e6095a1875dedd0808509e8b75160b&#34;&gt;Routing&lt;/h3&gt;
+
+&lt;p&gt;The first thing we need for our application is a router.&lt;br /&gt;
+Traffic routes are a pair of an HTTP method and a URL pattern that, if matched,
+call a function that act as route-handler.&lt;/p&gt;
+
+&lt;p&gt;Our first route&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
+
+import (
+	&amp;quot;github.com/pilu/traffic&amp;quot;
+)
+
+var router *traffic.Router
+
+func main() {
+	router = traffic.New()
+	router.Get(&amp;quot;/&amp;quot;, RootHandler)
+	router.Run()
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Routes are matched in the same order they are declared, the first that match is executed.&lt;/p&gt;
+
+&lt;p&gt;Routes can contain named parameters that are accesible using the &lt;code&gt;Param&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;router.Get(`/:width/:height/?`, ImageHandler)
+
+func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
+	width := r.Param(&amp;quot;width&amp;quot;)
+	height := r.Param(&amp;quot;height&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and parameters can be optional&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;router.Get(`/:width)/(:height)?`, ImageHandler)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Route patterns can also include wildcards and regular expressions&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;router.Get(`/:width/*`, ImageHandler)
+
+// match (width)x(height) format
+router.Get(`/(?P&amp;lt;width&amp;gt;\d+)(x(?P&amp;lt;height&amp;gt;\d+)?)?/?`, ImageHandler)
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;before-filters:c0e6095a1875dedd0808509e8b75160b&#34;&gt;Before filters&lt;/h3&gt;
+
+&lt;p&gt;Traffic allows to prepend the request handler with filters, which are like regular request handlers that get executed before the real handler.&lt;br /&gt;
+Before fitlers can be chained and can be attached to all routes or just some of them.&lt;br /&gt;
+If a before filters write something in the Response Body, the request chain is interrupted.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// if route match, before executing ImageHandler, Traffic executes the two filters
+// RequireValidImageParameters and GenerateImageCache in order  
+// If one of them fails and write to the response body, the execution stops
+// before reaching the actual handler
+router.Get(`/:width/?(:height)?/?`, ImageHandler).
+	AddBeforeFilter(RequireValidImageParameters).
+	AddBeforeFilter(GenerateImageCache)
+
+func RequireValidImageParameters(w traffic.ResponseWriter, r *traffic.Request) {
+	width, err := strconv.Atoi(r.Param(&amp;quot;width&amp;quot;))
+	if err != nil { // conversion error, either var is empty or not a number
+		// cannot continue
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	height, err := strconv.Atoi(r.Param(&amp;quot;height&amp;quot;))
+	if err != nil {
+		// if height is omitted the image is gonna be a square
+		height = width
+	}
+
+	if (width &amp;lt;= 2560 &amp;amp;&amp;amp; width &amp;gt; 0) &amp;amp;&amp;amp; (height &amp;lt;= 2560 &amp;amp;&amp;amp; height &amp;gt; 0) {
+		// set vars for the next filter
+	} else {
+		// bad request
+		w.WriteHeader(http.StatusBadRequest)
+		w.Render(&amp;quot;400&amp;quot;, nil)
+	}
+}
+
+func GenerateImageCache(w traffic.ResponseWriter, r *traffic.Request) {
+	// pseudo code
+	if not cache_folder_exists and create_folder_fails
+		throw error with panic
+
+	write_image_file_according_to_parameters
+}
+
+func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
+	// output the image with the correct content-type
+	w.Header().Set(&amp;quot;Content-Type&amp;quot;, &amp;quot;image/jpeg&amp;quot;)
+
+	// at this point we can safely assume that the image file already exists
+}
+
+// this filter is global to the router and is applied before each request
+router.AddBeforeFilter(PoweredByHandler)
+
+func PoweredByHandler(w traffic.ResponseWriter, r *traffic.Request) {
+	w.Header().Set(&amp;quot;X-Powered-By&amp;quot;, &amp;quot;Grumpy cat&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;templates-and-static-files:c0e6095a1875dedd0808509e8b75160b&#34;&gt;Templates and static files&lt;/h3&gt;
+
+&lt;p&gt;Traffic supports templates in the standard Go format.&lt;br /&gt;
+Template library documentation can be found &lt;a href=&#34;http://golang.org/pkg/html/template/&#34;&gt;here&lt;/a&gt;.&lt;br /&gt;
+Traffic Response Writer has a method to render templates called &lt;code&gt;Render&lt;/code&gt;, that takes the template name (without the extension) and an optional param that contains the data to be rendered.
+By default templates are placed in the &lt;code&gt;/view&lt;/code&gt; folder.&lt;br /&gt;
+Templates can be nested one isnide the other like in our &lt;code&gt;404&lt;/code&gt; example&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-django&#34;&gt;{% raw %}
+{{ template &amp;quot;includes/header&amp;quot; }}
+	&amp;lt;div class=&amp;quot;error error-404&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+{{ template &amp;quot;includes/footer&amp;quot; }}
+{% endraw %}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you are writing an API you might find the methods &lt;code&gt;WriteJSON&lt;/code&gt; and &lt;code&gt;WriteXML&lt;/code&gt; useful too.&lt;/p&gt;
+
+&lt;p&gt;Traffic also support serving static assets: every file placed in the &lt;code&gt;/public&lt;/code&gt; folder is directly accessible.&lt;br /&gt;
+For example if we put a css inside &lt;code&gt;/public/css/app.css&lt;/code&gt; it will be automatically accessible as&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-http://address/css/app.css```.&#34;&gt;
+**Update**:  static files are served through `StaticMiddleware` that is added automatically only if environment is *‘development’*.
+Environment is set using the `TRAFFIC_ENV` variable, so if you set it to`production`, you have to manually add the `StaticMiddleware`  
+
+```go  
+if traffic.Env() == &amp;quot;production&amp;quot; {
+    router.Use(traffic.NewStaticMiddleware(traffic.PublicPath()))
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;custom-error-handlers:c0e6095a1875dedd0808509e8b75160b&#34;&gt;Custom error handlers&lt;/h3&gt;
+
+&lt;p&gt;The Traffic router has builtin handlers for &lt;code&gt;404&lt;/code&gt; and &lt;code&gt;500&lt;/code&gt; erros that can be customized.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// Custom not found handler
+router.NotFoundHandler = NotFoundHandler
+
+func NotFoundHandler(w traffic.ResponseWriter, r *traffic.Request) {
+	w.Render(&amp;quot;404&amp;quot;)
+}
+
+// Custom error handler
+router.ErrorHandler = ErrorHandler
+
+func ErrorHandler(w traffic.ResponseWriter, r *traffic.Request) {
+	w.Render(&amp;quot;500&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;conclusions:c0e6095a1875dedd0808509e8b75160b&#34;&gt;Conclusions&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;Traffic&lt;/a&gt; is a young framework specifically crafte for small to medium applications.&lt;br /&gt;
+I was able to create the demo app &lt;a href=&#34;https://github.com/wstucco/purrraceholder&#34;&gt;Purrraceholder&lt;/a&gt; (read it with a japanese accent) in a couple of hours, without previous knowledge of Traffic internals.&lt;br /&gt;
+I know there are people that can write a blog in 15 minutes, but I think hours is a more realistic time frame and, most of all, you are really in control of what&amp;rsquo;s happening.&lt;br /&gt;
+If you wanna play with &lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;Traffic&lt;/a&gt;, you can start by forking &lt;a href=&#34;https://github.com/wstucco/purrraceholder&#34;&gt;Purraceholder&lt;/a&gt; and adding some features.
+These are the firsts that come to mind:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;add more cats, there are never enough cats on the internet&lt;/li&gt;
+&lt;li&gt;treat special cases with special cats: longcat for vertical images, monorail cat for horizontal ones&lt;/li&gt;
+&lt;li&gt;add support for text overlay&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;happy coding with &lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;Traffic&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>I tried Go and I liked it</title>
+      <link>http://massimoronca.it/2013/11/i-tried-go-and-i-liked-it.html</link>
+      <pubDate>Mon, 04 Nov 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2013/11/i-tried-go-and-i-liked-it.html</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;http://upload.wikimedia.org/wikipedia/commons/2/23/Golang.png&#34; alt=&#34;Gopher in all of its glory&#34; title=&#34;Gopher&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Say hello to &lt;a href=&#34;http://golang.org/doc/gopher/&#34;&gt;Gopher&lt;/a&gt;.
+Gopher is the mascotte of a new language from &lt;a href=&#34;http://google.com&#34;&gt;Google&lt;/a&gt;, called &lt;a href=&#34;http://golang.org&#34;&gt;Go&lt;/a&gt;, with the capital &lt;strong&gt;G&lt;/strong&gt;.&lt;br /&gt;
+Not a very clever name from a search engine company, if you ask me, but that&amp;rsquo;s probably the only bad thing you will hear about it.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Hint:&lt;/strong&gt; use the word &lt;code&gt;golang&lt;/code&gt; to search on Google&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;a-brief-introduction:e3f4998492e6f90831033ef66fcf3463&#34;&gt;A brief introduction&lt;/h2&gt;
+
+&lt;p&gt;Created inside Google by &lt;a href=&#34;http://en.wikipedia.org/wiki/Ken_Thompson&#34; title=&#34;Ken Thompson&#34;&gt;Ken Thompson&lt;/a&gt; and &lt;a href=&#34;http://en.wikipedia.org/wiki/Rob_Pike&#34; title=&#34;Rob Pike&#34;&gt;Rob Pike&lt;/a&gt;, fathers of Unix and UTF-8, to overcome the limitations of C++ (compile times being the most annoying), Go is a &lt;em&gt;concurrent&lt;/em&gt;, &lt;em&gt;garbage-collected&lt;/em&gt; language with &lt;em&gt;fast compilation&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Its real strength is just simplicity.&lt;br /&gt;
+As Rob Pike once said, &lt;a href=&#34;http://commandcenter.blogspot.it/2012/06/less-is-exponentially-more.html&#34;&gt;less is exponentially more&lt;/a&gt; and I strongly agree with him.&lt;/p&gt;
+
+&lt;h3 id=&#34;features:e3f4998492e6f90831033ef66fcf3463&#34;&gt;Features&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;blazing fast compilation speed&lt;/li&gt;
+&lt;li&gt;statically compiled binaries (the result is a single binary with no external dependencies)&lt;/li&gt;
+&lt;li&gt;type safe, statically typed with some type inference support. More errors get caught at compile time, less time is spent debugging&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://talks.golang.org/2012/splash.article#TOC_14.&#34;&gt;garbage collected&lt;/a&gt; with support for pointers, but no pointer arithmetics (for safety and good health of programmers minds).&lt;/li&gt;
+&lt;li&gt;strict compiler: &lt;a href=&#34;http://golang.org/doc/effective_go.html#blank_unused&#34;&gt;you can&amp;rsquo;t declare a variable or import a package without using it&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;concurrency and parallelism through &lt;a href=&#34;http://golang.org/doc/effective_go.html#goroutines&#34;&gt;goroutines&lt;/a&gt;. Goroutines are one of the peculiarities of Go, they are a cheap, lightweight construct built on top of threads, that run concurrently with other goroutines. If you have more than one core processor, they also run in parallel, in a completely transparent way for the programmer. Communication is managed sending messages through &lt;a href=&#34;http://golang.org/doc/effective_go.html#channels&#34;&gt;channels&lt;/a&gt; which are basically type safe queues.&lt;/li&gt;
+&lt;li&gt;Object orientation but &lt;strong&gt;no&lt;/strong&gt; classes. Any type can be an object.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No type inheritance&lt;/strong&gt; in favour of &lt;em&gt;&lt;a href=&#34;http://talks.golang.org/2012/splash.article#TOC_15.&#34;&gt;composition&lt;/a&gt;&lt;/em&gt; and &lt;em&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Duck_typing&#34;&gt;duck typing&lt;/a&gt;&lt;/em&gt;. IS-A relationships are banned!&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://golang.org/doc/effective_go.html#multiple-returns&#34;&gt;multiple return values&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://golang.org/pkg/&#34;&gt;rich&lt;/a&gt; standard library.&lt;/li&gt;
+&lt;li&gt;a powerful set of &lt;a href=&#34;http://golang.org/doc/cmd&#34;&gt;command line tools&lt;/a&gt; including one to &lt;a href=&#34;http://golang.org/cmd/gofmt/&#34;&gt;enforce coding conventions&lt;/a&gt; and one for &lt;a href=&#34;http://blog.golang.org/godoc-documenting-go-code&#34;&gt;automatic code documentation&lt;/a&gt;.&lt;br /&gt;
+Many IDE that support Go, launch &lt;code&gt;gofmt&lt;/code&gt; just before save, to ensure that every Go file obey the rules.&lt;/li&gt;
+&lt;li&gt;last, but not least, cross compiling. Go compiler can create binaries for platforms/architectures different from the one it is running, provided &lt;a href=&#34;http://golang.org/doc/install#requirements&#34;&gt;the platform is supported&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;installing-go:e3f4998492e6f90831033ef66fcf3463&#34;&gt;Installing Go&lt;/h3&gt;
+
+&lt;p&gt;You can download Go from the &lt;a href=&#34;https://golang.org&#34;&gt;golang.org website&lt;/a&gt;.&lt;br /&gt;
+There are packages for many different platforms (Linux, Windows, Mac OS, BSD) and architectures (x86, x64, ARM).&lt;br /&gt;
+Detailed instructions can be found &lt;a href=&#34;http://golang.org/doc/install&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Basically you need to create two environment variables:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;GOROOT&lt;/code&gt; which is the system wide Go root folder (it should be
+configured automatically by the installer)&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;GOPATH&lt;/code&gt; that will
+contain all your code and all the packages you are going to install&lt;/li&gt;
+&lt;li&gt;it is optional, but recommended, to add &lt;code&gt;$GOPATH/bin&lt;/code&gt; to the &lt;code&gt;$PATH&lt;/code&gt; variable&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;first-steps-and-getting-help:e3f4998492e6f90831033ef66fcf3463&#34;&gt;First steps and getting help&lt;/h3&gt;
+
+&lt;p&gt;You should now have a working installation of the Go development environment, but if you come from Ruby or Python, you might get lost while reading someone else&amp;rsquo;s code or trying to figure out which is the idiomatic way to solve a problem in Go.&lt;br /&gt;
+No worries, Go has an answer for that too.&lt;br /&gt;
+Included in the package there is &lt;a href=&#34;http://godoc.org/code.google.com/p/go.tools/cmd/godoc&#34;&gt;godoc&lt;/a&gt;.&lt;br /&gt;
+When launched with the &lt;code&gt;-http&lt;/code&gt; param, godoc act as a web server that present the documentation in form of web pages.
+This is a typical godoc summoning ritual&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ godoc -http=:60666
+$ open http://localhost:60666
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;My advice is to read carefully &lt;a href=&#34;http://golang.org/doc/code.html&#34;&gt;How to write Go code&lt;/a&gt; and &lt;a href=&#34;http://golang.org/doc/effective_go.html&#34;&gt;Effective Go&lt;/a&gt; before starting writing Go code.&lt;br /&gt;
+Go does not provide REPL, but you can try your snippets in the &lt;a href=&#34;http://play.golang.org/&#34;&gt;Playground&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt; every package you install with the go tool or write by yourself, will update the documentation as well.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;shut-up-show-us-the-code:e3f4998492e6f90831033ef66fcf3463&#34;&gt;SHUT UP! SHOW US THE CODE!&lt;/h2&gt;
+
+&lt;p&gt;Ok!&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
+
+import (
+	&amp;quot;fmt&amp;quot;
+	&amp;quot;net/http&amp;quot;
+)
+
+func main() {
+
+	http.HandleFunc(&amp;quot;/&amp;quot;, func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, &amp;quot;Hello World!&amp;quot;)
+	})
+
+	fmt.Println(&amp;quot;Server running at http://localhost:8080/&amp;quot;)
+	fmt.Println(&amp;quot;hit CTRL+C to shut it down&amp;quot;)
+	http.ListenAndServe(&amp;quot;:8080&amp;quot;, nil)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is our first Go program.&lt;br /&gt;
+Every client that connects to localhost, port 8080, will receive the &lt;em&gt;&amp;ldquo;Hello World!&amp;rdquo;&lt;/em&gt; message.&lt;br /&gt;
+The example looks a lot like the &lt;em&gt;Node.js&lt;/em&gt; &lt;a href=&#34;http://nodejs.org/about/&#34;&gt;hello world web serve example&lt;/a&gt;, but unlike &lt;em&gt;Node.js&lt;/em&gt;, this code is already multithreaded. Every new client is served by a &lt;code&gt;goroutine&lt;/code&gt;, that the &lt;code&gt;net/http&lt;/code&gt; starts behind the scenes, taking advantage of concurrency and multiple cores, if present.
+Talking about simplicity, is there anything simpler than that?&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; To run the code you have to save it in a file and then execute &lt;code&gt;go run &amp;lt;filename&amp;gt;&lt;/code&gt; from the console&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Let&amp;rsquo;s explore  the code above in more detail:&lt;/p&gt;
+
+&lt;h3 id=&#34;packages-and-imports:e3f4998492e6f90831033ef66fcf3463&#34;&gt;Packages and imports&lt;/h3&gt;
+
+&lt;p&gt;The first statement in a Go program must always be&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package name
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Executable packages have to reside in a package called &lt;strong&gt;&lt;em&gt;main&lt;/em&gt;&lt;/strong&gt;.&lt;br /&gt;
+The entry point function is called &lt;strong&gt;&lt;em&gt;main&lt;/em&gt;&lt;/strong&gt; as well.&lt;/p&gt;
+
+&lt;p&gt;Next we find the import section, you can import packages by declaring your intentions with the &lt;strong&gt;&lt;em&gt;import&lt;/em&gt;&lt;/strong&gt; directive.&lt;br /&gt;
+This is the first Go idiom we encounter: &lt;em&gt;statement grouping&lt;/em&gt;.&lt;br /&gt;
+You can import packages (or declare variables) one per line, like in&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;import &amp;quot;fmt&amp;quot;
+import &amp;quot;net/http&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;or you can group them together, surrounding the imports with parenthesis, like in our example.&lt;/p&gt;
+
+&lt;h3 id=&#34;variables-and-type-inference:e3f4998492e6f90831033ef66fcf3463&#34;&gt;Variables and type inference&lt;/h3&gt;
+
+&lt;p&gt;Variables are declared &lt;em&gt;name first, then type&lt;/em&gt;.&lt;br /&gt;
+If you &lt;em&gt;declare and assign&lt;/em&gt;, you can let the compiler infere the type.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// when variables are declared without assignment, Go assign them a default value:
+// zero for numbers, empty string for strings, nil for pointers and nullable types
+var a string
+var b int
+
+// type inference
+c := &amp;quot;Hello, Wolrd!&amp;quot;  // := operator is available only inside function body
+var s = &amp;quot;a string&amp;quot;    // this pattern is available outside functions
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course &lt;em&gt;statement grouping&lt;/em&gt; is available too&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;var (
+    s string
+    i int
+    f float64
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Don&amp;rsquo;t worry about lining up the elements between the brackets, &lt;code&gt;gofmt&lt;/code&gt; will take care of it for you.&lt;/p&gt;
+
+&lt;h3 id=&#34;anonymous-functions-and-oo:e3f4998492e6f90831033ef66fcf3463&#34;&gt;Anonymous functions and OO&lt;/h3&gt;
+
+&lt;p&gt;Go support &lt;a href=&#34;http://golang.org/ref/spec#Function_literals&#34;&gt;anonymous functions&lt;/a&gt; and high order functions.&lt;br /&gt;
+Functions are first class citizens in Go and can be assigned and carried around like regular variables.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;log := func(s string) {
+    fmt.Printf(&amp;quot;[%s] %s&amp;quot;, time.Now(), s)
+}
+
+log(&amp;quot;Hello World!&amp;quot;)
+
+// sample output
+// [2009-11-10 23:00:00 +0000 UTC] Hello World!
+
+// a more complex example
+
+type logLevel string
+type logger func(string) // create a new type for a function that takes a string as input
+
+getLogger := func(l logLevel) logger {
+	return func(s string) {
+		fmt.Printf(&amp;quot;[%s] %s: %s\n&amp;quot;, time.Now(), l, s)
+	}
+}
+
+err := getLogger(&amp;quot;Err&amp;quot;)
+warn := getLogger(&amp;quot;Warn&amp;quot;)
+info := getLogger(&amp;quot;Info&amp;quot;)
+
+err(&amp;quot;File not found&amp;quot;)
+warn(&amp;quot;Timezone is not set&amp;quot;)
+info(&amp;quot;loggin&#39; some stuff&amp;quot;)
+
+// sample output
+// [2009-11-10 23:00:00 +0000 UTC] Err: File not found
+// [2009-11-10 23:00:00 +0000 UTC] Warn: Timezone is not set
+// [2009-11-10 23:00:00 +0000 UTC] Info: loggin&#39; some stuff
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s now improve our web server with new functionalities.&lt;br /&gt;
+We want to send out an &lt;code&gt;X-Powered-By&lt;/code&gt; header with the name of our web server.&lt;br /&gt;
+What we need to do is define a new &lt;strong&gt;&lt;em&gt;type&lt;/em&gt;&lt;/strong&gt; that  act as handler for the requests and will append the new header to the default set of headers.&lt;br /&gt;
+In Go, an http handler is any object that implements the Handler&amp;rsquo;s &lt;em&gt;interface&lt;/em&gt;, and the Handler&amp;rsquo;s &lt;em&gt;interface&lt;/em&gt; contains only one method: &lt;code&gt;ServeHTTP&lt;/code&gt;.&lt;br /&gt;
+So we are going to create a new object that implements the &lt;code&gt;ServeHTTP&lt;/code&gt; method and pass it to &lt;code&gt;ListenAndServe&lt;/code&gt;.&lt;br /&gt;
+Instead of classes, Go uses &lt;strong&gt;structs&lt;/strong&gt;.&lt;br /&gt;
+In this case it is an empty struct, but it can contain any other type as member variables (more on this later).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// declare the new type Middleware.
+// Note: the type can be literally **any** type
+// type seq []int is a perfectly legal declaration
+// it creates a new type (not an alias) seq that represents a slice of ints
+type Middleware struct {
+}
+
+// implements the ServeHTTP method as requested by Handler&#39;s interface
+// notice the syntax:
+// after the keyword func we declare the type that the method will be attached to
+// and then we pass a parameter m that represents our instance variable
+// in a very similar way to Python&#39;s self
+func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf(&amp;quot;Request to %s is being handled by our middleware\n&amp;quot;, r.URL.Path)
+	w.Header().Set(&amp;quot;X-Powered-By&amp;quot;, &amp;quot;mikamai-web-server&amp;quot;)
+}
+
+// initialize and return a new object literal of type Middleware
+// in Go we also declare the return type, after the parameters of the function
+// in this case a pointer, denoted by the *, to Middleware type
+func NewMiddleware() *Middleware {
+	return &amp;amp;Middleware{}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We now pass the new handler to the listener&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;http.ListenAndServe(&amp;quot;:8080&amp;quot;, NewMiddleware())
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Every time a client connects, it doesn&amp;rsquo;t receive any message back, except for the new header.
+&lt;img src=&#34;http://31.media.tumblr.com/83ea05b44971684313f8d6d1c535b2d9/tumblr_mvhrpwaNvX1rhmakfo1_r1_500.png&#34; alt=&#34;X-Powered-By mikamai&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Nice, but not very interesting, plus we lost the ability to serve the content to the client, cause
+the handler function we declared before is not getting called.&lt;br /&gt;
+How can we fix that?&lt;br /&gt;
+Before explaining how to forward the call to the default handler, we&amp;rsquo;re going to modify our middleware
+to do something different.&lt;br /&gt;
+In addition to adding the header with the artist&amp;rsquo;s signature, we want to limit the ability to visit
+our web site through one and only one specified host.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// we expand our middleware to contain the definition of the single allowed host
+type Middleware struct {
+    allowedHost string
+}
+
+// we modify the initializer function (our constructor) as well
+func NewMiddleware(host string) *Middleware {
+	return &amp;amp;Middleware{
+	    allowedHost: host, // trailing comma is required by Go compiler
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Rewrite &lt;code&gt;ServeHTTP&lt;/code&gt; to check for the host validity&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	// strip the port from hostname
+	host := strings.Split(r.Host, &amp;quot;:&amp;quot;)[0] // import &amp;quot;strings&amp;quot; in order to use Split
+
+    // the signature is sent anyway
+	w.Header().Set(&amp;quot;X-Powered-By&amp;quot;, &amp;quot;mikamai-web-server&amp;quot;)
+
+	if host == m.allowedHost {
+		fmt.Printf(&amp;quot;Request for host %s is being handled by our middleware\n&amp;quot;, host)
+
+		// net/http has a default handler called DefaultServerMux
+		// we feeded it with an handler for &amp;quot;/&amp;quot; in the first example
+		// forward the call to the default handler and send &amp;quot;Hello World!&amp;quot; to the client
+		http.DefaultServeMux.ServeHTTP(w, r)
+	} else {
+		// request is denied, wrong hostname
+		fmt.Printf(&amp;quot;Request for host %s is strictly forbidden by our middleware\n&amp;quot;, host)
+
+		// order is important.If we send data before the header, the server assumes the return code is 200 OK
+		w.WriteHeader(403)
+		fmt.Fprintf(w, &amp;quot;&amp;lt;h1&amp;gt;Forbidden&amp;lt;/h1&amp;gt;you don&#39;t have permission to access host %s&amp;quot;, host)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;update the handler&amp;rsquo;s initialization&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;http.ListenAndServe(&amp;quot;:8080&amp;quot;, NewMiddleware(&amp;quot;localhost&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;et voilà&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://24.media.tumblr.com/aedc0f5dd849aae18ef022f7d10f3dad/tumblr_mvhrpwaNvX1rhmakfo2_r1_1280.png&#34; alt=&#34;access denied&#34; /&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://31.media.tumblr.com/d3cd5cabdc9bb2a83f12923093d6581f/tumblr_mvhrpwaNvX1rhmakfo3_r1_1280.png&#34; alt=&#34;access granted&#34; /&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://25.media.tumblr.com/a472850a96238d71194c7fbb23909ae7/tumblr_mvhrpwaNvX1rhmakfo4_r2_1280.png&#34; alt=&#34;console output&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;All the code presented in this article can be downlaoded from &lt;a href=&#34;https://gist.github.com/wstucco/7248624&#34;&gt;github&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

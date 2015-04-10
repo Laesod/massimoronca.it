@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ttyrplay on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://massimoronca.it/tags/ttyrplay.html</link>
+    <description>Recent content in Ttyrplay on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 05 Nov 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://massimoronca.it/tags/ttyrplay.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Create an animated GIF of your console sessions</title>
+      <link>http://massimoronca.it/2014/11/create-an-animated-gif-of-your-console-sessions.html</link>
+      <pubDate>Wed, 05 Nov 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/11/create-an-animated-gif-of-your-console-sessions.html</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://s2.quickmeme.com/img/32/325fc351053e41d230961a71308d37937e68192130d11a82308ae619571ef942.jpg&#34; alt=&#34;animate all the things&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;More often than not, our job involves opening up a console, typing some command and waiting for the output.&lt;br /&gt;
+When I write articles, sometimes I feel the need to show how the commands behave interactively, not only the sequence of commands you have to type.&lt;br /&gt;
+It&amp;rsquo;s easier to understand by looking at an animation, than reading&lt;br /&gt;
+&amp;ldquo;when you hit TAB &amp;lt;this happen&amp;gt;&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;For example, can you explain how the emmet plugin for VIM works, better than this, using only words?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://qiita-image-store.s3.amazonaws.com/0/38647/86b91c27-f894-c969-89b0-5846408ad1db.gif&#34; alt=&#34;emmet plugin for VIM&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Fortunately, the solution is pretty easy.&lt;br /&gt;
+You need a few open source tools, if you&amp;rsquo;re on a Mac, like me, you should already have installed &lt;a href=&#34;http://brew.sh/&#34;&gt;Homebrew&lt;/a&gt;, and Imagemagick (&lt;code&gt;brew install imagemagick&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;To record your sessions, you need &lt;code&gt;ttyrec&lt;/code&gt; (&lt;code&gt;brew install ttyrec&lt;/code&gt; on Mac).&lt;br /&gt;
+The usage is very simlpe&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;usage: ttyrec [-u] [-e command] [-a] [file]
+
+OPTIONS
+       -a     Append the output to file or ttyrecord, rather than overwriting it.
+
+       -u     With this option, ttyrec automatically calls uudecode(1) and  saves  its  output  when  uuencoded  data
+              appear on the session.  It allow you to transfer files from remote host.  You can call ttyrec with this
+              option, login to the remote host and invoke uuencode(1) on it for the file you want to transfer.
+
+       -e command
+              Invoke command when ttyrec starts.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;file&lt;/code&gt; is the name of the file that will be used to record the session. If no file name is given, &lt;code&gt;ttyrecord&lt;/code&gt; will be used.&lt;/p&gt;
+
+&lt;p&gt;A new session is started as soon as you launch &lt;code&gt;ttyrec&lt;/code&gt; and is automatically saved when you close the session with &lt;code&gt;CTRL+D&lt;/code&gt; or &lt;code&gt;exit&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To replay an already saved session, use&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ttyplay [-s SPEED] [-n] [-p] file
+
+OPTIONS
+       -s SPEED
+              multiple the playing speed by SPEED (default is 1).
+
+       -n     no wait mode.  Ignore the timing information in file.
+
+       -p     peek another person&#39;s tty session.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see how it looks&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/q7NHxN0.gif&#34; alt=&#34;ttyrec session&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Now that we have a recorded sessions, we need to convert it to an animated GIF.&lt;br /&gt;
+We&amp;rsquo;ll use &lt;a href=&#34;https://github.com/icholy/ttygif&#34;&gt;&lt;code&gt;ttygif&lt;/code&gt;&lt;/a&gt; for the task.&lt;br /&gt;
+There&amp;rsquo;s no installer for it, you must compile it from the sources&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ git clone https://github.com/icholy/ttygif.git
+$ cd ttygif
+$ make
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once make is done, you will find some executable files in the folder&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;-rwxr-xr-x   1 maks  staff    881 Nov  5 16:08 concat.sh
+-rwxr-xr-x   1 maks  staff    829 Nov  5 16:08 concat_osx.sh
+-rwxr-xr-x   1 maks  staff  14836 Nov  5 16:08 ttygif
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In my setup I&amp;rsquo;ve linked &lt;code&gt;ttygif&lt;/code&gt; to &lt;code&gt;/usr/local/bin&lt;/code&gt;  and &lt;code&gt;concat.sh&lt;/code&gt; (&lt;code&gt;concat_osx.sh&lt;/code&gt; in case you&amp;rsquo;re on a Mac) to &lt;code&gt;/usr/local/bin/ttyconcat&lt;/code&gt; to avoid name clash.&lt;br /&gt;
+Creating the gif is a two steps process: first you launch &lt;code&gt;ttygif &amp;lt;recfile&amp;gt;&lt;/code&gt; to genearet a sequence of PNGs, then you launch the &lt;code&gt;ttyconcat&lt;/code&gt; script we linked before and it automatically creates the animated GIF for you.&lt;br /&gt;
+Optionally you can pass an output filename to &lt;code&gt;ttyconcat&lt;/code&gt;, if omitted the image will be saved as &lt;code&gt;output.gif&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you are a prefectionist, there&amp;rsquo;s an optional final step, install &lt;a href=&#34;http://www.lcdf.org/gifsicle/&#34;&gt;&lt;code&gt;gifsicle&lt;/code&gt;&lt;/a&gt; (&lt;code&gt;brew install gifsicle&lt;/code&gt;) and give your animation the final touches.&lt;br /&gt;
+I usually add a fixed delay between frames, make it loop forever and optimize the size with this command line&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;gifsicle --delay=10 --loop=0 -O3 &amp;lt; in.gif &amp;gt; out.gif
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;More otpions can be found on the &lt;a href=&#34;http://www.lcdf.org/gifsicle/man.html&#34;&gt;&lt;code&gt;gifsicle&lt;/code&gt; man page&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

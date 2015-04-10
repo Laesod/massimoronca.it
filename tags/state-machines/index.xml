@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>State Machines on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://massimoronca.it/tags/state-machines.html</link>
+    <description>Recent content in State Machines on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 09 Apr 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://massimoronca.it/tags/state-machines.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Taming the processing loop</title>
+      <link>http://massimoronca.it/2014/04/taming-the-processing-loop.html</link>
+      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/04/taming-the-processing-loop.html</guid>
+      <description>&lt;p&gt;In Mikamai we do a lot of reasearch on &lt;a href=&#34;http://dev.mikamai.com/post/78652180658/how-to-program-an-attiny85-or-attiny45-with-an&#34;&gt;non&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/78453410376/let-your-raspberry-pi-see-this-wonderful-world&#34;&gt;conventional&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/69163914657/intel-galileo-getting-started-with-mac-os-x&#34;&gt;hardware&lt;/a&gt;, we make &lt;a href=&#34;http://dev.mikamai.com/post/76945627390/you-cant-touch-this-an-evil-arduino-based-alarm&#34;&gt;prototypes&lt;/a&gt; or create unsual interfaces that are very domain specific.&lt;/p&gt;
+
+&lt;p&gt;Like this one&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://scontent-b-ams.xx.fbcdn.net/hphotos-ash3/t1.0-9/994503_10151525258526336_667825845_n.jpg&#34; alt=&#34;image&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Seriously, we did it.&lt;/p&gt;
+
+&lt;p&gt;To quickly sketch ideas, we often rely on &lt;a href=&#34;http://www.processing.org/&#34;&gt;Processing&lt;/a&gt;, it&amp;rsquo;s super easy and its loop based execution model gives the feeling of programming a video game.&lt;br /&gt;
+The drawback is that it is so fast to get something working, that you will be tempted to make the mistake of creating a &lt;a href=&#34;http://foxdellfolio.com/the-perils-of-a-polished-prototype/&#34;&gt;polished prototpe&lt;/a&gt;.&lt;br /&gt;
+Your prototype code ends up in production and there&amp;rsquo;s no way back from there.&lt;/p&gt;
+
+&lt;p&gt;To resist the temptation of releasing a blob of code, I borrowed &lt;a href=&#34;https://www.youtube.com/watch?v=HxaD_trXwRE&#34;&gt;a technique from  one of the Rob Pike&amp;rsquo;s talks&lt;/a&gt; to keep things easy, while keeping them clean at the same time.&lt;/p&gt;
+
+&lt;p&gt;It is basically an implementation of a state machime.&lt;br /&gt;
+We&amp;rsquo;re gonna have a &lt;code&gt;StateMachine&lt;/code&gt; class that handles the inputs and the state changes, and several state classes that implement the &lt;code&gt;State&lt;/code&gt; interface.&lt;br /&gt;
+The interface is very simple and contains only one method&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;interface State {
+	  public State nextState();  
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The loop of our Processing application is really simple too&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;StateMachine sm = new StateMachine(initialstate);
+void draw() {
+  sm = sm.nextState();  
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and this is the most basic implementation possible of the &lt;code&gt;StateMachine&lt;/code&gt; class&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class StateMachine(State initialstate) {
+  private State currentstate;
+
+  StateMachine(State initialstate) {
+    this.currentstate = initialstate;
+  }
+
+  public StateMachine nextState() {
+    this.currentstate = this.currentstate.nextState();
+   	return this;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Each class must implement the &lt;code&gt;nextState&lt;/code&gt; method and return an istance of the next state that will be executed.&lt;br /&gt;
+With this knowledge in mind, this is how you build an infinite loop inside an inifinite loop&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class InfiniteLoopState implements State {
+	public State nextState() {
+	    return this;
+  	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But we can do better!&lt;br /&gt;
+How about a ping pong?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class Ping implements State {
+	public State nextState() {
+		println(&amp;quot;ping?&amp;quot;);
+	    return new PongState();
+  	}
+}
+
+class Pong implements State {
+	public State nextState() {
+		println(&amp;quot;pong!&amp;quot;);
+	    return new PingState();
+  	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We moved the logic of the application out of the central &lt;code&gt;switch/case&lt;/code&gt; statement in the &lt;code&gt;draw&lt;/code&gt; function and deconstruted it into smaller pieces, that only know about themselves and the next state they are going to emit.&lt;/p&gt;
+
+&lt;p&gt;As long as your state classes implement the &lt;code&gt;State&lt;/code&gt; interface you can exapnd the concept to fit your needs.&lt;br /&gt;
+For example, if you need to keep track of the environment and/or the previous state, you can adjust the &lt;code&gt;State&lt;/code&gt; interface to support it.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;interface State {
+	  public State nextState(State previousstate, StateMachine sm);  
+	  // StateMachine holds the environment for us
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and modify &lt;code&gt;StateMachine&lt;/code&gt; accordingly&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public StateMachine nextState() {
+  this.currentstate = this.currentstate.nextState(this.currentstate, this);
+ 	return this;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR:&lt;/strong&gt; state machines are easy, use them!&lt;/p&gt;
+
+&lt;p&gt;You can find examples on how to use this pattern and how to add more features in the &lt;a href=&#34;https://github.com/wstucco/processing_state_machine&#34;&gt;github repository&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

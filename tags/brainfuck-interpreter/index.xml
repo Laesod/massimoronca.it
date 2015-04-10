@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Brainfuck Interpreter on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://massimoronca.it/tags/brainfuck-interpreter.html</link>
+    <description>Recent content in Brainfuck Interpreter on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 10 Nov 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://massimoronca.it/tags/brainfuck-interpreter.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Writing a Brainfuck interpreter in Elixir, part two</title>
+      <link>http://massimoronca.it/2014/11/writing-a-brainfuck-interpreter-in-elixir-part-two.html</link>
+      <pubDate>Mon, 10 Nov 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/11/writing-a-brainfuck-interpreter-in-elixir-part-two.html</guid>
+      <description>
+
+&lt;blockquote&gt;
+&lt;p&gt;This is the second in a series of articles on building a brainfuck interpreter in Elixir&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In the &lt;a href=&#34;http://dev.mikamai.com/post/100075543414/elixir-as-a-parsing-tool-writing-a-brainfuck&#34;&gt;first part&lt;/a&gt; we built a minimal brainfuck interpreter that can already run some basic program.
+For example&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-brainfuck&#34;&gt;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+# prints A
+
+,-.
+# prints the ASCII character preceding the one taken as input
+# in &amp;quot;B&amp;quot; -&amp;gt; out &amp;quot;A&amp;quot; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But honestly we can&amp;rsquo;t do anything more with it.&lt;br /&gt;
+The first missing feature is &lt;em&gt;memory management&lt;/em&gt;. We have implemented the functions that move the pointer to memory cells left and right, but we&amp;rsquo;re still stuck with a non expanding memory tape of one cell only.&lt;br /&gt;
+Let&amp;rsquo;s implement memory auto expansion, turns out it is gonna be very easy.&lt;/p&gt;
+
+&lt;h3 id=&#34;memory-management:b2ed223dec99eecb4254f6d99c79a103&#34;&gt;Memory management&lt;/h3&gt;
+
+&lt;p&gt;The functions that handle the &lt;code&gt;&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;&lt;/code&gt; operators are&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_pinc &amp;lt;&amp;gt; rest, addr, mem, output) do
+  run(rest, addr+1, mem, output)
+end
+
+defp run(@op_pdec &amp;lt;&amp;gt; rest, addr, mem, output) do
+  run(rest, addr-1, mem, output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;One easy way to try to implement an auto expanding memory would be to check if we are accessing a cell past the end of the tape or before the initial one and handling those edge cases.
+Something like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_pinc &amp;lt;&amp;gt; rest, addr, mem, output) do
+  if length(mem) == addr+1 do
+    mem = mem ++ [0]
+  end
+  run(rest, addr+1, mem, output)
+end
+
+defp run(@op_pdec &amp;lt;&amp;gt; rest, addr, mem, output) do
+  if addr == 0 do
+    mem = [0] ++ mem
+  end
+  run(rest, addr-1, mem, output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This implementation has several problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;the second function does not work, it keeps decrementing the memory pointer and can go negative, which is an unwanted behaviour (it should be &lt;code&gt;zero&lt;/code&gt;). We should add another &lt;code&gt;if&lt;/code&gt; to make it work, not so good.&lt;/li&gt;
+&lt;li&gt;We are shadowing the original &lt;code&gt;mem&lt;/code&gt; variable by reassigning its value.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;we are modifying code that already works (we&amp;rsquo;ll talk about testing Elixir code in the next article) introducing branching and making it harder to mantain&lt;/li&gt;
+&lt;li&gt;we&amp;rsquo;re not &lt;em&gt;taking advantage of Elixir features&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;One of the main selling point of Elixir is pattern matching in function declaration.&lt;br /&gt;
+But pattern matching alone could not be enough, as we&amp;rsquo;ve seen in this example.&lt;br /&gt;
+In Elixir you can add conditions to function declarations that act in tandem with pattern matching and limit the range of values a function accept. They are called &lt;code&gt;guard clauses&lt;/code&gt;, I&amp;rsquo;ll rewrite those two functions to use them:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;note the &lt;code&gt;when&lt;/code&gt; after function declaration&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;# we are moving past the end of the memory tape
+defp run(@op_pinc &amp;lt;&amp;gt; rest, addr, mem, output) when length(mem) == addr + 1 do
+  # append a new cell, initialize its value to zero, return the next address
+  run(rest, addr+1, mem ++ [0], output)
+end
+
+# we are moving to the left of the first cell of the memory tape
+defp run(@op_pdec &amp;lt;&amp;gt; rest, addr, mem, output) when addr == 0 do
+  # prepend a new empty cell, initialize its value to zero, return zero as address
+  run(rest, 0, [0] ++ mem, output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is much better,  requires no branching, can be added without modifying the existing code and by looking at the definition we can easily guess when the function is going to be called.&lt;br /&gt;
+The only limitation is that Erlang VM only allows &lt;a href=&#34;http://elixir-lang.org/getting_started/5.html#5.2-expressions-in-guard-clauses.&#34;&gt;a limited set of expressions in guards&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;With this simple addition, we have created a complete memory management system, that can automatically expand on both sides, in a virtually unlimited way.&lt;/p&gt;
+
+&lt;h3 id=&#34;loops-and-jumps:b2ed223dec99eecb4254f6d99c79a103&#34;&gt;Loops and jumps&lt;/h3&gt;
+
+&lt;p&gt;Implementing brainfuck operators has been quite linear until now.
+We just had to follow the language specs and we obtained a working implementation.&lt;/p&gt;
+
+&lt;p&gt;Loops are a bit harder task though.&lt;br /&gt;
+The following are the representations of the two ways to define loops&lt;/p&gt;
+
+&lt;p&gt;the &lt;code&gt;while&lt;/code&gt; loop
+&lt;img src=&#34;http://i.imgur.com/IiIEPo8.jpg&#34; alt=&#34;flow chart of while loop&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;the &lt;code&gt;do until&lt;/code&gt; loop
+&lt;img src=&#34;http://i.imgur.com/Joke2ar.jpg&#34; alt=&#34;do until loop&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In Elixir specs they are defined as&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;[&lt;/code&gt; if the current cell value is zero, jump to the next matching &lt;code&gt;]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;]&lt;/code&gt; if the current cell value is non-zero jump back to the matching &lt;code&gt;[&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Looks like brainfuck author overengineered the loops, making it possible to have both.
+But when it&amp;rsquo;s time to implement them, we can choose to check the loop condition only one time (at the beginning or at the end) and treat the other end of the loop as an &lt;em&gt;unconditional&lt;/em&gt; jump.
+I&amp;rsquo;ve chosen to implement the &lt;code&gt;while&lt;/code&gt; loop.&lt;/p&gt;
+
+&lt;p&gt;To implement the loop in brainfuck, we need a function that matches &lt;em&gt;balanced couples&lt;/em&gt; of &lt;code&gt;[&lt;/code&gt; and &lt;code&gt;]&lt;/code&gt; first (did someone say s-expressions?).&lt;br /&gt;
+We cannot simply match &lt;code&gt;]&lt;/code&gt; when we find a &lt;code&gt;[&lt;/code&gt; and the reason is fairly obvious: we could not have nested loops (&lt;code&gt;[[-]-]&lt;/code&gt; would not work).&lt;/p&gt;
+
+&lt;p&gt;The algorithm we are using is the following:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;when we match a &lt;code&gt;[&lt;/code&gt; we check the value at the current memory address, if it is zero, we jump past the end of the loop&lt;/li&gt;
+&lt;li&gt;if it is not zero, we extract the loop&amp;rsquo;s body and execute it, like it is a stand alone program, then collect the results and jump (&lt;em&gt;unconditionally&lt;/em&gt;) to the beginning of the loop&lt;/li&gt;
+&lt;li&gt;go back to 1.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In code it is&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_lbeg &amp;lt;&amp;gt; rest, addr, mem, output) do
+  case mem |&amp;gt; byte_at addr do
+    0 -&amp;gt;
+      run(rest |&amp;gt; jump_to_lend, addr,  mem, output)
+    _ -&amp;gt;
+      {a, m, o} = run(rest |&amp;gt; loop_body, addr,  mem, output)
+      # prepend [ to the input, to make sure we call this function again
+      run(@op_lbeg &amp;lt;&amp;gt; rest, a, m, o)
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;remember that in Elixir &lt;code&gt;_&lt;/code&gt; means &lt;em&gt;match everything&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;To match the balanced couples of square brackets, I used this algorithm&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;when a &lt;code&gt;[&lt;/code&gt; is found, pass the rest to a matcher function with a &lt;code&gt;depth&lt;/code&gt; parameter with value &lt;code&gt;1&lt;/code&gt; and a parameter &lt;code&gt;acc&lt;/code&gt;, to hold the length of the loop body, initially set to &lt;code&gt;zero&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;for every character we find, we increment &lt;code&gt;acc&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;if we find a &lt;code&gt;[&lt;/code&gt;, increment &lt;code&gt;depth&lt;/code&gt; too&lt;/li&gt;
+&lt;li&gt;if we find a &lt;code&gt;]&lt;/code&gt; decrement &lt;code&gt;depth&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;if &lt;code&gt;depth&lt;/code&gt; is zero, we have found the end of loop, return the length of its body&lt;/li&gt;
+&lt;li&gt;if we reach the end of the input and &lt;code&gt;depth&lt;/code&gt; is non-zero, square brackets are unbalanced, &lt;code&gt;raise&lt;/code&gt; an error then.&lt;br /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Let&amp;rsquo;s translate this to Elixir&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;
+# start the matching loop
+defp match_lend(source), do: match_lend(source, 1, 0)
+
+# if depth is zero, we have reached the other end of the loop
+# return the body length
+defp match_lend(_, 0, acc), do: acc
+
+# if we reached the end of the input, but depth is not zero, the
+# sequence is unbalanced, raise an error
+defp match_lend(@empty, _, _), do: raise &amp;quot;unbalanced loop&amp;quot;
+
+# [ increment the depth
+defp match_lend(@op_lbeg &amp;lt;&amp;gt; rest, depth, acc), do: match_lend(rest, depth+1, acc+1)
+# ] decrement the depth
+defp match_lend(@op_lend &amp;lt;&amp;gt; rest, depth, acc), do: match_lend(rest, depth-1, acc+1)
+# every other character just increment acc (loop body length)
+defp match_lend(&amp;lt;&amp;lt;_&amp;gt;&amp;gt; &amp;lt;&amp;gt; rest, depth, acc), do: match_lend(rest, depth, acc+1)
+
+# returns the slice of the input program starting from the end of the loop after ]
+defp jump_to_lend(source), do: source |&amp;gt; String.slice (source |&amp;gt; match_lend)..-1
+# return the slice of the input that represent the loop&#39;s body 
+# between 0 and the body length-1 (everything but the last ])
+defp loop_body(source), do: source |&amp;gt; String.slice 0..(source |&amp;gt; match_lend)-1
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This implementation automatically works for nested loops of any depth.
+Every time a &lt;code&gt;[&lt;/code&gt; command is found,  the program is split in a smaller one and executed until the loop condition is met (this does not save you from infinite loops).&lt;/p&gt;
+
+&lt;p&gt;We have now a complete implementation of a brainfuck interpreter that can run any brainfuck program.&lt;br /&gt;
+To test it let&amp;rsquo;s run it inside &lt;code&gt;iex&lt;/code&gt; the Elixir shell&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/1lTQqee.gif&#34; alt=&#34;iex brainfuck session&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In the next post I&amp;rsquo;ll talk about testing the code, creating a project and compiling down to an executable and the command line tools.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://gist.github.com/wstucco/3064b6d01f1f8cf1292c&#34;&gt;As usual, I&amp;rsquo;ve created a gist with all the code presented in this post&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Writing a Brainfuck interpreter in Elixir, part one</title>
+      <link>http://massimoronca.it/2014/10/writing-a-brainfuck-interpreter-in-elixir-part-one.html</link>
+      <pubDate>Wed, 15 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2014/10/writing-a-brainfuck-interpreter-in-elixir-part-one.html</guid>
+      <description>
+
+&lt;blockquote&gt;
+&lt;p&gt;For instructions on how to install the Elixir environment you can take a look at the &lt;a href=&#34;http://elixir-lang.org/getting_started/1.html#1.1-installers&#34;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;To get used to the language and try some of the code in this post, you can start &lt;code&gt;iex&lt;/code&gt;, the Elixir shell.
+One of its best features are autocompletion of module and function names and the integrated documentation accessible with the command &lt;code&gt;h&lt;/code&gt;.
+This is an example of an &lt;code&gt;iex&lt;/code&gt; session:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/IigY3j3.jpg&#34; alt=&#34;image&#34; /&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;brainfuck-the-language:5e8426109aae4353298eac2be50da78b&#34;&gt;Brainfuck, the language&lt;/h3&gt;
+
+&lt;p&gt;Brainfuck is an esoteric, turing complete, programming language with a very small set of instructions: there are only 8 of them.
+.
+A typical implementation requires a memory of at least 30 thousand cells, but ideally infinite on both sides (we&amp;rsquo;ll see this is very easy to implement in Elixir), each initially set to zero and a data pointer that points to the first memory cell.
+The available commands are:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&amp;gt;&lt;/code&gt; increment the data pointer (point to the cell on the right)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;&lt;/code&gt; decrement the data pointer (point to the cell on the left)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;+&lt;/code&gt; increment the value at the data pointer location&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-&lt;/code&gt; decrement the value at the data pointer location&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.&lt;/code&gt; output the value at the data pointer as byte&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;,&lt;/code&gt; read a byte into the cell at pointer location&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;[&lt;/code&gt; if the current cell value is zero, jump to the next matching &lt;code&gt;]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;]&lt;/code&gt; if the current cell value is non-zero jump back to the matching &lt;code&gt;[&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All other characters are considered comments, hence ignored.&lt;/p&gt;
+
+&lt;h3 id=&#34;implementation-details:5e8426109aae4353298eac2be50da78b&#34;&gt;Implementation details&lt;/h3&gt;
+
+&lt;p&gt;We are going to write an Elixir module that only export one public function &lt;code&gt;run&lt;/code&gt; that accept a brainfuck program as string and scan it, character by character, until we reach the end.
+As a result it returns a triplet containing the final data pointer address, the memory state and the output generated.
+I assumed that each memory cell is an unsigned byte, that overlap on overflow (255+1 becomes zero again).
+Input and output operations work on bytes too.&lt;/p&gt;
+
+&lt;p&gt;In Elixir pattern matching is a fundamental feature for controlling the program flow, there are no loop instructions, so we are forced to use recursion.
+The condition of our loops are expressed in the function definition.&lt;/p&gt;
+
+&lt;p&gt;The logic of our interpreter is very simple: we are going to consume the program string char by char by using the pattern below
+&amp;gt; &lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt; is the operator for string concatenation, it work on bitstring, but since strings in Elixir are binaries, it works on strings too&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;run(first_char &amp;lt;&amp;gt; rest_of_the_program, ... ) do
+  ...
+  run(rest_of_the_program, ...)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As an example, the simple program &lt;code&gt;++.&lt;/code&gt;, which increment the location zero two times, and then output the result will flow like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;# step 1
+run(&amp;quot;+&amp;quot; &amp;lt;&amp;gt; &amp;quot;+.&amp;quot;, 0, [0], &amp;quot;&amp;quot;)
+  # inc the value at zero
+  run(&amp;quot;+.&amp;quot;, 0, [0+1], &amp;quot;&amp;quot;)
+
+# step 2
+run(&amp;quot;+&amp;quot; &amp;lt;&amp;gt; &amp;quot;.&amp;quot;, 0, [1], &amp;quot;&amp;quot;)
+  # inc the value at zero
+  run(&amp;quot;.&amp;quot;, 0, [1+1], &amp;quot;&amp;quot;)
+
+# step 3
+run(&amp;quot;.&amp;quot; &amp;lt;&amp;gt; &amp;quot;&amp;quot;, 0, [2], &amp;quot;&amp;quot;)
+  # append the value at zero to output
+  run(&amp;quot;&amp;quot;, 0, [2], &amp;quot;&amp;quot; &amp;lt;&amp;gt; &amp;lt;&amp;lt;2&amp;gt;&amp;gt;)
+
+# final step
+run(&amp;quot;&amp;quot;, 0, [2], &amp;lt;&amp;lt;2&amp;gt;&amp;gt;)
+  # return {addr, memory, output} -&amp;gt; {0, [2], &amp;lt;&amp;lt;2&amp;gt;&amp;gt;}
+
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;first-steps:5e8426109aae4353298eac2be50da78b&#34;&gt;First steps&lt;/h3&gt;
+
+&lt;p&gt;Let&amp;rsquo;s begin with the definition of our module, we are going to define our instruction set and the run function&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule Brainfuck do
+
+    # opcodes
+    @op_vinc &amp;quot;+&amp;quot; # increment value at memory address
+    @op_vdec &amp;quot;-&amp;quot; # decrement value at memory address
+    @op_pinc &amp;quot;&amp;gt;&amp;quot; # increment memory address
+    @op_pdec &amp;quot;&amp;lt;&amp;quot; # decrement memory address
+    @op_putc &amp;quot;.&amp;quot; # output byte at memory address
+    @op_getc &amp;quot;,&amp;quot; # input byte into memory address
+    @op_lbeg &amp;quot;[&amp;quot; # loop begin
+    @op_lend &amp;quot;]&amp;quot; # loop end
+
+    def run(program), do: run(program, 0, [0], &amp;quot;&amp;quot;)
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You may have noticed that run doesn&amp;rsquo;t really do anything, except call another run function with different parameters.
+This is a common pattern in Elixir programs: functions are defined as name/arity (the arity is the number of parameters a function takes), so for example the first &lt;code&gt;run&lt;/code&gt; function is &lt;code&gt;run/1&lt;/code&gt; and the one we are calling is &lt;code&gt;run/4&lt;/code&gt;, for Elixir they are two completely different functions, even if they share the same name.
+Elixir have strictly immutable types, we need to carry the state around by passing it in parameters, we&amp;rsquo;ll see in a minute what the parameters are for.&lt;/p&gt;
+
+&lt;h3 id=&#34;with-a-little-help-from-my-friends:5e8426109aae4353298eac2be50da78b&#34;&gt;With a little help from my friends&lt;/h3&gt;
+
+&lt;p&gt;Before getting our hands dirty (they&amp;rsquo;re not gonna be that dirty, I promise) I&amp;rsquo;m going to show you some helper functions I created to keep code as clean as possible.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp inc_at(list, addr), do: List.update_at(list, addr, &amp;amp;(&amp;amp;1+1 |&amp;gt; rem 255))
+defp dec_at(list, addr), do: List.update_at(list, addr, &amp;amp;(&amp;amp;1-1 |&amp;gt; rem 255))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;First thing to notice is that they start with a &lt;code&gt;defp&lt;/code&gt; not &lt;code&gt;def&lt;/code&gt;.
+It means they are private to the module and not visible from the outside.
+Both of them take two parameters, a list and an address that represent the position inside the list, and update the corresponding value.
+It&amp;rsquo;s easy to guess by their name what they do: &lt;code&gt;inc_at&lt;/code&gt; increment the value of &lt;code&gt;list&lt;/code&gt; at position &lt;code&gt;adrr&lt;/code&gt; and &lt;code&gt;dec_at&lt;/code&gt; decrement it.
+We use the facilities provided by the core &lt;code&gt;List&lt;/code&gt; module by calling &lt;code&gt;update_at&lt;/code&gt;, that takes a list, an address and a function that update the value.
+As we said in Elixir data types are immutable, so &lt;code&gt;update_at&lt;/code&gt; is returning a copy of the list with the modified value, it is not modifying the value in place.
+The only tricky part is understanding the third parameter, the update function.
+The &lt;code&gt;&amp;amp;()&lt;/code&gt; is called &lt;a href=&#34;http://elixir-lang.org/getting_started/8.html#8.4-function-capturing&#34;&gt;capture syntax&lt;/a&gt; in Elixir and is basically a shorthand for creating anonymous functions.
+Rewriting the same function without it would look like this &lt;code&gt;fn(a) -&amp;gt; a+1 |&amp;gt; rem 255 end&lt;/code&gt;, the capture syntax is more concise and allows us to get rid of the function parameter and use params placeholders (&lt;code&gt;&amp;amp;1&lt;/code&gt; represent the first parameter, &lt;code&gt;&amp;amp;2&lt;/code&gt; the second and so on).&lt;/p&gt;
+
+&lt;p&gt;The other thing you might have noticed, if you are new to Elixir, is the &lt;code&gt;|&amp;gt;&lt;/code&gt; symbol. That&amp;rsquo;s called the pipe operator and act much like a unix pipe, it &lt;code&gt;cat&lt;/code&gt;s the argument(s) on left as &lt;strong&gt;first parameter&lt;/strong&gt; of the function on the right.
+So &lt;code&gt;rem &amp;amp;1+1, 255&lt;/code&gt; can be rewritten as &lt;code&gt;&amp;amp;1+1 |&amp;gt; rem 255&lt;/code&gt;.
+It has no advantage in this case as number of characters typed, but it makes clearer what we are doing: we are taking the value of the first parameter, adding (or subtracting) 1 to it and then piping the result on the function &lt;code&gt;rem&lt;/code&gt; with the parameter 255.
+&lt;code&gt;rem&lt;/code&gt; returns the remainder of the int division, that&amp;rsquo;s how we keep memory values in the byte size range, by going back to zero when the value overflows 255.&lt;/p&gt;
+
+&lt;p&gt;In the same family, but with a different purpose, I created &lt;code&gt;put_at&lt;/code&gt;, that completely replace a value in a list at a speicified address.
+Of course this function takes a third parameter, the new value we are putting into the list.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp put_at(list, addr, val), do: List.replace_at(list, addr, val)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;the-real-run-function:5e8426109aae4353298eac2be50da78b&#34;&gt;The real &lt;code&gt;run&lt;/code&gt; function&lt;/h3&gt;
+
+&lt;p&gt;So what are those parameters we pass to our internal function for?
+I&amp;rsquo;ll explain by showing you the final step of our interpreter&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(&amp;quot;&amp;quot;, addr, mem, output), do: {addr, mem, output}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The first parameter is the program string &lt;em&gt;at this point&lt;/em&gt; of the execution, second is the pointer to the memory cell currently active, third is the current state of the memory tape and the last is the output string we are going to return.
+We know our program has ended when the run function is called with and empty string as first parameter.
+We then return the triplet containing the current data pointer, the memory cells and the output string.&lt;/p&gt;
+
+&lt;p&gt;Without the previous function our program would not end and it will give us an error like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;** (FunctionClauseError) no function clause matching in Brainfuck.run/4
+    iex:25: Brainfuck.run(&amp;quot;&amp;quot;, 0, [0], &amp;quot;&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;because there is no function matching the pattern with the empty string as first param.&lt;/p&gt;
+
+&lt;p&gt;The second basic function is the generic one that matches a string starting with some character, no matter which,  skips it, and calls run again with the rest of the string.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(&amp;lt;&amp;lt;_&amp;gt;&amp;gt; &amp;lt;&amp;gt; rest, addr, mem, output), do: run(rest, addr, mem, output)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With this two functions in place we already have a scanner, a completely useless scanner, that skips everything and then returns the initial state.The complete code for this is just a few lines long&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule Brainfuck do
+    def run(program), do: run(program, 0, [0], &amp;quot;&amp;quot;)
+    # exit program
+    defp run(&amp;quot;&amp;quot;, addr, mem, output), do: {addr, mem, output}
+    # skip everything
+    defp run(&amp;lt;&amp;lt;_&amp;gt;&amp;gt; &amp;lt;&amp;gt; rest, addr, mem, output), do: run(rest, addr, mem, output)
+end
+
+Brainfuck.run(&amp;quot;hello world&amp;quot;)
+# output: {0, [0], &amp;quot;&amp;quot;}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Note that Elixir matches patterns from top to bottom, so we need to put the function that skips unrecognized commands at the end, otherwise more specific patterns would be ignored.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;basics-strings-and-the-i-o:5e8426109aae4353298eac2be50da78b&#34;&gt;Basics, strings and the I/O&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;m gonna start implementing commands, by defining the functions that handle the &lt;code&gt;I\O&lt;/code&gt; operations, basically they output a byte and read a byte from input (in our case &lt;code&gt;stdin&lt;/code&gt;).
+To do that, first we need to introduce two more helper functions&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp byte_at(list, addr), do: list |&amp;gt; Enum.at addr
+defp char_at(list, addr), do: [list |&amp;gt; byte_at addr] |&amp;gt; to_string
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;byte_at&lt;/code&gt; extracts the byte at position &lt;code&gt;addr&lt;/code&gt; in &lt;code&gt;list&lt;/code&gt; (AKA our memory cells), while &lt;code&gt;char_at&lt;/code&gt; returns the same byte as string value.
+In Elixir strings are binaries, or, in other words, strings of bits.
+To convert a byte value to a string, we cannot simply use &lt;code&gt;to_string&lt;/code&gt; function, because it will convert the byte to its string representation, not to the character rapresented by its value, so we need to wrap it inside [] and make it a byte list (the internal representartion of ASCII strings).
+As an experiment, you can start &lt;code&gt;iex&lt;/code&gt; and try this code&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;65 |&amp;gt; to_string # print &amp;quot;65&amp;quot;
+[65] |&amp;gt; to_string # print &amp;quot;A&amp;quot;
+[65, 66, 67] |&amp;gt; to_string # print &amp;quot;ABC&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Handle @op_putc opcode, that appends one byte to &lt;code&gt;output&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_putc &amp;lt;&amp;gt; rest, addr, mem, output) do
+    run(rest, addr, mem, output &amp;lt;&amp;gt; (mem |&amp;gt; char_at addr))
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When @op_putc is at the beginning of the program, this function call &lt;code&gt;run&lt;/code&gt; with the new output formed by appending the character at the current memory location to the old output.
+Rest becomes the new program, while address and memory are unchanged.&lt;/p&gt;
+
+&lt;p&gt;Next is @op_getc, which reads a byte from &lt;code&gt;stdin&lt;/code&gt; and puts it in the current memory location.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_getc &amp;lt;&amp;gt; rest, addr, mem, output) do
+    val = case IO.getn(&amp;quot;Input\n&amp;quot;, 1) do
+        :eof -&amp;gt; 0
+        c    -&amp;gt; c
+    end
+    run(rest, addr, mem |&amp;gt; put_at(addr, val), output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It&amp;rsquo;s a bit trickier than the previous, but gives us the opportunity to introduce the &lt;code&gt;case&lt;/code&gt; statement.
+In Elixir everything is an expression, and returns a value.
+We use this feature to assign to &lt;code&gt;val&lt;/code&gt; the result of the &lt;code&gt;case&lt;/code&gt; expression.
+Inside the case we use pattern matching to match the return value of &lt;code&gt;IO.getn&lt;/code&gt;, which, straight from the Elixir interactive help&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;Gets a number of bytes from the io device. If the io device is a unicode
+device, count implies the number of unicode codepoints to be retrieved.
+Otherwise, count is the number of raw bytes to be retrieved. It returns:
+
+  • data - the input characters
+  • :eof - end of file was encountered
+  • {:error, reason} - other (rare) error condition; for instance, {:error,
+    :estale} if reading from an NFS volume
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We read one byte from the input, if it returns &lt;code&gt;:eof&lt;/code&gt;, return 0, if it returns some &lt;code&gt;data&lt;/code&gt;, we return it (it is guaranteed to be one byte long).
+We ignore error conditions, since they are very rare, especially in our simple case.
+The new memory will have &lt;code&gt;val&lt;/code&gt; value at &lt;code&gt;addr&lt;/code&gt; position.&lt;/p&gt;
+
+&lt;p&gt;Not hard at all until now.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/6oA7eED.png&#34; alt=&#34;very easy&#34; /&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;let-s-talk-about-memory:5e8426109aae4353298eac2be50da78b&#34;&gt;Let&amp;rsquo;s talk about memory&lt;/h3&gt;
+
+&lt;p&gt;There are two opcodes in brainfuck that operates on memory values, &lt;code&gt;+&lt;/code&gt; and &lt;code&gt;-&lt;/code&gt;.
+The implementation is very straightforward&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_vinc &amp;lt;&amp;gt; rest, addr, mem, output) do
+    run(rest, addr, mem |&amp;gt; inc_at(addr), output)
+end
+
+defp run(@op_vdec &amp;lt;&amp;gt; rest, addr, mem, output) do
+    run(rest, addr,  mem |&amp;gt; dec_at(addr), output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now that we (hopefully) grasped the basics of the Elixir syntax and how pattern matching is used, it should be pretty easy to understand how these two functions work.&lt;/p&gt;
+
+&lt;p&gt;Last two functions we meet today handle the data pointer.
+I&amp;rsquo;ll just show you the two basic cases, when the pointer moves inside the memory length, we&amp;rsquo;ll keep handling the auto expansion of the tape to the left and right for the next part.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defp run(@op_pinc &amp;lt;&amp;gt; rest, addr, mem, output) do
+    run(rest, addr+1, mem, output)
+end
+
+defp run(@op_pdec &amp;lt;&amp;gt; rest, addr, mem, output) do
+    run(rest, addr-1, mem, output)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Almost no need to explain what it is going on, the data pointer is simply incremented or decremented and the new value is passed to &lt;code&gt;run&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In the next post I&amp;rsquo;ll talk about how to handle expanding the memory tape when needed and, the most fun part, where Elixir capabilities really shine, handling loops and jumps in a very easy way.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://gist.github.com/wstucco/bc6a5037fe8b1fbf1cf0&#34;&gt;I&amp;rsquo;ve created a gist with all the code presented in this post&lt;/a&gt;, of course it misses loops, but you can use it as a starting point for your own experiments&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
