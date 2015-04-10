@@ -1,0 +1,9 @@
+{{ partial "header.html" . }}
+
+  <section>
+    {{ range .Data.Pages }}
+      {{ .Render "summary" }}
+    {{ end }}
+  </section>
+
+{{ partial "footer.html" . }}

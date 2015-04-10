@@ -1,0 +1,22 @@
+<article class="post">
+  <h2 class="post-title jedi">
+    <a href="{{ .Permalink }}#content">{{ .Title }}</a>
+  </h2>
+  <p class="post-excerpt">{{ .Description | safeHtml }}</p>
+  <div class='post-meta'>
+    <i class="fa fa-clock-o"></i>
+    <span class="small">
+    posted {{ if and (isset .Params "sourceurl") (isset .Params "sourcename") }}
+    in <a href="{{ .Params.sourceurl }}">{{ .Params.sourcename }}</a>
+    {{ end }}
+    on {{ .Date.Format "Monday, Jan 2 2006" }}
+    </span>
+  </div>
+  <div class='post-terms'>
+    <i class="fa fa-tags"></i>
+    <span class="small">
+    {{ with.Params.tags }}
+    {{ delimit (apply . "partial" "post/tags" ".") ", " }}
+    {{ end }}
+    </span>
+</article>

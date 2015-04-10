@@ -1,0 +1,12 @@
+<article id="content" class="post">
+  <h1 class="post-title">{{ .Title }}</h1>
+  <div class="post-content">
+    {{ .Content }}
+  </div>
+  <div class='small post-meta'>
+    posted {{ if and (isset .Params "source_url") (isset .Params "source_name") }}
+    in <a href="{{ .Params.source_url }}">{{ .Params.source_name }}</a>
+    {{ end }}
+    on {{ .Date.Format "Monday, Jan 2 2006" }}
+  </div>
+</article>

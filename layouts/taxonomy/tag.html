@@ -1,0 +1,16 @@
+{{ partial "header.html" . }}
+
+  <section>
+    <article>
+      <h2 class="tag-title">
+        <i class="fa fa-tags large"></i>
+        All pages in <span class="tag">{{ .Title }}</span>
+      </h2>
+    </article>
+
+    {{ range .Data.Pages }}
+      {{ .Render "summary" }}
+    {{ end }}
+  </section>
+
+{{ partial "footer.html" . }}

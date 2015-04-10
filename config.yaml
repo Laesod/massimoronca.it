@@ -1,0 +1,6 @@
+baseurl: "http://massimoronca.it"
+languageCode: "en-us"
+title: "Massimo Ronca ~ a reckless programmer with a sarcastic wit"
+permalinks:
+  post: /:year/:month/:title.html
+uglyUrls: true
