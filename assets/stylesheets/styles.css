@@ -226,7 +226,7 @@ footer a:hover {
   position: relative;
 }
 
-.post-title {
+.post-title, .tag-title {
   font-family: "adelle", monospace;
   font-size: 2em;
   border-bottom: 2px solid;
@@ -396,11 +396,26 @@ footer a:hover {
 }
 
 .post-meta {
-  background: url(../images/clock.png) top left no-repeat;
-  padding-left: 20px;
-  background-position: 0 8px;
   display: block;
   clear: both;
+}
+.post-meta .fa, .post-terms .fa {
+  -webkit-transform: translate(0, 4px);
+  -moz-transform: translate(0, 4px);
+  -ms-transform: translate(0, 4px);
+  transform: translate(0, 4px);
+}
+
+.tag-title {
+  border-color: transparent !important;
+  margin-left: -50px;
+}
+.tag-title .tag {
+  color: #dc322f;
+  font-size: 1.2em;
+}
+.tag-title .fa {
+  color: #dc322f;
 }
 
 .view a {
@@ -571,6 +586,10 @@ html[xmlns] .clearfix {
 
   footer .view {
     position: relative;
+  }
+
+  .tag-title {
+    margin-left: 0;
   }
 
   .header-title {
