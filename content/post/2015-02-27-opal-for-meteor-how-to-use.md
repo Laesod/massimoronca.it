@@ -1,7 +1,7 @@
 ---
 title: "Bootstap Opal for Meteor"
 date: "2015-02-27"
-description: <a href="/2015-02-27-opal-for-meteor-how-to-use/#content"><img src='/assets/images/meteor-loves-opal.png' class='fill'></a>
+description: <a href="/2015/02/27/bootstap-opal-for-meteor.html#content"><img src='/assets/images/meteor-loves-opal.png' class='fill'></a>
 tags:
   - Opal
   - Meteor
