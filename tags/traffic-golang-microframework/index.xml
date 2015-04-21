@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Traffic Golang Microframework on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
-    <link>http://localhost:1313/tags/traffic-golang-microframework.html</link>
+    <link>http://massimoronca.it/tags/traffic-golang-microframework.html</link>
     <description>Recent content in Traffic Golang Microframework on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 29 Nov 2013 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/traffic-golang-microframework.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://massimoronca.it/tags/traffic-golang-microframework.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Building web apps with Traffic, the Go micro framework.</title>
-      <link>http://localhost:1313/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html</link>
+      <link>http://massimoronca.it/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html</link>
       <pubDate>Fri, 29 Nov 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html</guid>
+      <guid>http://massimoronca.it/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html</guid>
       <description>
 
 &lt;p&gt;Written by the long time Ruby developer &lt;a href=&#34;http://gravityblast.com/&#34;&gt;Andrea Franz&lt;/a&gt;,  &lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;&lt;strong&gt;Traffic&lt;/strong&gt;&lt;/a&gt; is a &lt;a href=&#34;http://flask.pocoo.org/docs/foreword/#what-does-micro-mean&#34;&gt;&lt;em&gt;micro framework&lt;/em&gt;&lt;/a&gt; for Web development inspired by &lt;a href=&#34;http://www.sinatrarb.com&#34;&gt;Sinatra&lt;/a&gt;.&lt;/p&gt;

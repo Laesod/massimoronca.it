@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
-    <link>http://localhost:1313/post.html</link>
+    <link>http://massimoronca.it/post.html</link>
     <description>Recent content in Posts on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 27 Feb 2015 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/post.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://massimoronca.it/post.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Bootstap Opal for Meteor</title>
-      <link>http://localhost:1313/2015/02/27/bootstap-opal-for-meteor.html</link>
+      <link>http://massimoronca.it/2015/02/27/bootstap-opal-for-meteor.html</link>
       <pubDate>Fri, 27 Feb 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2015/02/27/bootstap-opal-for-meteor.html</guid>
+      <guid>http://massimoronca.it/2015/02/27/bootstap-opal-for-meteor.html</guid>
       <description>&lt;p&gt;If you wanna use the &lt;a href=&#34;https://atmospherejs.com/massimoronca/opal&#34;&gt;Opal build plugin&lt;/a&gt; for Meteor I&amp;rsquo;ve recently published, but don&amp;rsquo;t know how, here it is &lt;a href=&#34;https://gist.github.com/wstucco/42392ee21b76dfa3ef83&#34;&gt;a Gist showing how to integrate Opal with Meteor builtin functionalities&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;script src=&#34;https://gist.github.com/wstucco/42392ee21b76dfa3ef83.js?file=user.rb&#34;&gt; &lt;/script&gt;
@@ -25,10 +25,10 @@
     
     <item>
       <title>Opal for Meteor</title>
-      <link>http://localhost:1313/2015/02/18/opal-for-meteor.html</link>
+      <link>http://massimoronca.it/2015/02/18/opal-for-meteor.html</link>
       <pubDate>Wed, 18 Feb 2015 00:00:01 +0200</pubDate>
       
-      <guid>http://localhost:1313/2015/02/18/opal-for-meteor.html</guid>
+      <guid>http://massimoronca.it/2015/02/18/opal-for-meteor.html</guid>
       <description>&lt;p&gt;I present you the result of my weekend project: an &lt;a href=&#34;https://atmospherejs.com/massimoronca/opal&#34;&gt;Opal build plugin&lt;/a&gt; for Meteor that compiles Ruby files down to Javascript, both on the client and the server.&lt;/p&gt;
 
 &lt;p&gt;Installation is as easy as running&lt;/p&gt;
@@ -45,16 +45,16 @@
     
     <item>
       <title>Brainfuck in Elixir, part three, compiling</title>
-      <link>http://localhost:1313/2015/01/24/brainfuck-in-elixir-part-three-compiling.html</link>
+      <link>http://massimoronca.it/2015/01/24/brainfuck-in-elixir-part-three-compiling.html</link>
       <pubDate>Sat, 24 Jan 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2015/01/24/brainfuck-in-elixir-part-three-compiling.html</guid>
+      <guid>http://massimoronca.it/2015/01/24/brainfuck-in-elixir-part-three-compiling.html</guid>
       <description>
 
 &lt;blockquote&gt;
 &lt;p&gt;This is the third in a series of articles on building a brainfuck interpreter in Elixir.&lt;br /&gt;
-In the &lt;a href=&#34;http://localhost:1313/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html&#34;&gt;first one&lt;/a&gt; we built a minimal brainfuck interpreter that could understand the basic instructions.&lt;br /&gt;
-In &lt;a href=&#34;http://localhost:1313/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html&#34;&gt;the second&lt;/a&gt;, we completed it by implementing loops.&lt;br /&gt;
+In the &lt;a href=&#34;http://massimoronca.it/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html&#34;&gt;first one&lt;/a&gt; we built a minimal brainfuck interpreter that could understand the basic instructions.&lt;br /&gt;
+In &lt;a href=&#34;http://massimoronca.it/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html&#34;&gt;the second&lt;/a&gt;, we completed it by implementing loops.&lt;br /&gt;
 In this third episode we&amp;rsquo;ll write a simple compiler to translate Brainfuck instructions to a machine readable intermediate format (AST) and a VM that executes it.&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -221,10 +221,10 @@ To run the tests use &lt;code&gt;mix test&lt;/code&gt;.&lt;/p&gt;
     
     <item>
       <title>Writing a Brainfuck interpreter in Elixir, part two</title>
-      <link>http://localhost:1313/2014/11/10/writing-a-brainfuck-interpreter-in-elixir-part-two.html</link>
+      <link>http://massimoronca.it/2014/11/10/writing-a-brainfuck-interpreter-in-elixir-part-two.html</link>
       <pubDate>Mon, 10 Nov 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/11/10/writing-a-brainfuck-interpreter-in-elixir-part-two.html</guid>
+      <guid>http://massimoronca.it/2014/11/10/writing-a-brainfuck-interpreter-in-elixir-part-two.html</guid>
       <description>
 
 &lt;blockquote&gt;
@@ -425,10 +425,10 @@ To test it let&amp;rsquo;s run it inside &lt;code&gt;iex&lt;/code&gt; the Elixir
     
     <item>
       <title>Create an animated GIF of your console sessions</title>
-      <link>http://localhost:1313/2014/11/05/create-an-animated-gif-of-your-console-sessions.html</link>
+      <link>http://massimoronca.it/2014/11/05/create-an-animated-gif-of-your-console-sessions.html</link>
       <pubDate>Wed, 05 Nov 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/11/05/create-an-animated-gif-of-your-console-sessions.html</guid>
+      <guid>http://massimoronca.it/2014/11/05/create-an-animated-gif-of-your-console-sessions.html</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://s2.quickmeme.com/img/32/325fc351053e41d230961a71308d37937e68192130d11a82308ae619571ef942.jpg&#34; alt=&#34;animate all the things&#34; /&gt;
 &lt;/p&gt;
 
@@ -515,10 +515,10 @@ I usually add a fixed delay between frames, make it loop forever and optimize th
     
     <item>
       <title>Writing a Brainfuck interpreter in Elixir, part one</title>
-      <link>http://localhost:1313/2014/10/15/writing-a-brainfuck-interpreter-in-elixir-part-one.html</link>
+      <link>http://massimoronca.it/2014/10/15/writing-a-brainfuck-interpreter-in-elixir-part-one.html</link>
       <pubDate>Wed, 15 Oct 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/10/15/writing-a-brainfuck-interpreter-in-elixir-part-one.html</guid>
+      <guid>http://massimoronca.it/2014/10/15/writing-a-brainfuck-interpreter-in-elixir-part-one.html</guid>
       <description>
 
 &lt;blockquote&gt;
@@ -795,29 +795,29 @@ end
     
     <item>
       <title>The strange case of &#39;Ronca Knives&#39;</title>
-      <link>http://localhost:1313/2014/05/20/the-strange-case-of-ronca-knives.html</link>
+      <link>http://massimoronca.it/2014/05/20/the-strange-case-of-ronca-knives.html</link>
       <pubDate>Tue, 20 May 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/05/20/the-strange-case-of-ronca-knives.html</guid>
+      <guid>http://massimoronca.it/2014/05/20/the-strange-case-of-ronca-knives.html</guid>
       <description>&lt;p&gt;The other day I was looking at my websites stats and I found a spike in visits coming from search engines.&lt;br /&gt;
 It is always good news when something catch search engines attention and traffic get redirected to your website.&lt;br /&gt;
 Well actually not always &amp;hellip;&lt;br /&gt;
 The keywords used to get to me were definitely a bit OT.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://localhost:1313/assets/images/ronca-knives-stats.png&#34; alt=&#34;Ronca Knives&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/ronca-knives-stats.png&#34; alt=&#34;Ronca Knives&#34; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;My name&amp;rsquo;s Ronca, I wrote an article about &lt;a href=&#34;http://localhost:1313/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife.html&#34;&gt;Drush, the swiss army knife for Drupal&lt;/a&gt;, but this is totally not my line of work :)&lt;/p&gt;
+&lt;p&gt;My name&amp;rsquo;s Ronca, I wrote an article about &lt;a href=&#34;http://massimoronca.it/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife.html&#34;&gt;Drush, the swiss army knife for Drupal&lt;/a&gt;, but this is totally not my line of work :)&lt;/p&gt;
 
 &lt;p&gt;To be honest, I love knives and I always carry a small one with me.
 My grandfather taught me how to recognize them, he used to be a tailor, but he also lived in the country, so he was competent in the fieldwork and had a superb collection of working knives, like this baby here&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://localhost:1313/assets/images/coltello-da-innesto-6.png&#34; alt=&#34;graft knife&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/coltello-da-innesto-6.png&#34; alt=&#34;graft knife&#34; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;I imagine that I would have loved to sell knives, maybe not on TV, I don&amp;rsquo;t really like showing myself to big audiences, but I also seriously think that you guys where looking for this knives, not the metaphorical ones I wrote about&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://localhost:1313/assets/images/44356.jpg&#34; alt=&#34;ronco knives&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/44356.jpg&#34; alt=&#34;ronco knives&#34; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;I invite you to go to &lt;a href=&#34;https://www.roncocutlery.com/&#34;&gt;their website&lt;/a&gt; and buy everything! those knives look great, as seen on TV!&lt;/p&gt;
@@ -826,10 +826,10 @@ My grandfather taught me how to recognize them, he used to be a tailor, but he a
     
     <item>
       <title>Writing custom commands for Drush: the Drupal swiss army knife.</title>
-      <link>http://localhost:1313/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife..html</link>
+      <link>http://massimoronca.it/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife..html</link>
       <pubDate>Wed, 14 May 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife..html</guid>
+      <guid>http://massimoronca.it/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife..html</guid>
       <description>&lt;p&gt;Recently I worked on a client project based on the Drupal platform.&lt;br /&gt;
 The most important part of the job was automating a data import from a remote source, but instead of writing a script to do the job, I created a command for &lt;a href=&#34;https://github.com/drush-ops/drush&#34;&gt;Drush&lt;/a&gt;.
 Quoting from Drush repository site&lt;/p&gt;
@@ -979,10 +979,10 @@ For a complete implementation of a command example, see &lt;code&gt;drush topic 
     
     <item>
       <title>A modern workflow for Wordpress using Docker and Dokku</title>
-      <link>http://localhost:1313/2014/05/13/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</link>
+      <link>http://massimoronca.it/2014/05/13/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</link>
       <pubDate>Tue, 13 May 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/05/13/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</guid>
+      <guid>http://massimoronca.it/2014/05/13/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</guid>
       <description>&lt;p&gt;Every developer, sooner or later, had to deal with &lt;a href=&#34;http://wordpress.org/&#34;&gt;WordPress&lt;/a&gt;, given it is one of the most popular Blog/CMS platform, if not &lt;strong&gt;the&lt;/strong&gt; most popular.&lt;br /&gt;
 According to Wikipedia, roughly 22% of the web sites run on it, (it means one web site in five) it is widely know by users, &lt;a href=&#34;https://wordpress.org/plugins/&#34;&gt;it has a large community&lt;/a&gt; (over 30 thousand contributed plugins) and it is easily supported by designers.&lt;/p&gt;
 
@@ -1167,10 +1167,10 @@ In a next article we&amp;rsquo;ll see how to create a Dokku plugin to automate t
     
     <item>
       <title>Taming the processing loop</title>
-      <link>http://localhost:1313/2014/04/09/taming-the-processing-loop.html</link>
+      <link>http://massimoronca.it/2014/04/09/taming-the-processing-loop.html</link>
       <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/04/09/taming-the-processing-loop.html</guid>
+      <guid>http://massimoronca.it/2014/04/09/taming-the-processing-loop.html</guid>
       <description>&lt;p&gt;In Mikamai we do a lot of reasearch on &lt;a href=&#34;http://dev.mikamai.com/post/78652180658/how-to-program-an-attiny85-or-attiny45-with-an&#34;&gt;non&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/78453410376/let-your-raspberry-pi-see-this-wonderful-world&#34;&gt;conventional&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/69163914657/intel-galileo-getting-started-with-mac-os-x&#34;&gt;hardware&lt;/a&gt;, we make &lt;a href=&#34;http://dev.mikamai.com/post/76945627390/you-cant-touch-this-an-evil-arduino-based-alarm&#34;&gt;prototypes&lt;/a&gt; or create unsual interfaces that are very domain specific.&lt;/p&gt;
 
 &lt;p&gt;Like this one&lt;/p&gt;
@@ -1274,11 +1274,11 @@ For example, if you need to keep track of the environment and/or the previous st
     
     <item>
       <title>Le email di Tumblr le scrive Beppe Grillo</title>
-      <link>http://localhost:1313/2014/04/08/le-email-di-tumblr-le-scrive-beppe-grillo.html</link>
+      <link>http://massimoronca.it/2014/04/08/le-email-di-tumblr-le-scrive-beppe-grillo.html</link>
       <pubDate>Tue, 08 Apr 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/04/08/le-email-di-tumblr-le-scrive-beppe-grillo.html</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://localhost:1313/assets/images/tumblr-email.jpg&#34; alt=&#34;LOL&#34; /&gt;
+      <guid>http://massimoronca.it/2014/04/08/le-email-di-tumblr-le-scrive-beppe-grillo.html</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/tumblr-email.jpg&#34; alt=&#34;LOL&#34; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;LOL&lt;/p&gt;
@@ -1287,10 +1287,10 @@ For example, if you need to keep track of the environment and/or the previous st
     
     <item>
       <title>Start running your own DNS server</title>
-      <link>http://localhost:1313/2014/02/10/start-running-your-own-dns-server.html</link>
+      <link>http://massimoronca.it/2014/02/10/start-running-your-own-dns-server.html</link>
       <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/02/10/start-running-your-own-dns-server.html</guid>
+      <guid>http://massimoronca.it/2014/02/10/start-running-your-own-dns-server.html</guid>
       <description>&lt;p&gt;A common problem in web development is simulating the final environment and, specifically, running your apps in their own private domain.&lt;br /&gt;
 One solution is editing the &lt;code&gt;/etc/hosts&lt;/code&gt; every time you need to add a new domain, but this can quickly become a very tedious process.&lt;br /&gt;
 If you work on OS X, you probably have heard of &lt;a href=&#34;http://pow.cx/&#34;&gt;Pow&lt;/a&gt;, but if you only need the domain resolution and don&amp;rsquo;t use Rails, it is probaly overkill to install a full featured application server just to create some dev domain.
@@ -1400,10 +1400,10 @@ For example, &lt;code&gt;myapp.dev&lt;/code&gt; will point to &lt;code&gt;~/Site
     
     <item>
       <title>Building web apps with Traffic, the Go micro framework.</title>
-      <link>http://localhost:1313/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html</link>
+      <link>http://massimoronca.it/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html</link>
       <pubDate>Fri, 29 Nov 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html</guid>
+      <guid>http://massimoronca.it/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html</guid>
       <description>
 
 &lt;p&gt;Written by the long time Ruby developer &lt;a href=&#34;http://gravityblast.com/&#34;&gt;Andrea Franz&lt;/a&gt;,  &lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;&lt;strong&gt;Traffic&lt;/strong&gt;&lt;/a&gt; is a &lt;a href=&#34;http://flask.pocoo.org/docs/foreword/#what-does-micro-mean&#34;&gt;&lt;em&gt;micro framework&lt;/em&gt;&lt;/a&gt; for Web development inspired by &lt;a href=&#34;http://www.sinatrarb.com&#34;&gt;Sinatra&lt;/a&gt;.&lt;/p&gt;
@@ -1633,10 +1633,10 @@ These are the firsts that come to mind:&lt;/p&gt;
     
     <item>
       <title>I tried Go and I liked it</title>
-      <link>http://localhost:1313/2013/11/04/i-tried-go-and-i-liked-it.html</link>
+      <link>http://massimoronca.it/2013/11/04/i-tried-go-and-i-liked-it.html</link>
       <pubDate>Mon, 04 Nov 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2013/11/04/i-tried-go-and-i-liked-it.html</guid>
+      <guid>http://massimoronca.it/2013/11/04/i-tried-go-and-i-liked-it.html</guid>
       <description>
 
 &lt;p&gt;&lt;img src=&#34;http://upload.wikimedia.org/wikipedia/commons/2/23/Golang.png&#34; alt=&#34;Gopher in all of its glory&#34; title=&#34;Gopher&#34; /&gt;

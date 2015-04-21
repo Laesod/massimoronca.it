@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Processing on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
-    <link>http://localhost:1313/tags/processing.html</link>
+    <link>http://massimoronca.it/tags/processing.html</link>
     <description>Recent content in Processing on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 09 Apr 2014 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/processing.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://massimoronca.it/tags/processing.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Taming the processing loop</title>
-      <link>http://localhost:1313/2014/04/09/taming-the-processing-loop.html</link>
+      <link>http://massimoronca.it/2014/04/09/taming-the-processing-loop.html</link>
       <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/04/09/taming-the-processing-loop.html</guid>
+      <guid>http://massimoronca.it/2014/04/09/taming-the-processing-loop.html</guid>
       <description>&lt;p&gt;In Mikamai we do a lot of reasearch on &lt;a href=&#34;http://dev.mikamai.com/post/78652180658/how-to-program-an-attiny85-or-attiny45-with-an&#34;&gt;non&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/78453410376/let-your-raspberry-pi-see-this-wonderful-world&#34;&gt;conventional&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/69163914657/intel-galileo-getting-started-with-mac-os-x&#34;&gt;hardware&lt;/a&gt;, we make &lt;a href=&#34;http://dev.mikamai.com/post/76945627390/you-cant-touch-this-an-evil-arduino-based-alarm&#34;&gt;prototypes&lt;/a&gt; or create unsual interfaces that are very domain specific.&lt;/p&gt;
 
 &lt;p&gt;Like this one&lt;/p&gt;

@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Dnsmasq on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
-    <link>http://localhost:1313/tags/dnsmasq.html</link>
+    <link>http://massimoronca.it/tags/dnsmasq.html</link>
     <description>Recent content in Dnsmasq on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 10 Feb 2014 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/dnsmasq.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://massimoronca.it/tags/dnsmasq.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Start running your own DNS server</title>
-      <link>http://localhost:1313/2014/02/10/start-running-your-own-dns-server.html</link>
+      <link>http://massimoronca.it/2014/02/10/start-running-your-own-dns-server.html</link>
       <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2014/02/10/start-running-your-own-dns-server.html</guid>
+      <guid>http://massimoronca.it/2014/02/10/start-running-your-own-dns-server.html</guid>
       <description>&lt;p&gt;A common problem in web development is simulating the final environment and, specifically, running your apps in their own private domain.&lt;br /&gt;
 One solution is editing the &lt;code&gt;/etc/hosts&lt;/code&gt; every time you need to add a new domain, but this can quickly become a very tedious process.&lt;br /&gt;
 If you work on OS X, you probably have heard of &lt;a href=&#34;http://pow.cx/&#34;&gt;Pow&lt;/a&gt;, but if you only need the domain resolution and don&amp;rsquo;t use Rails, it is probaly overkill to install a full featured application server just to create some dev domain.
