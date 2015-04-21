@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Wordpress Modern Workflow on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
-    <link>http://massimoronca.it/tags/wordpress-modern-workflow.html</link>
+    <link>http://localhost:1313/tags/wordpress-modern-workflow.html</link>
     <description>Recent content in Wordpress Modern Workflow on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 13 May 2014 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://massimoronca.it/tags/wordpress-modern-workflow.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/wordpress-modern-workflow.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>A modern workflow for Wordpress using Docker and Dokku</title>
-      <link>http://massimoronca.it/2014/05/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</link>
+      <link>http://localhost:1313/2014/05/13/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</link>
       <pubDate>Tue, 13 May 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://massimoronca.it/2014/05/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</guid>
+      <guid>http://localhost:1313/2014/05/13/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</guid>
       <description>&lt;p&gt;Every developer, sooner or later, had to deal with &lt;a href=&#34;http://wordpress.org/&#34;&gt;WordPress&lt;/a&gt;, given it is one of the most popular Blog/CMS platform, if not &lt;strong&gt;the&lt;/strong&gt; most popular.&lt;br /&gt;
 According to Wikipedia, roughly 22% of the web sites run on it, (it means one web site in five) it is widely know by users, &lt;a href=&#34;https://wordpress.org/plugins/&#34;&gt;it has a large community&lt;/a&gt; (over 30 thousand contributed plugins) and it is easily supported by designers.&lt;/p&gt;
 

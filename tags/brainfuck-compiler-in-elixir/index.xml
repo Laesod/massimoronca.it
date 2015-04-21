@@ -2,25 +2,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Brainfuck Compiler In Elixir on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
-    <link>http://massimoronca.it/tags/brainfuck-compiler-in-elixir.html</link>
+    <link>http://localhost:1313/tags/brainfuck-compiler-in-elixir.html</link>
     <description>Recent content in Brainfuck Compiler In Elixir on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 24 Jan 2015 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://massimoronca.it/tags/brainfuck-compiler-in-elixir.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/brainfuck-compiler-in-elixir.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Brainfuck in Elixir, part three, compiling</title>
-      <link>http://massimoronca.it/2015/01/brainfuck-in-elixir-part-three-compiling.html</link>
+      <link>http://localhost:1313/2015/01/24/brainfuck-in-elixir-part-three-compiling.html</link>
       <pubDate>Sat, 24 Jan 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://massimoronca.it/2015/01/brainfuck-in-elixir-part-three-compiling.html</guid>
+      <guid>http://localhost:1313/2015/01/24/brainfuck-in-elixir-part-three-compiling.html</guid>
       <description>
 
 &lt;blockquote&gt;
 &lt;p&gt;This is the third in a series of articles on building a brainfuck interpreter in Elixir.&lt;br /&gt;
-In the &lt;a href=&#34;http://massimoronca.it/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html&#34;&gt;first one&lt;/a&gt; we built a minimal brainfuck interpreter that could understand the basic instructions.&lt;br /&gt;
-In &lt;a href=&#34;http://massimoronca.it/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html&#34;&gt;the second&lt;/a&gt;, we completed it by implementing loops.&lt;br /&gt;
+In the &lt;a href=&#34;http://localhost:1313/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html&#34;&gt;first one&lt;/a&gt; we built a minimal brainfuck interpreter that could understand the basic instructions.&lt;br /&gt;
+In &lt;a href=&#34;http://localhost:1313/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html&#34;&gt;the second&lt;/a&gt;, we completed it by implementing loops.&lt;br /&gt;
 In this third episode we&amp;rsquo;ll write a simple compiler to translate Brainfuck instructions to a machine readable intermediate format (AST) and a VM that executes it.&lt;/p&gt;
 &lt;/blockquote&gt;
 

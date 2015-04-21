@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
 
-    <base href="http://massimoronca.it/">
+    <base href="http://localhost:1313/">
 
     
     <meta name="description" content="Welcome to Massimo Ronca website. I am a full stack developer, and definitely a tech enthusiast. This is about what I do."/>
@@ -51,7 +51,7 @@
     
       <article class="post">
   <h2 class="post-title jedi">
-    <a href="http://massimoronca.it/2013/11/building-web-apps-with-traffic-the-go-micro-framework..html#content">Building web apps with Traffic, the Go micro framework.</a>
+    <a href="http://localhost:1313/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html#content">Building web apps with Traffic, the Go micro framework.</a>
   </h2>
   <p class="post-excerpt">In times when software development is moving towards creating services for other applications, micro frameworks serve very well this paradigm by providing an easy way to create the building blocks on top of which larger applications can rely. Traffic is one of them.</p>
   <div class='post-meta'>
@@ -91,5 +91,8 @@
 
 </script>
 
-  </body>
+  <script>document.write('<script src="http://'
+        + (location.host || 'localhost').split(':')[0]
+		+ ':1313/livereload.js?mindelay=10"></'
+        + 'script>')</script></body>
 </html>
