@@ -6,8 +6,18 @@
     <description>Recent content on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 22 Apr 2015 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://massimoronca.it/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Migrating from Jekyll to Hugo</title>
+      <link>http://massimoronca.it/2015/04/22/migrating-from-jekyll-to-hugo.html</link>
+      <pubDate>Wed, 22 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/04/22/migrating-from-jekyll-to-hugo.html</guid>
+      <description>&lt;p&gt;This webiste is not run by &lt;a href=&#34;http://jekyllrb.com/&#34;&gt;Jekyll&lt;/a&gt; anymore, say hello to &lt;a href=&#34;http://gohugo.io/&#34;&gt;Hugo&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Bootstap Opal for Meteor</title>
