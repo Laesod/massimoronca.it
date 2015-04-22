@@ -1,4 +1,4 @@
 [submodule "public"]
 	path = public
-	url = https://github.com/wstucco/wstucco.github.io.git
+	url = https://github.com/wstucco/massimoronca.it.git
 	branch = gh-pages
