@@ -1,0 +1,341 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>I tried Go and I liked it</title>
+
+    <link rel="stylesheet" href="/assets/stylesheets/fonts.css">
+    <link rel="stylesheet" href="/assets/stylesheets/styles.css">
+    <link rel="stylesheet" href="/assets/stylesheets/pygment_trac.css">
+
+    <link rel="icon" type="image/png" href="/assets/images/icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header-title"><a href="/">Massimo Ronca</a></h1>
+
+        <img src="/assets/images/massimoronca.png" class="logo">
+        <p>This is not</p>
+        <p>the programmer</p>
+        <p>you're looking for</p>
+
+        <nav>
+          <ul>
+            <li><a href="/about.html">ABOUT</a></li>
+          </ul>
+        </nav>
+    </header>
+      <section>
+      <article>
+	<h1 class="post-title">I tried Go and I liked it</h1>
+	<div class="post-content">
+	<p><img src="http://upload.wikimedia.org/wikipedia/commons/2/23/Golang.png" alt="Gopher in all of its glory" title="Gopher">   </p>
+
+<p>Say hello to <a href="http://golang.org/doc/gopher/">Gopher</a>.<br>
+Gopher is the mascotte of a new language from <a href="http://google.com">Google</a>, called <a href="http://golang.org">Go</a>, with the capital <strong>G</strong>.<br>
+Not a very clever name from a search engine company, if you ask me, but that&#39;s probably the only bad thing you will hear about it.</p>
+
+<blockquote>
+<p><strong>Hint:</strong> use the word <code class="inline-code">golang</code> to search on Google</p>
+</blockquote>
+
+<h2>A brief introduction</h2>
+
+<p>Created inside Google by <a href="http://en.wikipedia.org/wiki/Ken_Thompson" title="Ken Thompson">Ken Thompson</a> and <a href="http://en.wikipedia.org/wiki/Rob_Pike" title="Rob Pike">Rob Pike</a>, fathers of Unix and UTF-8, to overcome the limitations of C++ (compile times being the most annoying), Go is a <em>concurrent</em>, <em>garbage-collected</em> language with <em>fast compilation</em>.  </p>
+
+<p>Its real strength is just simplicity.<br>
+As Rob Pike once said, <a href="http://commandcenter.blogspot.it/2012/06/less-is-exponentially-more.html">less is exponentially more</a> and I strongly agree with him.   </p>
+
+<h3>Features</h3>
+
+<ul>
+<li>blazing fast compilation speed</li>
+<li>statically compiled binaries (the result is a single binary with no external dependencies)</li>
+<li>type safe, statically typed with some type inference support. More errors get caught at compile time, less time is spent debugging</li>
+<li><a href="http://talks.golang.org/2012/splash.article#TOC_14.">garbage collected</a> with support for pointers, but no pointer arithmetics (for safety and good health of programmers minds).</li>
+<li>strict compiler: <a href="http://golang.org/doc/effective_go.html#blank_unused">you can&#39;t declare a variable or import a package without using it</a></li>
+<li>concurrency and parallelism through <a href="http://golang.org/doc/effective_go.html#goroutines">goroutines</a>. Goroutines are one of the peculiarities of Go, they are a cheap, lightweight construct built on top of threads, that run concurrently with other goroutines. If you have more than one core processor, they also run in parallel, in a completely transparent way for the programmer. Communication is managed sending messages through <a href="http://golang.org/doc/effective_go.html#channels">channels</a> which are basically type safe queues. </li>
+<li>Object orientation but <strong>no</strong> classes. Any type can be an object.</li>
+<li><strong>No type inheritance</strong> in favour of <em><a href="http://talks.golang.org/2012/splash.article#TOC_15.">composition</a></em> and <em><a href="http://en.wikipedia.org/wiki/Duck_typing">duck typing</a></em>. IS-A relationships are banned!</li>
+<li><a href="http://golang.org/doc/effective_go.html#multiple-returns">multiple return values</a></li>
+<li><a href="http://golang.org/pkg/">rich</a> standard library.</li>
+<li>a powerful set of <a href="http://golang.org/doc/cmd">command line tools</a> including one to <a href="http://golang.org/cmd/gofmt/">enforce coding conventions</a> and one for <a href="http://blog.golang.org/godoc-documenting-go-code">automatic code documentation</a>.<br>
+Many IDE that support Go, launch <code class="inline-code">gofmt</code> just before save, to ensure that every Go file obey the rules.</li>
+<li>last, but not least, cross compiling. Go compiler can create binaries for platforms/architectures different from the one it is running, provided <a href="http://golang.org/doc/install#requirements">the platform is supported</a>. </li>
+</ul>
+
+<h3>Installing Go</h3>
+
+<p>You can download Go from the <a href="https://golang.org">golang.org website</a>.<br>
+There are packages for many different platforms (Linux, Windows, Mac OS, BSD) and architectures (x86, x64, ARM).<br>
+Detailed instructions can be found <a href="http://golang.org/doc/install">here</a>.</p>
+
+<p>Basically you need to create two environment variables:</p>
+
+<ul>
+<li><code class="inline-code">GOROOT</code> which is the system wide Go root folder (it should be
+configured automatically by the installer)<br></li>
+<li><code class="inline-code">GOPATH</code> that will
+contain all your code and all the packages you are going to install</li>
+<li>it is optional, but recommended, to add <code class="inline-code">$GOPATH/bin</code> to the <code class="inline-code">$PATH</code> variable </li>
+</ul>
+
+<h3>First steps and getting help</h3>
+
+<p>You should now have a working installation of the Go development environment, but if you come from Ruby or Python, you might get lost while reading someone else&#39;s code or trying to figure out which is the idiomatic way to solve a problem in Go.<br>
+No worries, Go has an answer for that too.<br>
+Included in the package there is <a href="http://godoc.org/code.google.com/p/go.tools/cmd/godoc">godoc</a>.<br>
+When launched with the <code class="inline-code">-http</code> param, godoc act as a web server that present the documentation in form of web pages.<br>
+This is a typical godoc summoning ritual</p>
+<div class="highlight"><pre><code class="bash"><a name="line-1"></a><span class="nv">$ </span>godoc -http<span class="o">=</span>:60666
+<a name="line-2"></a><span class="nv">$ </span>open http://localhost:60666
+</code></pre></div>
+<p>My advice is to read carefully <a href="http://golang.org/doc/code.html">How to write Go code</a> and <a href="http://golang.org/doc/effective_go.html">Effective Go</a> before starting writing Go code.<br>
+Go does not provide REPL, but you can try your snippets in the <a href="http://play.golang.org/">Playground</a>.</p>
+
+<blockquote>
+<p><strong>NOTE:</strong> every package you install with the go tool or write by yourself, will update the documentation as well.  </p>
+</blockquote>
+
+<h2>SHUT UP! SHOW US THE CODE!</h2>
+
+<p>Ok!</p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="kn">package</span> <span class="nx">main</span>
+<a name="line-2"></a>
+<a name="line-3"></a><span class="kn">import</span> <span class="p">(</span>
+<a name="line-4"></a>    <span class="s">&quot;fmt&quot;</span>
+<a name="line-5"></a>    <span class="s">&quot;net/http&quot;</span>
+<a name="line-6"></a><span class="p">)</span>
+<a name="line-7"></a>
+<a name="line-8"></a><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+<a name="line-9"></a>
+<a name="line-10"></a>    <span class="nx">http</span><span class="p">.</span><span class="nx">HandleFunc</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+<a name="line-11"></a>        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&quot;Hello World!&quot;</span><span class="p">)</span>
+<a name="line-12"></a>    <span class="p">})</span>
+<a name="line-13"></a>
+<a name="line-14"></a>    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Server running at http://localhost:8080/&quot;</span><span class="p">)</span>
+<a name="line-15"></a>    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;hit CTRL+C to shut it down&quot;</span><span class="p">)</span>
+<a name="line-16"></a>    <span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:8080&quot;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<a name="line-17"></a><span class="p">}</span>
+</code></pre></div>
+<p>This is our first Go program.<br>
+Every client that connects to localhost, port 8080, will receive the <em>&quot;Hello World!&quot;</em> message.<br>
+The example looks a lot like the <em>Node.js</em> <a href="http://nodejs.org/about/">hello world web serve example</a>, but unlike <em>Node.js</em>, this code is already multithreaded. Every new client is served by a <code class="inline-code">goroutine</code>, that the <code class="inline-code">net/http</code> starts behind the scenes, taking advantage of concurrency and multiple cores, if present.<br>
+Talking about simplicity, is there anything simpler than that?  </p>
+
+<blockquote>
+<p><strong>Note:</strong> To run the code you have to save it in a file and then execute <code class="inline-code">go run <filename></code> from the console  </p>
+</blockquote>
+
+<p>Let&#39;s explore  the code above in more detail:</p>
+
+<h3>Packages and imports</h3>
+
+<p>The first statement in a Go program must always be</p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="kn">package</span> <span class="nx">name</span>
+</code></pre></div>
+<p>Executable packages have to reside in a package called <strong><em>main</em></strong>.<br>
+The entry point function is called <strong><em>main</em></strong> as well.  </p>
+
+<p>Next we find the import section, you can import packages by declaring your intentions with the <strong><em>import</em></strong> directive.<br>
+This is the first Go idiom we encounter: <em>statement grouping</em>.<br>
+You can import packages (or declare variables) one per line, like in</p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="kn">import</span> <span class="s">&quot;fmt&quot;</span>
+<a name="line-2"></a><span class="kn">import</span> <span class="s">&quot;net/http&quot;</span>
+</code></pre></div>
+<p>or you can group them together, surrounding the imports with parenthesis, like in our example.</p>
+
+<h3>Variables and type inference</h3>
+
+<p>Variables are declared <em>name first, then type</em>.<br>
+If you <em>declare and assign</em>, you can let the compiler infere the type.  </p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="c1">// when variables are declared without assignment, Go assign them a default value:</span>
+<a name="line-2"></a><span class="c1">// zero for numbers, empty string for strings, nil for pointers and nullable types</span>
+<a name="line-3"></a><span class="kd">var</span> <span class="nx">a</span> <span class="kt">string</span>
+<a name="line-4"></a><span class="kd">var</span> <span class="nx">b</span> <span class="kt">int</span>
+<a name="line-5"></a>
+<a name="line-6"></a><span class="c1">// type inference</span>
+<a name="line-7"></a><span class="nx">c</span> <span class="o">:=</span> <span class="s">&quot;Hello, Wolrd!&quot;</span>  <span class="c1">// := operator is available only inside function body</span>
+<a name="line-8"></a><span class="kd">var</span> <span class="nx">s</span> <span class="p">=</span> <span class="s">&quot;a string&quot;</span>    <span class="c1">// this pattern is available outside functions</span>
+</code></pre></div>
+<p>Of course <em>statement grouping</em> is available too</p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="kd">var</span> <span class="p">(</span>
+<a name="line-2"></a>    <span class="nx">s</span> <span class="kt">string</span>
+<a name="line-3"></a>    <span class="nx">i</span> <span class="kt">int</span>
+<a name="line-4"></a>    <span class="nx">f</span> <span class="kt">float64</span>
+<a name="line-5"></a><span class="p">)</span>
+</code></pre></div>
+<p>Don&#39;t worry about lining up the elements between the brackets, <code class="inline-code">gofmt</code> will take care of it for you.  </p>
+
+<h3>Anonymous functions and OO</h3>
+
+<p>Go support <a href="http://golang.org/ref/spec#Function_literals">anonymous functions</a> and high order functions.<br>
+Functions are first class citizens in Go and can be assigned and carried around like regular variables.</p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="nx">log</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+<a name="line-2"></a>    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;[%s] %s&quot;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">(),</span> <span class="nx">s</span><span class="p">)</span>
+<a name="line-3"></a><span class="p">}</span>
+<a name="line-4"></a>
+<a name="line-5"></a><span class="nx">log</span><span class="p">(</span><span class="s">&quot;Hello World!&quot;</span><span class="p">)</span>
+<a name="line-6"></a>
+<a name="line-7"></a><span class="c1">// sample output</span>
+<a name="line-8"></a><span class="c1">// [2009-11-10 23:00:00 +0000 UTC] Hello World!</span>
+<a name="line-9"></a>
+<a name="line-10"></a><span class="c1">// a more complex example</span>
+<a name="line-11"></a>
+<a name="line-12"></a><span class="kd">type</span> <span class="nx">logLevel</span> <span class="kt">string</span> 
+<a name="line-13"></a><span class="kd">type</span> <span class="nx">logger</span> <span class="kd">func</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span> <span class="c1">// create a new type for a function that takes a string as input </span>
+<a name="line-14"></a>
+<a name="line-15"></a><span class="nx">getLogger</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">l</span> <span class="nx">logLevel</span><span class="p">)</span> <span class="nx">logger</span> <span class="p">{</span>
+<a name="line-16"></a>    <span class="k">return</span> <span class="kd">func</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+<a name="line-17"></a>        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;[%s] %s: %s\n&quot;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">(),</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+<a name="line-18"></a>    <span class="p">}</span>
+<a name="line-19"></a><span class="p">}</span>
+<a name="line-20"></a>
+<a name="line-21"></a><span class="nx">err</span> <span class="o">:=</span> <span class="nx">getLogger</span><span class="p">(</span><span class="s">&quot;Err&quot;</span><span class="p">)</span>
+<a name="line-22"></a><span class="nx">warn</span> <span class="o">:=</span> <span class="nx">getLogger</span><span class="p">(</span><span class="s">&quot;Warn&quot;</span><span class="p">)</span>
+<a name="line-23"></a><span class="nx">info</span> <span class="o">:=</span> <span class="nx">getLogger</span><span class="p">(</span><span class="s">&quot;Info&quot;</span><span class="p">)</span>
+<a name="line-24"></a>
+<a name="line-25"></a><span class="nx">err</span><span class="p">(</span><span class="s">&quot;File not found&quot;</span><span class="p">)</span>
+<a name="line-26"></a><span class="nx">warn</span><span class="p">(</span><span class="s">&quot;Timezone is not set&quot;</span><span class="p">)</span>
+<a name="line-27"></a><span class="nx">info</span><span class="p">(</span><span class="s">&quot;loggin&#39; some stuff&quot;</span><span class="p">)</span>
+<a name="line-28"></a>
+<a name="line-29"></a><span class="c1">// sample output</span>
+<a name="line-30"></a><span class="c1">// [2009-11-10 23:00:00 +0000 UTC] Err: File not found</span>
+<a name="line-31"></a><span class="c1">// [2009-11-10 23:00:00 +0000 UTC] Warn: Timezone is not set</span>
+<a name="line-32"></a><span class="c1">// [2009-11-10 23:00:00 +0000 UTC] Info: loggin&#39; some stuff</span>
+</code></pre></div>
+<p>Let&#39;s now improve our web server with new functionalities.<br>
+We want to send out an <code class="inline-code">X-Powered-By</code> header with the name of our web server.<br>
+What we need to do is define a new <strong><em>type</em></strong> that  act as handler for the requests and will append the new header to the default set of headers.<br>
+In Go, an http handler is any object that implements the Handler&#39;s <em>interface</em>, and the Handler&#39;s <em>interface</em> contains only one method: <code class="inline-code">ServeHTTP</code>.<br>
+So we are going to create a new object that implements the <code class="inline-code">ServeHTTP</code> method and pass it to <code class="inline-code">ListenAndServe</code>.<br>
+Instead of classes, Go uses <strong>structs</strong>.<br>
+In this case it is an empty struct, but it can contain any other type as member variables (more on this later).</p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="c1">// declare the new type Middleware.</span>
+<a name="line-2"></a><span class="c1">// Note: the type can be literally **any** type</span>
+<a name="line-3"></a><span class="c1">// type seq []int is a perfectly legal declaration</span>
+<a name="line-4"></a><span class="c1">// it creates a new type (not an alias) seq that represents a slice of ints</span>
+<a name="line-5"></a><span class="kd">type</span> <span class="nx">Middleware</span> <span class="kd">struct</span> <span class="p">{</span>
+<a name="line-6"></a><span class="p">}</span>
+<a name="line-7"></a>
+<a name="line-8"></a><span class="c1">// implements the ServeHTTP method as requested by Handler&#39;s interface</span>
+<a name="line-9"></a><span class="c1">// notice the syntax: </span>
+<a name="line-10"></a><span class="c1">// after the keyword func we declare the type that the method will be attached to </span>
+<a name="line-11"></a><span class="c1">// and then we pass a parameter m that represents our instance variable</span>
+<a name="line-12"></a><span class="c1">// in a very similar way to Python&#39;s self</span>
+<a name="line-13"></a><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Middleware</span><span class="p">)</span> <span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+<a name="line-14"></a>    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Request to %s is being handled by our middleware\n&quot;</span><span class="p">,</span> <span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">)</span>
+<a name="line-15"></a>    <span class="nx">w</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;X-Powered-By&quot;</span><span class="p">,</span> <span class="s">&quot;mikamai-web-server&quot;</span><span class="p">)</span>
+<a name="line-16"></a><span class="p">}</span>
+<a name="line-17"></a>
+<a name="line-18"></a><span class="c1">// initialize and return a new object literal of type Middleware</span>
+<a name="line-19"></a><span class="c1">// in Go we also declare the return type, after the parameters of the function</span>
+<a name="line-20"></a><span class="c1">// in this case a pointer, denoted by the *, to Middleware type</span>
+<a name="line-21"></a><span class="kd">func</span> <span class="nx">NewMiddleware</span><span class="p">()</span> <span class="o">*</span><span class="nx">Middleware</span> <span class="p">{</span>
+<a name="line-22"></a>    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">Middleware</span><span class="p">{}</span>
+<a name="line-23"></a><span class="p">}</span>
+</code></pre></div>
+<p>We now pass the new handler to the listener</p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:8080&quot;</span><span class="p">,</span> <span class="nx">NewMiddleware</span><span class="p">())</span>
+</code></pre></div>
+<p>Every time a client connects, it doesn&#39;t receive any message back, except for the new header.<br>
+<img src="http://31.media.tumblr.com/83ea05b44971684313f8d6d1c535b2d9/tumblr_mvhrpwaNvX1rhmakfo1_r1_500.png" alt="X-Powered-By mikamai"></p>
+
+<p>Nice, but not very interesting, plus we lost the ability to serve the content to the client, cause 
+the handler function we declared before is not getting called.<br>
+How can we fix that?<br>
+Before explaining how to forward the call to the default handler, we&#39;re going to modify our middleware
+to do something different.<br>
+In addition to adding the header with the artist&#39;s signature, we want to limit the ability to visit 
+our web site through one and only one specified host.  </p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="c1">// we expand our middleware to contain the definition of the single allowed host</span>
+<a name="line-2"></a><span class="kd">type</span> <span class="nx">Middleware</span> <span class="kd">struct</span> <span class="p">{</span>
+<a name="line-3"></a>    <span class="nx">allowedHost</span> <span class="kt">string</span>
+<a name="line-4"></a><span class="p">}</span>
+<a name="line-5"></a>
+<a name="line-6"></a><span class="c1">// we modify the initializer function (our constructor) as well</span>
+<a name="line-7"></a><span class="kd">func</span> <span class="nx">NewMiddleware</span><span class="p">(</span><span class="nx">host</span> <span class="kt">string</span><span class="p">)</span> <span class="o">*</span><span class="nx">Middleware</span> <span class="p">{</span>
+<a name="line-8"></a>    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">Middleware</span><span class="p">{</span>
+<a name="line-9"></a>        <span class="nx">allowedHost</span><span class="p">:</span> <span class="nx">host</span><span class="p">,</span> <span class="c1">// trailing comma is required by Go compiler</span>
+<a name="line-10"></a>    <span class="p">}</span>
+<a name="line-11"></a><span class="p">}</span>
+</code></pre></div>
+<p>Rewrite <code class="inline-code">ServeHTTP</code> to check for the host validity</p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Middleware</span><span class="p">)</span> <span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+<a name="line-2"></a>
+<a name="line-3"></a>    <span class="c1">// strip the port from hostname</span>
+<a name="line-4"></a>    <span class="nx">host</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">Split</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Host</span><span class="p">,</span> <span class="s">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">// import &quot;strings&quot; in order to use Split</span>
+<a name="line-5"></a>
+<a name="line-6"></a>    <span class="c1">// the signature is sent anyway</span>
+<a name="line-7"></a>    <span class="nx">w</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;X-Powered-By&quot;</span><span class="p">,</span> <span class="s">&quot;mikamai-web-server&quot;</span><span class="p">)</span>
+<a name="line-8"></a>
+<a name="line-9"></a>    <span class="k">if</span> <span class="nx">host</span> <span class="o">==</span> <span class="nx">m</span><span class="p">.</span><span class="nx">allowedHost</span> <span class="p">{</span>
+<a name="line-10"></a>        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Request for host %s is being handled by our middleware\n&quot;</span><span class="p">,</span> <span class="nx">host</span><span class="p">)</span>
+<a name="line-11"></a>
+<a name="line-12"></a>        <span class="c1">// net/http has a default handler called DefaultServerMux</span>
+<a name="line-13"></a>        <span class="c1">// we feeded it with an handler for &quot;/&quot; in the first example</span>
+<a name="line-14"></a>        <span class="c1">// forward the call to the default handler and send &quot;Hello World!&quot; to the client</span>
+<a name="line-15"></a>        <span class="nx">http</span><span class="p">.</span><span class="nx">DefaultServeMux</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+<a name="line-16"></a>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<a name="line-17"></a>        <span class="c1">// request is denied, wrong hostname</span>
+<a name="line-18"></a>        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Request for host %s is strictly forbidden by our middleware\n&quot;</span><span class="p">,</span> <span class="nx">host</span><span class="p">)</span>
+<a name="line-19"></a>
+<a name="line-20"></a>        <span class="c1">// order is important.If we send data before the header, the server assumes the return code is 200 OK</span>
+<a name="line-21"></a>        <span class="nx">w</span><span class="p">.</span><span class="nx">WriteHeader</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
+<a name="line-22"></a>        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&quot;&lt;h1&gt;Forbidden&lt;/h1&gt;you don&#39;t have permission to access host %s&quot;</span><span class="p">,</span> <span class="nx">host</span><span class="p">)</span>
+<a name="line-23"></a>    <span class="p">}</span>
+<a name="line-24"></a><span class="p">}</span>
+</code></pre></div>
+<p>update the handler&#39;s initialization</p>
+<div class="highlight"><pre><code class="go"><a name="line-1"></a><span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:8080&quot;</span><span class="p">,</span> <span class="nx">NewMiddleware</span><span class="p">(</span><span class="s">&quot;localhost&quot;</span><span class="p">))</span>
+</code></pre></div>
+<p>et voilà</p>
+
+<p><img src="http://24.media.tumblr.com/aedc0f5dd849aae18ef022f7d10f3dad/tumblr_mvhrpwaNvX1rhmakfo2_r1_1280.png" alt="access denied">  </p>
+
+<hr>
+
+<p><img src="http://31.media.tumblr.com/d3cd5cabdc9bb2a83f12923093d6581f/tumblr_mvhrpwaNvX1rhmakfo3_r1_1280.png" alt="access granted"></p>
+
+<hr>
+
+<p><img src="http://25.media.tumblr.com/a472850a96238d71194c7fbb23909ae7/tumblr_mvhrpwaNvX1rhmakfo4_r2_1280.png" alt="console output"></p>
+
+<p>All the code presented in this article can be downlaoded from <a href="https://gist.github.com/wstucco/7248624">github</a></p>
+
+	</div>
+	<div class='small post-meta'>posted in <a href="http://dev.mikamai.com/post/65984358855/i-tried-go-and-i-liked-it">MIKAMAYHEM</a> on Monday, 4 November 2013</div>
+</article>
+
+
+      </section>
+      <footer>
+        <p class="view">                    
+          <img src="/assets/images/GitHub-Mark-32px.png" alt="" class="github-logo">
+          <a href="https://github.com/wstucco">my GitHub profile</a>
+        </p>
+      </footer>
+    </div>
+    <script src="/assets/javascripts/scale.fix.js"></script>
+    
+		<script type="text/javascript">
+
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-1218157-1']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+
+		</script>    
+  </body>
+</html>
