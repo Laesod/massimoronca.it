@@ -1,0 +1,19 @@
+{{ partial "header.html" . }}
+
+  <section>
+    <article>
+      <h2 class="tag-title">
+        <i class="fa fa-tags large"></i>
+        <span class="tag">{{ .Title }}</span>
+      </h2>
+    </article>
+
+    {{ $data := .Data }}
+    {{ range $key, $value := $data.Terms }}
+      <li><a href="{{ $data.Plural }}/{{ $key | urlize }}.html">{{ $key }}</a></li>
+    {{ end }}
+
+  </section>
+
+{{ partial "footer.html" . }}
+
