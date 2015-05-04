@@ -1,7 +1,7 @@
 ---
 title: Writing a Brainfuck interpreter in Elixir, part two
 date: "2014-11-10"
-description: This is the second in a series of articles on building a brainfuck interpreter in Elixir. In <a href="/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html">the first part</a> we built a minimal brainfuck interpreter that can already run some basic program. In this second part we'll finish it implementing loop handling.
+description: This is the second in a series of articles on building a brainfuck interpreter in Elixir. In <a href="/2014/10/15/writing-a-brainfuck-interpreter-in-elixir-part-one.html#content">the first part</a> we built a minimal brainfuck interpreter that can already run some basic program. In this second part we'll finish it implementing loop handling.
 source_name: MIKAMAYHEM
 source_url: http://dev.mikamai.com/post/102283561929/elixir-as-a-parsing-tool-writing-a-brainfuck
 tags:
@@ -15,7 +15,7 @@ tags:
 
 > This is the second in a series of articles on building a brainfuck interpreter in Elixir
 
-In the [first part](http://dev.mikamai.com/post/100075543414/elixir-as-a-parsing-tool-writing-a-brainfuck) we built a minimal brainfuck interpreter that can already run some basic program.
+In the [first part](/2014/10/15/writing-a-brainfuck-interpreter-in-elixir-part-one.html#content) we built a minimal brainfuck interpreter that can already run some basic program.
 For example
 
 ```brainfuck
