@@ -19,8 +19,8 @@
 
 &lt;blockquote&gt;
 &lt;p&gt;This is the third in a series of articles on building a brainfuck interpreter in Elixir.&lt;br /&gt;
-In the &lt;a href=&#34;http://massimoronca.it/2014/10/15/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-one.html&#34;&gt;first one&lt;/a&gt; we built a minimal brainfuck interpreter that could understand the basic instructions.&lt;br /&gt;
-In &lt;a href=&#34;http://massimoronca.it/2014/11/10/elixir-as-a-pasring-tool-writing-a-brainfuck-interpreter-part-two.html&#34;&gt;the second&lt;/a&gt;, we completed it by implementing loops.&lt;br /&gt;
+In the &lt;a href=&#34;http://massimoronca.it/2014/10/15/writing-a-brainfuck-interpreter-in-elixir-part-one.html#content&#34;&gt;first one&lt;/a&gt; we built a minimal brainfuck interpreter that could understand the basic instructions.&lt;br /&gt;
+In &lt;a href=&#34;http://massimoronca.it/2014/11/10/writing-a-brainfuck-interpreter-in-elixir-part-two.html#content&#34;&gt;the second&lt;/a&gt;, we completed it by implementing loops.&lt;br /&gt;
 In this third episode we&amp;rsquo;ll write a simple compiler to translate Brainfuck instructions to a machine readable intermediate format (AST) and a VM that executes it.&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -197,7 +197,7 @@ To run the tests use &lt;code&gt;mix test&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;This is the second in a series of articles on building a brainfuck interpreter in Elixir&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;In the &lt;a href=&#34;http://dev.mikamai.com/post/100075543414/elixir-as-a-parsing-tool-writing-a-brainfuck&#34;&gt;first part&lt;/a&gt; we built a minimal brainfuck interpreter that can already run some basic program.
+&lt;p&gt;In the &lt;a href=&#34;http://massimoronca.it/2014/10/15/writing-a-brainfuck-interpreter-in-elixir-part-one.html#content&#34;&gt;first part&lt;/a&gt; we built a minimal brainfuck interpreter that can already run some basic program.
 For example&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-brainfuck&#34;&gt;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.

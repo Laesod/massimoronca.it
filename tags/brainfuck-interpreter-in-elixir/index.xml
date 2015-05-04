@@ -21,7 +21,7 @@
 &lt;p&gt;This is the second in a series of articles on building a brainfuck interpreter in Elixir&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;In the &lt;a href=&#34;http://dev.mikamai.com/post/100075543414/elixir-as-a-parsing-tool-writing-a-brainfuck&#34;&gt;first part&lt;/a&gt; we built a minimal brainfuck interpreter that can already run some basic program.
+&lt;p&gt;In the &lt;a href=&#34;http://massimoronca.it/2014/10/15/writing-a-brainfuck-interpreter-in-elixir-part-one.html#content&#34;&gt;first part&lt;/a&gt; we built a minimal brainfuck interpreter that can already run some basic program.
 For example&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-brainfuck&#34;&gt;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
