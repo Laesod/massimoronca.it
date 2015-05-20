@@ -10,11 +10,11 @@
     <atom:link href="http://massimoronca.it/tags/custom-drush-commands.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Writing custom commands for Drush: the Drupal swiss army knife.</title>
-      <link>http://massimoronca.it/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife..html</link>
+      <title>Writing custom commands for Drush: the Drupal swiss army knife</title>
+      <link>http://massimoronca.it/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife.html</link>
       <pubDate>Wed, 14 May 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://massimoronca.it/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife..html</guid>
+      <guid>http://massimoronca.it/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife.html</guid>
       <description>&lt;p&gt;Recently I worked on a client project based on the Drupal platform.&lt;br /&gt;
 The most important part of the job was automating a data import from a remote source, but instead of writing a script to do the job, I created a command for &lt;a href=&#34;https://github.com/drush-ops/drush&#34;&gt;Drush&lt;/a&gt;.
 Quoting from Drush repository site&lt;/p&gt;
