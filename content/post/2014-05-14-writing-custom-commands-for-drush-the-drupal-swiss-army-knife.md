@@ -1,5 +1,5 @@
 ---
-title: "Writing custom commands for Drush: the Drupal swiss army knife."
+title: "Writing custom commands for Drush: the Drupal swiss army knife"
 date: "2014-05-14"
 description: Recently I worked on a client project based on the Drupal platform. The most important part of the job was automating a data import from a remote source, but instead of writing a script to do the job, I created a command for Drush.
 source_name: MIKAMAYHEM
