@@ -10,6 +10,9 @@ tags:
 - brainfuck compiler
 - brainfuck compiler in Elixir
 - parsing in Elixir
+- functional programming
+- functional programming language
+
 ---
 
 > This is the third in a series of articles on building a brainfuck interpreter in Elixir.  
