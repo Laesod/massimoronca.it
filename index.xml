@@ -6,8 +6,313 @@
     <description>Recent content on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 05 Jun 2015 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://massimoronca.it/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Meteor and Kendo UI integration guide</title>
+      <link>http://massimoronca.it/2015/06/05/meteor-and-kendo-ui-integration-guide.html</link>
+      <pubDate>Fri, 05 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/06/05/meteor-and-kendo-ui-integration-guide.html</guid>
+      <description>&lt;p&gt;At the end of last year I&amp;rsquo;ve been involved in a testdrive project aimed to explore the possibility of replacing good old desktop applications with modern web applications, a demanding task, but nonetheless a fun one.&lt;/p&gt;
+
+&lt;p&gt;The client gave me complete freedom to chose whatever technology I wanted, except for some key elements, one of them was &lt;a href=&#34;http://www.telerik.com/kendo-ui&#34; title=&#34;Kendo UI&#34;&gt;Kendo UI&lt;/a&gt;, a widget library they had been testing for a while with an impressive &lt;a href=&#34;http://www.telerik.com/kendo-ui#more-widgets&#34; title=&#34;Kend UI widgets&#34;&gt;list of features and components&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;On my side I&amp;rsquo;ve decided to put &lt;a href=&#34;http://meteor.com&#34; title=&#34;Meteor&#34;&gt;Meteor&lt;/a&gt; on test, I confess, I&amp;rsquo;m not the biggest Javascript fan around, but I&amp;rsquo;ve rarely felt so confident with a new platform like I&amp;rsquo;ve been with Meteor, so I went for it.&lt;br /&gt;
+The biggest advantage Meteor gave us was speed, we&amp;rsquo;ve been able to put together an incredible (IMHO) amount of work in a very short period of time.&lt;/p&gt;
+
+&lt;p&gt;Long story short: the project was a success, everything was good, we also had the opportunity to experiment on the infrastructure side, and I&amp;rsquo;ve learned a lot in those few months, about things I could never have accessed otherwise.&lt;/p&gt;
+
+&lt;p&gt;There was only one small glitch that constantly bugged me: the integration between Meteor and Kendo, especially in regards to reactivity.&lt;/p&gt;
+
+&lt;p&gt;Meteor might not be the &lt;em&gt;new kid on the block&lt;/em&gt; anymore, but it&amp;rsquo;s not the &lt;a href=&#34;http://en.wikipedia.org/wiki/Spring_Framework&#34; title=&#34;Spring MVC&#34;&gt;well established framework&lt;/a&gt; either: there was no official Telerik package for Meteor, and I had to roll my own, learning by doing.&lt;/p&gt;
+
+&lt;p&gt;I don&amp;rsquo;t know wheter Telerik listened to my prayers or not, but on february of this year they released a bunch of &lt;a href=&#34;https://atmospherejs.com/telerik&#34;&gt;packages on Atmoshpere&lt;/a&gt;, making things easier for everyone, including me, so I decided to write this simple guide.&lt;/p&gt;
+
+&lt;p&gt;The Telerik packages differ from each other only in the default theme used, the set of bundled components is the same, you can find the complete list on &lt;a href=&#34;https://github.com/telerik/kendo-ui-core&#34; title=&#34;Kendo UI Core&#34;&gt;their github project page&lt;/a&gt;, although they included only the open source version of the components, this guide applies to the paid version as well.&lt;/p&gt;
+
+&lt;p&gt;We are going to build a simple applications that shows a list of tweets for a particular location (in this example the city of Milan).&lt;br /&gt;
+Let&amp;rsquo;s start by creating a new empty application and configure the packages&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
+$ meteor create telerik-demo
+$ cd telerik-demo
+
+# disable autopublish, we don&#39;t want to publish all the tweets, but only the
+# 30 most recent
+# disable insecure too, but it&#39;s not required
+$ meteor remove autopublish insecure
+
+# add official momentjs
+$ meteor add momentjs:moment
+# add twitter library
+$ meteor add mrt:twit  
+# add telerik components 
+# choose your favourite theme
+# if you install the bootstrap theme, bootstrap CSS framework is included too
+$ meteor add telerik:kendo-ui-core-material-theme
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Open &lt;code&gt;telerik-dom.js&lt;/code&gt;, the core application code, and add the declaration of our collection of tweets, making it available to both client and server.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;Tweets = new Mongo.Collection(&#39;tweets&#39;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;then, look for the line &lt;code&gt;if (Meteor.isServer) {&lt;/code&gt;, this is the entry point of the server side app.&lt;br /&gt;
+What we need to do is setup the Twitter library, subscribe on a stream filtering by location and language, and then add every tweet we receive to a collection in our MongoDB instance.&lt;br /&gt;
+You might be tempted to do something like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;Meteor.startup(function () {
+  var t = new TwitMaker({
+    consumer_key:     &#39;...&#39;
+    , consumer_secret:    &#39;...&#39;
+    , access_token:     &#39;...&#39;
+    , access_token_secret:  &#39;...&#39;
+  })
+
+  // I used this tool to get the bounding box coordinates
+  // http://boundingbox.klokantech.com/
+  var milan = [&#39;8.9936308861&#39;,&#39;45.3026233328&#39;,&#39;9.5197601318&#39;,&#39;45.6359571671&#39;]
+  // subscribe to tweets from Milan in Italian
+  var stream = t.stream(&#39;statuses/filter&#39;, {locations: milan, language: &#39;it&#39;})
+
+  // listen and wait
+  stream.on(&#39;tweet&#39;, function (tweet) {
+    Tweets.insert(tweet);
+  );
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Aaaand you would be wrong…&lt;br /&gt;
+If you do this, Meteor will exit with the error &lt;code&gt;Meteor code must always run within a Fiber&lt;/code&gt;.&lt;br /&gt;
+The problem is that the code that inserts the new tweets is executed asynchronously, outside the Meteor Fiber, so you need to provide Meteor the right environment in which to run. The esiest way is to wrap the callback inside a &lt;code&gt;Meteor.bindEnvironment&lt;/code&gt; call, like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;  stream.on(&#39;tweet&#39;, Meteor.bindEnvironment(function (tweet) {
+    Tweets.insert(tweet);
+  }, function () {
+    console.log(&#39;Failed to bind environment&#39;);
+  }));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Don&amp;rsquo;t forget to publish your tweets, to be correct, the 30 most recent tweets.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;Meteor.publish(&#39;latest_tweets&#39;, function() {
+  return Tweets.find({}, {sort: {timestamp_ms: -1}, limit: 30});
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now that we have a working Twitter scraper, let&amp;rsquo;s work on the frontend:
+open &lt;code&gt;telerik-demo.html&lt;/code&gt; and replace its content with this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;
+&amp;lt;head&amp;gt;
+  &amp;lt;title&amp;gt;twitter&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+
+&amp;lt;body&amp;gt;
+  {{ &amp;gt; tweets }}
+&amp;lt;/body&amp;gt;
+
+
+&amp;lt;template name=&amp;quot;tweets&amp;quot;&amp;gt;
+  &amp;lt;div id=&amp;quot;tweets&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+  &amp;lt;div id=&amp;quot;pager&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+
+  &amp;lt;script type=&amp;quot;text/x-kendo-tmpl&amp;quot; id=&amp;quot;tweet&amp;quot;&amp;gt;
+    &amp;lt;div class=&amp;quot;tweet&amp;quot; data-twitter-id=&amp;quot;${id}&amp;quot;&amp;gt;
+      &amp;lt;ul&amp;gt;
+        &amp;lt;li&amp;gt;
+          &amp;lt;div class=&amp;quot;user&amp;quot;&amp;gt;
+            &amp;lt;a href=&amp;quot;http://twitter.com/${user.screen_name}&amp;quot; aria-label=&amp;quot;${user.name} (screen name: ${user.screen_name})&amp;quot; data-scribe=&amp;quot;element:user_link&amp;quot;&amp;gt;
+              &amp;lt;img alt=&amp;quot;&amp;quot; src=&amp;quot;${user.profile_image_url}&amp;quot; data-scribe=&amp;quot;element:avatar&amp;quot;&amp;gt;
+              &amp;lt;span&amp;gt;
+                &amp;lt;span data-scribe=&amp;quot;element:name&amp;quot;&amp;gt;${user.name}&amp;lt;/span&amp;gt;
+              &amp;lt;/span&amp;gt;
+              &amp;lt;span data-scribe=&amp;quot;element:screen_name&amp;quot;&amp;gt;@${user.screen_name}&amp;lt;/span&amp;gt;
+            &amp;lt;/a&amp;gt;
+          &amp;lt;/div&amp;gt;
+          &amp;lt;p class=&amp;quot;tweet&amp;quot;&amp;gt;${text}&amp;lt;/p&amp;gt;
+          &amp;lt;p class=&amp;quot;timePosted&amp;quot;&amp;gt;Posted &amp;lt;a title=&amp;quot;#= moment(created_at).format(&#39;dddd, MMMM Do YYYY, h:mm:ss a&#39;) #&amp;quot;&amp;gt;#= moment(created_at).fromNow() #&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
+          &amp;lt;p class=&amp;quot;interact&amp;quot;&amp;gt;${place.full_name}&amp;lt;/p&amp;gt;
+        &amp;lt;/li&amp;gt;
+      &amp;lt;/ul&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/script&amp;gt;
+
+
+&amp;lt;/template&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The code inside the &lt;code&gt;&amp;lt;script type=&amp;quot;text/x-kendo-tmpl&amp;quot;&amp;gt;&lt;/code&gt; is the template code that the Kendo ListView is going to use to render every single item in the list.&lt;br /&gt;
+An explanation of the custom syntax used in Kendo templates is beyond the purpose of this guide, but you can refer to the &lt;a href=&#34;http://docs.telerik.com/kendo-ui/framework/templates/overview&#34;&gt;Telerik official documentation&lt;/a&gt;, it&amp;rsquo;s really easy.&lt;/p&gt;
+
+&lt;p&gt;Now back to &lt;code&gt;telerik-demo.js&lt;/code&gt;, inside &lt;code&gt;if (Meteor.isClient) { ... }&lt;/code&gt; we subscribe to the publications created above&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;  Meteor.subscribe(&#39;latest_tweets&#39;, function() {
+    console.log(&amp;quot;subscribed to latest tweets&amp;quot;);
+  })
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now taht the channel is open, the server will start to send the data to the client and keep it in sync, automatically.&lt;br /&gt;
+The last step is to bootstrap the Kendo component and display our tweets on the page&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// when the tweets template has done rendering
+Template.tweets.rendered = function() {
+
+  // create the datasource for the listview showing 3 items per page
+  var dataSource = new kendo.data.DataSource({
+    pageSize: 3
+  });
+
+  // initialize the listview with the datasource and the template code
+  $(&#39;#tweets&#39;).kendoListView({
+    dataSource: dataSource,
+    template: kendo.template($(&amp;quot;#tweet&amp;quot;).html())
+  });
+
+  // initialize the pager component
+  $(&#39;#pager&#39;).kendoPager({
+    dataSource: dataSource
+  });
+
+  // this function is run automatically when dependencies change,
+  // in our case when the collection is updated 
+  // (items are changed, added or removed)
+  // Meteor figured out that if we subscribed to a publication, we wanna
+  // be also informed when it changes
+  this.autorun(function() {
+    // we use fetch becase it returns a Json list of all the items 
+    // in the collection, which is one of the formats supported by
+    // Kendo datasource 
+    // this also triggers the rendering of the list view and the pager
+    dataSource.data(Tweets.find({}, {sort: {timestamp_ms: -1}}).fetch()); 
+  });
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And that could be all. If now you launch &lt;code&gt;meteor&lt;/code&gt; inside the project folder and navigate to &lt;code&gt;http://localhost:3000&lt;/code&gt; you should see a list of tweets automatically updating.&lt;br /&gt;
+It&amp;rsquo;s not the best looking app ever, but it works.&lt;br /&gt;
+&lt;img src=&#34;http://i.imgur.com/lXxC3Gg.png&#34; alt=&#34;&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s do something to improve the presentation layer.&lt;br /&gt;
+I&amp;rsquo;m not a great designer, so I grabbed this &lt;a href=&#34;http://codepen.io/nerijusgood/pen/Ggqygo&#34; title=&#34;Twitter custom widget CSS&#34;&gt;Twitter widget customization&lt;/a&gt; from Codepen and copied the relevant bits inside &lt;code&gt;telerik-demo.css&lt;/code&gt;.&lt;br /&gt;
+Next thing I wanted to try is to add a fade-in effect to every new tweets, to make things smoother.&lt;br /&gt;
+I&amp;rsquo;ve created a class that runs an animation inside the CSS and I wanted to attach this class to every new tweet &lt;code&gt;div&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fade-in {
+  animation-duration: 1s;
+  animation-name: fade-in;
+}
+
+/* I removed the prefixed versions of keyframes and animation-* for clarity */
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;My first naive approach relied on &lt;a href=&#34;http://updates.html5rocks.com/2012/02/Detect-DOM-changes-with-Mutation-Observers&#34; title=&#34;Mutation Observers&#34;&gt;Mutation Observers&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;  document.addEventListener(&amp;quot;DOMNodeInserted&amp;quot;, function(event) {
+    if($(event.target).hasClass(&amp;quot;tweet&amp;quot;)) {
+      // a new tweet has been added to the DOM, start fading
+      event.target.classList.add(&#39;fade-in&#39;);
+      console.warn(&amp;quot;Another node has been inserted! &amp;quot;, event, event.target);
+    }
+  }, false);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Only after a few unsuccesfull attempts, where every tweet was being faded, I realized that when you change the &lt;code&gt;data&lt;/code&gt; property of the &lt;code&gt;datasource&lt;/code&gt; component, the current view (so only the current page) is re-rendered completely, making every tweet a &lt;em&gt;new&lt;/em&gt; tweet to the eyes of the poor browser.&lt;br /&gt;
+The solution is simple, I made a diff between the actual data and the new data coming from the server and only added the fade to those tweets that really were new, I used the Twitter &lt;code&gt;id&lt;/code&gt;   attribute as the key.&lt;/p&gt;
+
+&lt;p&gt;update the template with the new Twitter id attribute&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;!-- telerik-demo.html --&amp;gt;
+&amp;lt;script type=&amp;quot;text/x-kendo-tmpl&amp;quot; id=&amp;quot;tweet&amp;quot;&amp;gt;
+    &amp;lt;div class=&amp;quot;tweet&amp;quot; data-twitter-id=&amp;quot;${id}&amp;quot;&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;update the autorun function to compute a diff and apply the fade-in effect
+only to the new tweets&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;this.autorun(function() {
+  var current_values = dataSource.data();
+  var updated_values = Tweets.find({}, {sort: {timestamp_ms: -1}}).fetch();
+  var current_ids = _.map(current_values, function(x) { return x.id; });
+  var updated_ids = _.map(updated_values, function(x) { return x.id; });
+  var diff = _.difference(updated_ids, current_ids);
+
+  // update dataSource and trigger listview render
+  dataSource.data(updated_values);
+  // fade in new nodes
+  _.each(diff, function(x) {
+    $(&#39;div[data-twitter-id=&amp;quot;&#39;  + x + &#39;&amp;quot;&#39;).addClass(&#39;fade-in&#39;);
+  })
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;not strictly required, but advised, remove the fade class when animation ends&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var animationListener = function(event){
+  if (event.animationName == &amp;quot;fade-in&amp;quot;) {
+    console.log(&amp;quot;remove class fade-in from&amp;quot;, event.target);
+    event.target.classList.remove(&#39;fade-in&#39;);
+  }
+}
+document.addEventListener(&amp;quot;animationend&amp;quot;, animationListener, false); 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;much better now
+&lt;img src=&#34;http://i.imgur.com/gr9F232.png&#34; alt=&#34;&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;You can see the application in action &lt;a href=&#34;http://telerik.meteor.com&#34;&gt;here&lt;/a&gt; and find the source code on &lt;a href=&#34;https://github.com/mikamai/telerik-meteor-integration-demo&#34;&gt;Mikamai&amp;rsquo;s Github&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>About cookies</title>
+      <link>http://massimoronca.it/pages/policy.html</link>
+      <pubDate>Tue, 02 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/pages/policy.html</guid>
+      <description>&lt;p&gt;&lt;h3&gt;What are cookies in computers?&lt;/h3&gt;
+    &lt;p&gt;Also known as browser cookies or tracking cookies, cookies are small, often encrypted text files, located in browser directories. They are used by web developers to help users navigate their websites efficiently and perform certain functions. Due to their core role of enhancing/enabling usability or site processes,&amp;nbsp;disabling cookies&amp;nbsp;may prevent users from using certain websites.&lt;/p&gt;
+    &lt;p&gt;Cookies are created when a user&amp;rsquo;s&amp;nbsp;browser&amp;nbsp;loads a particular website. The website sends information to the browser which then creates a text file. Every time the user goes back to the same website, the browser retrieves and sends this file to the website&amp;rsquo;s server. Computer Cookies are created not just by the website the user is browsing but also by other websites that run ads, widgets, or other elements on the page being loaded. These cookies regulate how the ads appear or how the widgets and other elements function on the page.For Managing cookies for different browsers&amp;nbsp;see here&lt;/p&gt;
+    &lt;h3&gt;Standard uses for browser cookies&lt;/h3&gt;
+    &lt;p&gt;Website servers set cookies to help authenticate the user if the user logs in to a secure area of the website. Login information is stored in a cookie so the user can enter and leave the website without having to re-enter the same authentication information over and over.More information&lt;/p&gt;
+    &lt;p&gt;Session Cookies&amp;nbsp;are also used by the server to store information about user page activities so users can easily pick up where they left off on the server&amp;rsquo;s pages. By default, web pages really don&amp;rsquo;t have any &amp;lsquo;memory&amp;rsquo;. Cookies tell the server what pages to show the user so the user doesn&amp;rsquo;t have to remember or start navigating the site all over again. Cookies act as a sort of “bookmark” within the site. Similarly, cookies can store ordering information needed to make shopping carts work instead of forcing the user to remember all the items the user put in the shopping cart.&lt;/p&gt;
+    &lt;p&gt;Persistent or tracking Cookies&amp;nbsp;are also employed to store user preferences. Many websites allow the user to customize how information is presented through site layouts or themes. These changes make the site easier to navigate and/or lets user leave a part of the user&amp;rsquo;s “personality” at the site. For Information on session and persistent and tracking cookies,&amp;nbsp;see here&lt;/p&gt;
+    &lt;h3&gt;Cookie security and privacy issues&lt;/h3&gt;
+    &lt;p&gt;Cookies are NOT viruses. Cookies use a plain text format. They are not compiled pieces of code so they cannot be executed nor are they self-executing. Accordingly, they cannot make copies of themselves and spread to other networks to execute and replicate again. Since they cannot perform these functions, they fall outside the standard virus definition.&lt;/p&gt;
+    &lt;p&gt;Cookies CAN be used for malicious purposes though. Since they store information about a user&amp;rsquo;s browsing preferences and history, both on a specific site and browsing among several sites, cookies can be used to act as a form of spyware. Many&amp;nbsp;anti-spyware&amp;nbsp;products are well aware of this problem and routinely flag cookies as candidates for deletion after standard virus and/or spyware scans.See here for some&amp;nbsp;privacy issues and concerns.&lt;/p&gt;
+    &lt;p&gt;The way responsible and ethical web developers deal with privacy issues caused by cookie tracking is by including&amp;nbsp;clear descriptions of how cookies are deployed on their site.&amp;nbsp;If you are a web developer and need advice on implementation of cookies and a privacy policy, we suggest you contact marketing specialists who offer&amp;nbsp;search engine optimisation services. These privacy policies should explain what kind of information is collected and how the information is used. Organizations using the cookies initiative started by IAB Europe include:&amp;nbsp;InviteMedia&amp;nbsp;Networkadvertising.org&amp;nbsp;: andAntor&lt;/p&gt;
+    &lt;p&gt;Most browsers have built in privacy settings that provide differing levels of cookie acceptance, expiration time, and disposal after a user has visited a particular site. Backing up your computer&amp;nbsp;can give you the peace of mind that your files are safe.&lt;/p&gt;
+    &lt;h3&gt;Other cookie-based threats&lt;/h3&gt;
+    &lt;p&gt;Since identity protection is highly valued and is every internet users right , it pays to be aware of what threat cookies can pose.&lt;/p&gt;
+    &lt;p&gt;As cookies are transmitted back and forth between a browser and website, if an attacker or unauthorized person gets in between the data transmission, the sensitive cookie information can be intercepted. Although relatively rare, this can happen if the browser is connecting to the server using an unencrypted network like an non-secured WiFi channel.Internet security is only attainable if you regualrly use a anti-virus protection programme.See our&amp;nbsp;&lt;a href=&#34;http://www.allaboutcookies.org/security/index.html&#34;&gt;anti virus protection section&lt;/a&gt;.&lt;/p&gt;
+    &lt;p&gt;Other cookie-based attacks involve exploiting faulty cookie-setting systems on servers. If a website doesn&amp;rsquo;t require browsers to use encrypted channels only, attackers can use this vulnerability to trick browsers into sending sensitive information over insecure channels. The attackers then siphon off the sensitive data for unauthorized access purposes.&lt;/p&gt;
+    &lt;p&gt;New Laws for the use of cookies and other technologies that store online user information.&lt;/p&gt;
+    &lt;p&gt;On May 26th 2011, new rules governing the use of cookies by websites comes into force in Europe.&lt;/p&gt;
+    &lt;p&gt;Rather than the &amp;ldquo;Opt out&amp;rdquo; option for website visitors, websites will need to specifically gain the consent of their visitor and they must &amp;ldquo;Opt In&amp;rdquo; to be able to store cookies on their computer or other devices.This is expected to be difficult to manage and enforcement will more than likely be done subtlely and with encouragement rather than with the threat of fines and penaltys.&lt;/p&gt;
+    &lt;p&gt;What does the new law say?&lt;br&gt;The new requirement is essentially that cookies can only be placed&amp;nbsp;&lt;br&gt;on machines where the user or subscriber has given their consent.&amp;nbsp;&lt;br&gt;6 (1) Subject to paragraph (4), a person shall not store or gain&amp;nbsp;&lt;br&gt;access to information stored, in the terminal equipment of a subscriber&amp;nbsp;&lt;br&gt;or user unless the requirements of paragraph (2) are met.&amp;nbsp;&lt;br&gt;(2) The requirements are that the subscriber or user of that terminal&amp;nbsp;&lt;br&gt;equipment&amp;ndash;&amp;nbsp;&lt;br&gt;(a) is provided with clear and comprehensive information about the&amp;nbsp;&lt;br&gt;purposes of the storage of, or access to, that information; and&amp;nbsp;&lt;br&gt;(b) has given his or her consent.&amp;nbsp;&lt;br&gt;(3) Where an electronic communications network is used by the&amp;nbsp;&lt;br&gt;same person to store or access information in the terminal equipment&amp;nbsp;&lt;br&gt;of a subscriber or user on more than one occasion, it is sufficient for the purposes of this regulation that the requirements of paragraph (2)&amp;nbsp;&lt;br&gt;are met in respect of the initial use.&amp;nbsp;&lt;br&gt;“(3A) For the purposes of paragraph (2), consent may be signified by a&amp;nbsp;&lt;br&gt;subscriber who amends or sets controls on the internet browser which&amp;nbsp;&lt;br&gt;the subscriber uses or by using another application or programme to&amp;nbsp;&lt;br&gt;signify consent.&lt;br&gt;(4) Paragraph (1) shall not apply to the technical storage of, or&amp;nbsp;&lt;br&gt;access to, information&amp;ndash;&amp;nbsp;&lt;br&gt;(a) for the sole purpose of carrying out the transmission of a&amp;nbsp;&lt;br&gt;communication over an electronic communications network; or&amp;nbsp;&lt;br&gt;(b) where such storage or access is strictly necessary for the&amp;nbsp;&lt;br&gt;provision of an information society service requested by the subscriber&amp;nbsp;&lt;br&gt;or user.&lt;/p&gt;
+    &lt;h3&gt;Key tips for safe and responsible cookie-based Web browsing&lt;/h3&gt;
+    &lt;p&gt;Due to their flexibility and the fact that many of the largest and most-visited websites use cookies by default, cookies are almost unavoidable. Disabling cookies will lock a user out of many of the most widely-used sites on the Internet like Youtube, Gmail, Yahoo mail, and others. Even search settings require cookies for language settings. Here are some tips you can use to ensure worry-free cookie-based browsing:&lt;/p&gt;
+    &lt;p&gt;Customize your&amp;nbsp;browser&amp;rsquo;s cookie settings&amp;nbsp;to reflect your comfort level with cookie security or use the cookie cleaner included in&amp;nbsp;Abine&amp;rsquo;s free Privacy Suite.&lt;/p&gt;
+    &lt;p&gt;If you are very comfortable with cookies and you are the only person using your computer, you may want to set long expiration time frames for storing your personal access information and browsing history.&lt;/p&gt;
+    &lt;p&gt;If you share access on your computer, you may want to set your browser to clear private browsing data every time you close your browser. While not as secure as rejecting cookies outright, this option lets you access cookie-based websites while deleting any sensitive information after your browsing session.&lt;/p&gt;
+    &lt;p&gt;Install and keep antispyware applications updated&lt;/p&gt;
+    &lt;p&gt;Many spyware detection, cleanup applications, and spyware removers include attack site detection. They block your browser from accessing websites designed to exploit browser vulnerabilities or download malicious software.&lt;/p&gt;
+    &lt;p&gt;Make sure your browser is updated&lt;/p&gt;
+    &lt;p&gt;If you haven&amp;rsquo;t already, set your browser to update automatically. This eliminates security vulnerabilities caused by outdated browsers. Many cookie-based exploits are based on exploiting&amp;nbsp;older browsers&amp;rsquo; security shortcomings.&lt;/p&gt;
+    &lt;p&gt;Cookies are everywhere and can&amp;rsquo;t really be avoided if you wish to enjoy the biggest and best websites out there. With a clear understanding of how they operate and how they help your browsing experience, you can take the necessary security measures to ensure that you browse the Net confidently.&lt;/p&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Bootstap Opal for Meteor</title>
@@ -1628,321 +1933,6 @@ These are the firsts that come to mind:&lt;/p&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;happy coding with &lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;Traffic&lt;/a&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>I tried Go and I liked it</title>
-      <link>http://massimoronca.it/2013/11/04/i-tried-go-and-i-liked-it.html</link>
-      <pubDate>Mon, 04 Nov 2013 00:00:00 +0000</pubDate>
-      
-      <guid>http://massimoronca.it/2013/11/04/i-tried-go-and-i-liked-it.html</guid>
-      <description>
-
-&lt;p&gt;&lt;img src=&#34;http://upload.wikimedia.org/wikipedia/commons/2/23/Golang.png&#34; alt=&#34;Gopher in all of its glory&#34; title=&#34;Gopher&#34; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Say hello to &lt;a href=&#34;http://golang.org/doc/gopher/&#34;&gt;Gopher&lt;/a&gt;.
-Gopher is the mascotte of a new language from &lt;a href=&#34;http://google.com&#34;&gt;Google&lt;/a&gt;, called &lt;a href=&#34;http://golang.org&#34;&gt;Go&lt;/a&gt;, with the capital &lt;strong&gt;G&lt;/strong&gt;.&lt;br /&gt;
-Not a very clever name from a search engine company, if you ask me, but that&amp;rsquo;s probably the only bad thing you will hear about it.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;Hint:&lt;/strong&gt; use the word &lt;code&gt;golang&lt;/code&gt; to search on Google&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&#34;a-brief-introduction:e3f4998492e6f90831033ef66fcf3463&#34;&gt;A brief introduction&lt;/h2&gt;
-
-&lt;p&gt;Created inside Google by &lt;a href=&#34;http://en.wikipedia.org/wiki/Ken_Thompson&#34; title=&#34;Ken Thompson&#34;&gt;Ken Thompson&lt;/a&gt; and &lt;a href=&#34;http://en.wikipedia.org/wiki/Rob_Pike&#34; title=&#34;Rob Pike&#34;&gt;Rob Pike&lt;/a&gt;, fathers of Unix and UTF-8, to overcome the limitations of C++ (compile times being the most annoying), Go is a &lt;em&gt;concurrent&lt;/em&gt;, &lt;em&gt;garbage-collected&lt;/em&gt; language with &lt;em&gt;fast compilation&lt;/em&gt;.&lt;/p&gt;
-
-&lt;p&gt;Its real strength is just simplicity.&lt;br /&gt;
-As Rob Pike once said, &lt;a href=&#34;http://commandcenter.blogspot.it/2012/06/less-is-exponentially-more.html&#34;&gt;less is exponentially more&lt;/a&gt; and I strongly agree with him.&lt;/p&gt;
-
-&lt;h3 id=&#34;features:e3f4998492e6f90831033ef66fcf3463&#34;&gt;Features&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;blazing fast compilation speed&lt;/li&gt;
-&lt;li&gt;statically compiled binaries (the result is a single binary with no external dependencies)&lt;/li&gt;
-&lt;li&gt;type safe, statically typed with some type inference support. More errors get caught at compile time, less time is spent debugging&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://talks.golang.org/2012/splash.article#TOC_14.&#34;&gt;garbage collected&lt;/a&gt; with support for pointers, but no pointer arithmetics (for safety and good health of programmers minds).&lt;/li&gt;
-&lt;li&gt;strict compiler: &lt;a href=&#34;http://golang.org/doc/effective_go.html#blank_unused&#34;&gt;you can&amp;rsquo;t declare a variable or import a package without using it&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;concurrency and parallelism through &lt;a href=&#34;http://golang.org/doc/effective_go.html#goroutines&#34;&gt;goroutines&lt;/a&gt;. Goroutines are one of the peculiarities of Go, they are a cheap, lightweight construct built on top of threads, that run concurrently with other goroutines. If you have more than one core processor, they also run in parallel, in a completely transparent way for the programmer. Communication is managed sending messages through &lt;a href=&#34;http://golang.org/doc/effective_go.html#channels&#34;&gt;channels&lt;/a&gt; which are basically type safe queues.&lt;/li&gt;
-&lt;li&gt;Object orientation but &lt;strong&gt;no&lt;/strong&gt; classes. Any type can be an object.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;No type inheritance&lt;/strong&gt; in favour of &lt;em&gt;&lt;a href=&#34;http://talks.golang.org/2012/splash.article#TOC_15.&#34;&gt;composition&lt;/a&gt;&lt;/em&gt; and &lt;em&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Duck_typing&#34;&gt;duck typing&lt;/a&gt;&lt;/em&gt;. IS-A relationships are banned!&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://golang.org/doc/effective_go.html#multiple-returns&#34;&gt;multiple return values&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://golang.org/pkg/&#34;&gt;rich&lt;/a&gt; standard library.&lt;/li&gt;
-&lt;li&gt;a powerful set of &lt;a href=&#34;http://golang.org/doc/cmd&#34;&gt;command line tools&lt;/a&gt; including one to &lt;a href=&#34;http://golang.org/cmd/gofmt/&#34;&gt;enforce coding conventions&lt;/a&gt; and one for &lt;a href=&#34;http://blog.golang.org/godoc-documenting-go-code&#34;&gt;automatic code documentation&lt;/a&gt;.&lt;br /&gt;
-Many IDE that support Go, launch &lt;code&gt;gofmt&lt;/code&gt; just before save, to ensure that every Go file obey the rules.&lt;/li&gt;
-&lt;li&gt;last, but not least, cross compiling. Go compiler can create binaries for platforms/architectures different from the one it is running, provided &lt;a href=&#34;http://golang.org/doc/install#requirements&#34;&gt;the platform is supported&lt;/a&gt;.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;installing-go:e3f4998492e6f90831033ef66fcf3463&#34;&gt;Installing Go&lt;/h3&gt;
-
-&lt;p&gt;You can download Go from the &lt;a href=&#34;https://golang.org&#34;&gt;golang.org website&lt;/a&gt;.&lt;br /&gt;
-There are packages for many different platforms (Linux, Windows, Mac OS, BSD) and architectures (x86, x64, ARM).&lt;br /&gt;
-Detailed instructions can be found &lt;a href=&#34;http://golang.org/doc/install&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Basically you need to create two environment variables:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;GOROOT&lt;/code&gt; which is the system wide Go root folder (it should be
-configured automatically by the installer)&lt;br /&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;GOPATH&lt;/code&gt; that will
-contain all your code and all the packages you are going to install&lt;/li&gt;
-&lt;li&gt;it is optional, but recommended, to add &lt;code&gt;$GOPATH/bin&lt;/code&gt; to the &lt;code&gt;$PATH&lt;/code&gt; variable&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;first-steps-and-getting-help:e3f4998492e6f90831033ef66fcf3463&#34;&gt;First steps and getting help&lt;/h3&gt;
-
-&lt;p&gt;You should now have a working installation of the Go development environment, but if you come from Ruby or Python, you might get lost while reading someone else&amp;rsquo;s code or trying to figure out which is the idiomatic way to solve a problem in Go.&lt;br /&gt;
-No worries, Go has an answer for that too.&lt;br /&gt;
-Included in the package there is &lt;a href=&#34;http://godoc.org/code.google.com/p/go.tools/cmd/godoc&#34;&gt;godoc&lt;/a&gt;.&lt;br /&gt;
-When launched with the &lt;code&gt;-http&lt;/code&gt; param, godoc act as a web server that present the documentation in form of web pages.
-This is a typical godoc summoning ritual&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ godoc -http=:60666
-$ open http://localhost:60666
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;My advice is to read carefully &lt;a href=&#34;http://golang.org/doc/code.html&#34;&gt;How to write Go code&lt;/a&gt; and &lt;a href=&#34;http://golang.org/doc/effective_go.html&#34;&gt;Effective Go&lt;/a&gt; before starting writing Go code.&lt;br /&gt;
-Go does not provide REPL, but you can try your snippets in the &lt;a href=&#34;http://play.golang.org/&#34;&gt;Playground&lt;/a&gt;.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt; every package you install with the go tool or write by yourself, will update the documentation as well.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&#34;shut-up-show-us-the-code:e3f4998492e6f90831033ef66fcf3463&#34;&gt;SHUT UP! SHOW US THE CODE!&lt;/h2&gt;
-
-&lt;p&gt;Ok!&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
-
-import (
-	&amp;quot;fmt&amp;quot;
-	&amp;quot;net/http&amp;quot;
-)
-
-func main() {
-
-	http.HandleFunc(&amp;quot;/&amp;quot;, func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, &amp;quot;Hello World!&amp;quot;)
-	})
-
-	fmt.Println(&amp;quot;Server running at http://localhost:8080/&amp;quot;)
-	fmt.Println(&amp;quot;hit CTRL+C to shut it down&amp;quot;)
-	http.ListenAndServe(&amp;quot;:8080&amp;quot;, nil)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is our first Go program.&lt;br /&gt;
-Every client that connects to localhost, port 8080, will receive the &lt;em&gt;&amp;ldquo;Hello World!&amp;rdquo;&lt;/em&gt; message.&lt;br /&gt;
-The example looks a lot like the &lt;em&gt;Node.js&lt;/em&gt; &lt;a href=&#34;http://nodejs.org/about/&#34;&gt;hello world web serve example&lt;/a&gt;, but unlike &lt;em&gt;Node.js&lt;/em&gt;, this code is already multithreaded. Every new client is served by a &lt;code&gt;goroutine&lt;/code&gt;, that the &lt;code&gt;net/http&lt;/code&gt; starts behind the scenes, taking advantage of concurrency and multiple cores, if present.
-Talking about simplicity, is there anything simpler than that?&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; To run the code you have to save it in a file and then execute &lt;code&gt;go run &amp;lt;filename&amp;gt;&lt;/code&gt; from the console&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Let&amp;rsquo;s explore  the code above in more detail:&lt;/p&gt;
-
-&lt;h3 id=&#34;packages-and-imports:e3f4998492e6f90831033ef66fcf3463&#34;&gt;Packages and imports&lt;/h3&gt;
-
-&lt;p&gt;The first statement in a Go program must always be&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package name
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Executable packages have to reside in a package called &lt;strong&gt;&lt;em&gt;main&lt;/em&gt;&lt;/strong&gt;.&lt;br /&gt;
-The entry point function is called &lt;strong&gt;&lt;em&gt;main&lt;/em&gt;&lt;/strong&gt; as well.&lt;/p&gt;
-
-&lt;p&gt;Next we find the import section, you can import packages by declaring your intentions with the &lt;strong&gt;&lt;em&gt;import&lt;/em&gt;&lt;/strong&gt; directive.&lt;br /&gt;
-This is the first Go idiom we encounter: &lt;em&gt;statement grouping&lt;/em&gt;.&lt;br /&gt;
-You can import packages (or declare variables) one per line, like in&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;import &amp;quot;fmt&amp;quot;
-import &amp;quot;net/http&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;or you can group them together, surrounding the imports with parenthesis, like in our example.&lt;/p&gt;
-
-&lt;h3 id=&#34;variables-and-type-inference:e3f4998492e6f90831033ef66fcf3463&#34;&gt;Variables and type inference&lt;/h3&gt;
-
-&lt;p&gt;Variables are declared &lt;em&gt;name first, then type&lt;/em&gt;.&lt;br /&gt;
-If you &lt;em&gt;declare and assign&lt;/em&gt;, you can let the compiler infere the type.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// when variables are declared without assignment, Go assign them a default value:
-// zero for numbers, empty string for strings, nil for pointers and nullable types
-var a string
-var b int
-
-// type inference
-c := &amp;quot;Hello, Wolrd!&amp;quot;  // := operator is available only inside function body
-var s = &amp;quot;a string&amp;quot;    // this pattern is available outside functions
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Of course &lt;em&gt;statement grouping&lt;/em&gt; is available too&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;var (
-    s string
-    i int
-    f float64
-)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Don&amp;rsquo;t worry about lining up the elements between the brackets, &lt;code&gt;gofmt&lt;/code&gt; will take care of it for you.&lt;/p&gt;
-
-&lt;h3 id=&#34;anonymous-functions-and-oo:e3f4998492e6f90831033ef66fcf3463&#34;&gt;Anonymous functions and OO&lt;/h3&gt;
-
-&lt;p&gt;Go support &lt;a href=&#34;http://golang.org/ref/spec#Function_literals&#34;&gt;anonymous functions&lt;/a&gt; and high order functions.&lt;br /&gt;
-Functions are first class citizens in Go and can be assigned and carried around like regular variables.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;log := func(s string) {
-    fmt.Printf(&amp;quot;[%s] %s&amp;quot;, time.Now(), s)
-}
-
-log(&amp;quot;Hello World!&amp;quot;)
-
-// sample output
-// [2009-11-10 23:00:00 +0000 UTC] Hello World!
-
-// a more complex example
-
-type logLevel string
-type logger func(string) // create a new type for a function that takes a string as input
-
-getLogger := func(l logLevel) logger {
-	return func(s string) {
-		fmt.Printf(&amp;quot;[%s] %s: %s\n&amp;quot;, time.Now(), l, s)
-	}
-}
-
-err := getLogger(&amp;quot;Err&amp;quot;)
-warn := getLogger(&amp;quot;Warn&amp;quot;)
-info := getLogger(&amp;quot;Info&amp;quot;)
-
-err(&amp;quot;File not found&amp;quot;)
-warn(&amp;quot;Timezone is not set&amp;quot;)
-info(&amp;quot;loggin&#39; some stuff&amp;quot;)
-
-// sample output
-// [2009-11-10 23:00:00 +0000 UTC] Err: File not found
-// [2009-11-10 23:00:00 +0000 UTC] Warn: Timezone is not set
-// [2009-11-10 23:00:00 +0000 UTC] Info: loggin&#39; some stuff
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Let&amp;rsquo;s now improve our web server with new functionalities.&lt;br /&gt;
-We want to send out an &lt;code&gt;X-Powered-By&lt;/code&gt; header with the name of our web server.&lt;br /&gt;
-What we need to do is define a new &lt;strong&gt;&lt;em&gt;type&lt;/em&gt;&lt;/strong&gt; that  act as handler for the requests and will append the new header to the default set of headers.&lt;br /&gt;
-In Go, an http handler is any object that implements the Handler&amp;rsquo;s &lt;em&gt;interface&lt;/em&gt;, and the Handler&amp;rsquo;s &lt;em&gt;interface&lt;/em&gt; contains only one method: &lt;code&gt;ServeHTTP&lt;/code&gt;.&lt;br /&gt;
-So we are going to create a new object that implements the &lt;code&gt;ServeHTTP&lt;/code&gt; method and pass it to &lt;code&gt;ListenAndServe&lt;/code&gt;.&lt;br /&gt;
-Instead of classes, Go uses &lt;strong&gt;structs&lt;/strong&gt;.&lt;br /&gt;
-In this case it is an empty struct, but it can contain any other type as member variables (more on this later).&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// declare the new type Middleware.
-// Note: the type can be literally **any** type
-// type seq []int is a perfectly legal declaration
-// it creates a new type (not an alias) seq that represents a slice of ints
-type Middleware struct {
-}
-
-// implements the ServeHTTP method as requested by Handler&#39;s interface
-// notice the syntax:
-// after the keyword func we declare the type that the method will be attached to
-// and then we pass a parameter m that represents our instance variable
-// in a very similar way to Python&#39;s self
-func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf(&amp;quot;Request to %s is being handled by our middleware\n&amp;quot;, r.URL.Path)
-	w.Header().Set(&amp;quot;X-Powered-By&amp;quot;, &amp;quot;mikamai-web-server&amp;quot;)
-}
-
-// initialize and return a new object literal of type Middleware
-// in Go we also declare the return type, after the parameters of the function
-// in this case a pointer, denoted by the *, to Middleware type
-func NewMiddleware() *Middleware {
-	return &amp;amp;Middleware{}
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;We now pass the new handler to the listener&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;http.ListenAndServe(&amp;quot;:8080&amp;quot;, NewMiddleware())
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Every time a client connects, it doesn&amp;rsquo;t receive any message back, except for the new header.
-&lt;img src=&#34;http://31.media.tumblr.com/83ea05b44971684313f8d6d1c535b2d9/tumblr_mvhrpwaNvX1rhmakfo1_r1_500.png&#34; alt=&#34;X-Powered-By mikamai&#34; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Nice, but not very interesting, plus we lost the ability to serve the content to the client, cause
-the handler function we declared before is not getting called.&lt;br /&gt;
-How can we fix that?&lt;br /&gt;
-Before explaining how to forward the call to the default handler, we&amp;rsquo;re going to modify our middleware
-to do something different.&lt;br /&gt;
-In addition to adding the header with the artist&amp;rsquo;s signature, we want to limit the ability to visit
-our web site through one and only one specified host.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// we expand our middleware to contain the definition of the single allowed host
-type Middleware struct {
-    allowedHost string
-}
-
-// we modify the initializer function (our constructor) as well
-func NewMiddleware(host string) *Middleware {
-	return &amp;amp;Middleware{
-	    allowedHost: host, // trailing comma is required by Go compiler
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Rewrite &lt;code&gt;ServeHTTP&lt;/code&gt; to check for the host validity&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	// strip the port from hostname
-	host := strings.Split(r.Host, &amp;quot;:&amp;quot;)[0] // import &amp;quot;strings&amp;quot; in order to use Split
-
-    // the signature is sent anyway
-	w.Header().Set(&amp;quot;X-Powered-By&amp;quot;, &amp;quot;mikamai-web-server&amp;quot;)
-
-	if host == m.allowedHost {
-		fmt.Printf(&amp;quot;Request for host %s is being handled by our middleware\n&amp;quot;, host)
-
-		// net/http has a default handler called DefaultServerMux
-		// we feeded it with an handler for &amp;quot;/&amp;quot; in the first example
-		// forward the call to the default handler and send &amp;quot;Hello World!&amp;quot; to the client
-		http.DefaultServeMux.ServeHTTP(w, r)
-	} else {
-		// request is denied, wrong hostname
-		fmt.Printf(&amp;quot;Request for host %s is strictly forbidden by our middleware\n&amp;quot;, host)
-
-		// order is important.If we send data before the header, the server assumes the return code is 200 OK
-		w.WriteHeader(403)
-		fmt.Fprintf(w, &amp;quot;&amp;lt;h1&amp;gt;Forbidden&amp;lt;/h1&amp;gt;you don&#39;t have permission to access host %s&amp;quot;, host)
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;update the handler&amp;rsquo;s initialization&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;http.ListenAndServe(&amp;quot;:8080&amp;quot;, NewMiddleware(&amp;quot;localhost&amp;quot;))
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;et voilà&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://24.media.tumblr.com/aedc0f5dd849aae18ef022f7d10f3dad/tumblr_mvhrpwaNvX1rhmakfo2_r1_1280.png&#34; alt=&#34;access denied&#34; /&gt;
-&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://31.media.tumblr.com/d3cd5cabdc9bb2a83f12923093d6581f/tumblr_mvhrpwaNvX1rhmakfo3_r1_1280.png&#34; alt=&#34;access granted&#34; /&gt;
-&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://25.media.tumblr.com/a472850a96238d71194c7fbb23909ae7/tumblr_mvhrpwaNvX1rhmakfo4_r2_1280.png&#34; alt=&#34;console output&#34; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;All the code presented in this article can be downlaoded from &lt;a href=&#34;https://gist.github.com/wstucco/7248624&#34;&gt;github&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

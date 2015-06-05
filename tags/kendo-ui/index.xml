@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kendo Ui on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://massimoronca.it/tags/kendo-ui.html</link>
+    <description>Recent content in Kendo Ui on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 05 Jun 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://massimoronca.it/tags/kendo-ui.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Meteor and Kendo UI integration guide</title>
+      <link>http://massimoronca.it/2015/06/05/meteor-and-kendo-ui-integration-guide.html</link>
+      <pubDate>Fri, 05 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/06/05/meteor-and-kendo-ui-integration-guide.html</guid>
+      <description>&lt;p&gt;At the end of last year I&amp;rsquo;ve been involved in a testdrive project aimed to explore the possibility of replacing good old desktop applications with modern web applications, a demanding task, but nonetheless a fun one.&lt;/p&gt;
+
+&lt;p&gt;The client gave me complete freedom to chose whatever technology I wanted, except for some key elements, one of them was &lt;a href=&#34;http://www.telerik.com/kendo-ui&#34; title=&#34;Kendo UI&#34;&gt;Kendo UI&lt;/a&gt;, a widget library they had been testing for a while with an impressive &lt;a href=&#34;http://www.telerik.com/kendo-ui#more-widgets&#34; title=&#34;Kend UI widgets&#34;&gt;list of features and components&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;On my side I&amp;rsquo;ve decided to put &lt;a href=&#34;http://meteor.com&#34; title=&#34;Meteor&#34;&gt;Meteor&lt;/a&gt; on test, I confess, I&amp;rsquo;m not the biggest Javascript fan around, but I&amp;rsquo;ve rarely felt so confident with a new platform like I&amp;rsquo;ve been with Meteor, so I went for it.&lt;br /&gt;
+The biggest advantage Meteor gave us was speed, we&amp;rsquo;ve been able to put together an incredible (IMHO) amount of work in a very short period of time.&lt;/p&gt;
+
+&lt;p&gt;Long story short: the project was a success, everything was good, we also had the opportunity to experiment on the infrastructure side, and I&amp;rsquo;ve learned a lot in those few months, about things I could never have accessed otherwise.&lt;/p&gt;
+
+&lt;p&gt;There was only one small glitch that constantly bugged me: the integration between Meteor and Kendo, especially in regards to reactivity.&lt;/p&gt;
+
+&lt;p&gt;Meteor might not be the &lt;em&gt;new kid on the block&lt;/em&gt; anymore, but it&amp;rsquo;s not the &lt;a href=&#34;http://en.wikipedia.org/wiki/Spring_Framework&#34; title=&#34;Spring MVC&#34;&gt;well established framework&lt;/a&gt; either: there was no official Telerik package for Meteor, and I had to roll my own, learning by doing.&lt;/p&gt;
+
+&lt;p&gt;I don&amp;rsquo;t know wheter Telerik listened to my prayers or not, but on february of this year they released a bunch of &lt;a href=&#34;https://atmospherejs.com/telerik&#34;&gt;packages on Atmoshpere&lt;/a&gt;, making things easier for everyone, including me, so I decided to write this simple guide.&lt;/p&gt;
+
+&lt;p&gt;The Telerik packages differ from each other only in the default theme used, the set of bundled components is the same, you can find the complete list on &lt;a href=&#34;https://github.com/telerik/kendo-ui-core&#34; title=&#34;Kendo UI Core&#34;&gt;their github project page&lt;/a&gt;, although they included only the open source version of the components, this guide applies to the paid version as well.&lt;/p&gt;
+
+&lt;p&gt;We are going to build a simple applications that shows a list of tweets for a particular location (in this example the city of Milan).&lt;br /&gt;
+Let&amp;rsquo;s start by creating a new empty application and configure the packages&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
+$ meteor create telerik-demo
+$ cd telerik-demo
+
+# disable autopublish, we don&#39;t want to publish all the tweets, but only the
+# 30 most recent
+# disable insecure too, but it&#39;s not required
+$ meteor remove autopublish insecure
+
+# add official momentjs
+$ meteor add momentjs:moment
+# add twitter library
+$ meteor add mrt:twit  
+# add telerik components 
+# choose your favourite theme
+# if you install the bootstrap theme, bootstrap CSS framework is included too
+$ meteor add telerik:kendo-ui-core-material-theme
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Open &lt;code&gt;telerik-dom.js&lt;/code&gt;, the core application code, and add the declaration of our collection of tweets, making it available to both client and server.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;Tweets = new Mongo.Collection(&#39;tweets&#39;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;then, look for the line &lt;code&gt;if (Meteor.isServer) {&lt;/code&gt;, this is the entry point of the server side app.&lt;br /&gt;
+What we need to do is setup the Twitter library, subscribe on a stream filtering by location and language, and then add every tweet we receive to a collection in our MongoDB instance.&lt;br /&gt;
+You might be tempted to do something like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;Meteor.startup(function () {
+  var t = new TwitMaker({
+    consumer_key:     &#39;...&#39;
+    , consumer_secret:    &#39;...&#39;
+    , access_token:     &#39;...&#39;
+    , access_token_secret:  &#39;...&#39;
+  })
+
+  // I used this tool to get the bounding box coordinates
+  // http://boundingbox.klokantech.com/
+  var milan = [&#39;8.9936308861&#39;,&#39;45.3026233328&#39;,&#39;9.5197601318&#39;,&#39;45.6359571671&#39;]
+  // subscribe to tweets from Milan in Italian
+  var stream = t.stream(&#39;statuses/filter&#39;, {locations: milan, language: &#39;it&#39;})
+
+  // listen and wait
+  stream.on(&#39;tweet&#39;, function (tweet) {
+    Tweets.insert(tweet);
+  );
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Aaaand you would be wrong…&lt;br /&gt;
+If you do this, Meteor will exit with the error &lt;code&gt;Meteor code must always run within a Fiber&lt;/code&gt;.&lt;br /&gt;
+The problem is that the code that inserts the new tweets is executed asynchronously, outside the Meteor Fiber, so you need to provide Meteor the right environment in which to run. The esiest way is to wrap the callback inside a &lt;code&gt;Meteor.bindEnvironment&lt;/code&gt; call, like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;  stream.on(&#39;tweet&#39;, Meteor.bindEnvironment(function (tweet) {
+    Tweets.insert(tweet);
+  }, function () {
+    console.log(&#39;Failed to bind environment&#39;);
+  }));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Don&amp;rsquo;t forget to publish your tweets, to be correct, the 30 most recent tweets.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;Meteor.publish(&#39;latest_tweets&#39;, function() {
+  return Tweets.find({}, {sort: {timestamp_ms: -1}, limit: 30});
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now that we have a working Twitter scraper, let&amp;rsquo;s work on the frontend:
+open &lt;code&gt;telerik-demo.html&lt;/code&gt; and replace its content with this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;
+&amp;lt;head&amp;gt;
+  &amp;lt;title&amp;gt;twitter&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+
+&amp;lt;body&amp;gt;
+  {{ &amp;gt; tweets }}
+&amp;lt;/body&amp;gt;
+
+
+&amp;lt;template name=&amp;quot;tweets&amp;quot;&amp;gt;
+  &amp;lt;div id=&amp;quot;tweets&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+  &amp;lt;div id=&amp;quot;pager&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+
+  &amp;lt;script type=&amp;quot;text/x-kendo-tmpl&amp;quot; id=&amp;quot;tweet&amp;quot;&amp;gt;
+    &amp;lt;div class=&amp;quot;tweet&amp;quot; data-twitter-id=&amp;quot;${id}&amp;quot;&amp;gt;
+      &amp;lt;ul&amp;gt;
+        &amp;lt;li&amp;gt;
+          &amp;lt;div class=&amp;quot;user&amp;quot;&amp;gt;
+            &amp;lt;a href=&amp;quot;http://twitter.com/${user.screen_name}&amp;quot; aria-label=&amp;quot;${user.name} (screen name: ${user.screen_name})&amp;quot; data-scribe=&amp;quot;element:user_link&amp;quot;&amp;gt;
+              &amp;lt;img alt=&amp;quot;&amp;quot; src=&amp;quot;${user.profile_image_url}&amp;quot; data-scribe=&amp;quot;element:avatar&amp;quot;&amp;gt;
+              &amp;lt;span&amp;gt;
+                &amp;lt;span data-scribe=&amp;quot;element:name&amp;quot;&amp;gt;${user.name}&amp;lt;/span&amp;gt;
+              &amp;lt;/span&amp;gt;
+              &amp;lt;span data-scribe=&amp;quot;element:screen_name&amp;quot;&amp;gt;@${user.screen_name}&amp;lt;/span&amp;gt;
+            &amp;lt;/a&amp;gt;
+          &amp;lt;/div&amp;gt;
+          &amp;lt;p class=&amp;quot;tweet&amp;quot;&amp;gt;${text}&amp;lt;/p&amp;gt;
+          &amp;lt;p class=&amp;quot;timePosted&amp;quot;&amp;gt;Posted &amp;lt;a title=&amp;quot;#= moment(created_at).format(&#39;dddd, MMMM Do YYYY, h:mm:ss a&#39;) #&amp;quot;&amp;gt;#= moment(created_at).fromNow() #&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
+          &amp;lt;p class=&amp;quot;interact&amp;quot;&amp;gt;${place.full_name}&amp;lt;/p&amp;gt;
+        &amp;lt;/li&amp;gt;
+      &amp;lt;/ul&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/script&amp;gt;
+
+
+&amp;lt;/template&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The code inside the &lt;code&gt;&amp;lt;script type=&amp;quot;text/x-kendo-tmpl&amp;quot;&amp;gt;&lt;/code&gt; is the template code that the Kendo ListView is going to use to render every single item in the list.&lt;br /&gt;
+An explanation of the custom syntax used in Kendo templates is beyond the purpose of this guide, but you can refer to the &lt;a href=&#34;http://docs.telerik.com/kendo-ui/framework/templates/overview&#34;&gt;Telerik official documentation&lt;/a&gt;, it&amp;rsquo;s really easy.&lt;/p&gt;
+
+&lt;p&gt;Now back to &lt;code&gt;telerik-demo.js&lt;/code&gt;, inside &lt;code&gt;if (Meteor.isClient) { ... }&lt;/code&gt; we subscribe to the publications created above&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;  Meteor.subscribe(&#39;latest_tweets&#39;, function() {
+    console.log(&amp;quot;subscribed to latest tweets&amp;quot;);
+  })
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now taht the channel is open, the server will start to send the data to the client and keep it in sync, automatically.&lt;br /&gt;
+The last step is to bootstrap the Kendo component and display our tweets on the page&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// when the tweets template has done rendering
+Template.tweets.rendered = function() {
+
+  // create the datasource for the listview showing 3 items per page
+  var dataSource = new kendo.data.DataSource({
+    pageSize: 3
+  });
+
+  // initialize the listview with the datasource and the template code
+  $(&#39;#tweets&#39;).kendoListView({
+    dataSource: dataSource,
+    template: kendo.template($(&amp;quot;#tweet&amp;quot;).html())
+  });
+
+  // initialize the pager component
+  $(&#39;#pager&#39;).kendoPager({
+    dataSource: dataSource
+  });
+
+  // this function is run automatically when dependencies change,
+  // in our case when the collection is updated 
+  // (items are changed, added or removed)
+  // Meteor figured out that if we subscribed to a publication, we wanna
+  // be also informed when it changes
+  this.autorun(function() {
+    // we use fetch becase it returns a Json list of all the items 
+    // in the collection, which is one of the formats supported by
+    // Kendo datasource 
+    // this also triggers the rendering of the list view and the pager
+    dataSource.data(Tweets.find({}, {sort: {timestamp_ms: -1}}).fetch()); 
+  });
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And that could be all. If now you launch &lt;code&gt;meteor&lt;/code&gt; inside the project folder and navigate to &lt;code&gt;http://localhost:3000&lt;/code&gt; you should see a list of tweets automatically updating.&lt;br /&gt;
+It&amp;rsquo;s not the best looking app ever, but it works.&lt;br /&gt;
+&lt;img src=&#34;http://i.imgur.com/lXxC3Gg.png&#34; alt=&#34;&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s do something to improve the presentation layer.&lt;br /&gt;
+I&amp;rsquo;m not a great designer, so I grabbed this &lt;a href=&#34;http://codepen.io/nerijusgood/pen/Ggqygo&#34; title=&#34;Twitter custom widget CSS&#34;&gt;Twitter widget customization&lt;/a&gt; from Codepen and copied the relevant bits inside &lt;code&gt;telerik-demo.css&lt;/code&gt;.&lt;br /&gt;
+Next thing I wanted to try is to add a fade-in effect to every new tweets, to make things smoother.&lt;br /&gt;
+I&amp;rsquo;ve created a class that runs an animation inside the CSS and I wanted to attach this class to every new tweet &lt;code&gt;div&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fade-in {
+  animation-duration: 1s;
+  animation-name: fade-in;
+}
+
+/* I removed the prefixed versions of keyframes and animation-* for clarity */
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;My first naive approach relied on &lt;a href=&#34;http://updates.html5rocks.com/2012/02/Detect-DOM-changes-with-Mutation-Observers&#34; title=&#34;Mutation Observers&#34;&gt;Mutation Observers&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;  document.addEventListener(&amp;quot;DOMNodeInserted&amp;quot;, function(event) {
+    if($(event.target).hasClass(&amp;quot;tweet&amp;quot;)) {
+      // a new tweet has been added to the DOM, start fading
+      event.target.classList.add(&#39;fade-in&#39;);
+      console.warn(&amp;quot;Another node has been inserted! &amp;quot;, event, event.target);
+    }
+  }, false);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Only after a few unsuccesfull attempts, where every tweet was being faded, I realized that when you change the &lt;code&gt;data&lt;/code&gt; property of the &lt;code&gt;datasource&lt;/code&gt; component, the current view (so only the current page) is re-rendered completely, making every tweet a &lt;em&gt;new&lt;/em&gt; tweet to the eyes of the poor browser.&lt;br /&gt;
+The solution is simple, I made a diff between the actual data and the new data coming from the server and only added the fade to those tweets that really were new, I used the Twitter &lt;code&gt;id&lt;/code&gt;   attribute as the key.&lt;/p&gt;
+
+&lt;p&gt;update the template with the new Twitter id attribute&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;!-- telerik-demo.html --&amp;gt;
+&amp;lt;script type=&amp;quot;text/x-kendo-tmpl&amp;quot; id=&amp;quot;tweet&amp;quot;&amp;gt;
+    &amp;lt;div class=&amp;quot;tweet&amp;quot; data-twitter-id=&amp;quot;${id}&amp;quot;&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;update the autorun function to compute a diff and apply the fade-in effect
+only to the new tweets&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;this.autorun(function() {
+  var current_values = dataSource.data();
+  var updated_values = Tweets.find({}, {sort: {timestamp_ms: -1}}).fetch();
+  var current_ids = _.map(current_values, function(x) { return x.id; });
+  var updated_ids = _.map(updated_values, function(x) { return x.id; });
+  var diff = _.difference(updated_ids, current_ids);
+
+  // update dataSource and trigger listview render
+  dataSource.data(updated_values);
+  // fade in new nodes
+  _.each(diff, function(x) {
+    $(&#39;div[data-twitter-id=&amp;quot;&#39;  + x + &#39;&amp;quot;&#39;).addClass(&#39;fade-in&#39;);
+  })
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;not strictly required, but advised, remove the fade class when animation ends&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var animationListener = function(event){
+  if (event.animationName == &amp;quot;fade-in&amp;quot;) {
+    console.log(&amp;quot;remove class fade-in from&amp;quot;, event.target);
+    event.target.classList.remove(&#39;fade-in&#39;);
+  }
+}
+document.addEventListener(&amp;quot;animationend&amp;quot;, animationListener, false); 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;much better now
+&lt;img src=&#34;http://i.imgur.com/gr9F232.png&#34; alt=&#34;&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;You can see the application in action &lt;a href=&#34;http://telerik.meteor.com&#34;&gt;here&lt;/a&gt; and find the source code on &lt;a href=&#34;https://github.com/mikamai/telerik-meteor-integration-demo&#34;&gt;Mikamai&amp;rsquo;s Github&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
