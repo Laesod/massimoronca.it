@@ -17,8 +17,7 @@
       <guid>http://massimoronca.it/2013/11/04/i-tried-go-and-i-liked-it.html</guid>
       <description>
 
-&lt;p&gt;&lt;img src=&#34;http://upload.wikimedia.org/wikipedia/commons/2/23/Golang.png&#34; alt=&#34;Gopher in all of its glory&#34; title=&#34;Gopher&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://upload.wikimedia.org/wikipedia/commons/2/23/Golang.png&#34; alt=&#34;Gopher in all of its glory&#34; title=&#34;Gopher&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Say hello to &lt;a href=&#34;http://golang.org/doc/gopher/&#34;&gt;Gopher&lt;/a&gt;.
 Gopher is the mascotte of a new language from &lt;a href=&#34;http://google.com&#34;&gt;Google&lt;/a&gt;, called &lt;a href=&#34;http://golang.org&#34;&gt;Go&lt;/a&gt;, with the capital &lt;strong&gt;G&lt;/strong&gt;.&lt;br /&gt;
@@ -248,8 +247,7 @@ func NewMiddleware() *Middleware {
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Every time a client connects, it doesn&amp;rsquo;t receive any message back, except for the new header.
-&lt;img src=&#34;http://31.media.tumblr.com/83ea05b44971684313f8d6d1c535b2d9/tumblr_mvhrpwaNvX1rhmakfo1_r1_500.png&#34; alt=&#34;X-Powered-By mikamai&#34; /&gt;
-&lt;/p&gt;
+&lt;img src=&#34;http://31.media.tumblr.com/83ea05b44971684313f8d6d1c535b2d9/tumblr_mvhrpwaNvX1rhmakfo1_r1_500.png&#34; alt=&#34;X-Powered-By mikamai&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Nice, but not very interesting, plus we lost the ability to serve the content to the client, cause
 the handler function we declared before is not getting called.&lt;br /&gt;
@@ -307,18 +305,15 @@ func NewMiddleware(host string) *Middleware {
 
 &lt;p&gt;et voilà&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://24.media.tumblr.com/aedc0f5dd849aae18ef022f7d10f3dad/tumblr_mvhrpwaNvX1rhmakfo2_r1_1280.png&#34; alt=&#34;access denied&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://24.media.tumblr.com/aedc0f5dd849aae18ef022f7d10f3dad/tumblr_mvhrpwaNvX1rhmakfo2_r1_1280.png&#34; alt=&#34;access denied&#34; /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://31.media.tumblr.com/d3cd5cabdc9bb2a83f12923093d6581f/tumblr_mvhrpwaNvX1rhmakfo3_r1_1280.png&#34; alt=&#34;access granted&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://31.media.tumblr.com/d3cd5cabdc9bb2a83f12923093d6581f/tumblr_mvhrpwaNvX1rhmakfo3_r1_1280.png&#34; alt=&#34;access granted&#34; /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://25.media.tumblr.com/a472850a96238d71194c7fbb23909ae7/tumblr_mvhrpwaNvX1rhmakfo4_r2_1280.png&#34; alt=&#34;console output&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://25.media.tumblr.com/a472850a96238d71194c7fbb23909ae7/tumblr_mvhrpwaNvX1rhmakfo4_r2_1280.png&#34; alt=&#34;console output&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;All the code presented in this article can be downlaoded from &lt;a href=&#34;https://gist.github.com/wstucco/7248624&#34;&gt;github&lt;/a&gt;&lt;/p&gt;
 </description>

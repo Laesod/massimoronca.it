@@ -31,7 +31,6 @@ Compilers just &lt;em&gt;transform&lt;/em&gt; a source code written in a program
 Most of the time, they are built following a common design, this one&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;http://twimgs.com/ddj/images/article/2012/0512/latfig1.gif&#34; alt=&#34;Compiler design&#34; /&gt;
-
 &amp;gt; copyright &lt;a href=&#34;http://www.drdobbs.com/architecture-and-design/the-design-of-llvm/240001128&#34;&gt;Dr. Dobb&amp;rsquo;s&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Our compiler will be much simpler: we will completely skip the optimizer (for now) and will directly execute the output of the fronted (AST or abstract syntax tree, from now on).&lt;/p&gt;

@@ -194,8 +194,7 @@ Template.tweets.rendered = function() {
 
 &lt;p&gt;And that could be all. If now you launch &lt;code&gt;meteor&lt;/code&gt; inside the project folder and navigate to &lt;code&gt;http://localhost:3000&lt;/code&gt; you should see a list of tweets automatically updating.&lt;br /&gt;
 It&amp;rsquo;s not the best looking app ever, but it works.&lt;br /&gt;
-&lt;img src=&#34;http://i.imgur.com/lXxC3Gg.png&#34; alt=&#34;&#34; /&gt;
-&lt;/p&gt;
+&lt;img src=&#34;http://i.imgur.com/lXxC3Gg.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Let&amp;rsquo;s do something to improve the presentation layer.&lt;br /&gt;
 I&amp;rsquo;m not a great designer, so I grabbed this &lt;a href=&#34;http://codepen.io/nerijusgood/pen/Ggqygo&#34; title=&#34;Twitter custom widget CSS&#34;&gt;Twitter widget customization&lt;/a&gt; from Codepen and copied the relevant bits inside &lt;code&gt;telerik-demo.css&lt;/code&gt;.&lt;br /&gt;
@@ -268,8 +267,7 @@ document.addEventListener(&amp;quot;animationend&amp;quot;, animationListener, f
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;much better now
-&lt;img src=&#34;http://i.imgur.com/gr9F232.png&#34; alt=&#34;&#34; /&gt;
-&lt;/p&gt;
+&lt;img src=&#34;http://i.imgur.com/gr9F232.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;You can see the application in action &lt;a href=&#34;http://telerik.meteor.com&#34;&gt;here&lt;/a&gt; and find the source code on &lt;a href=&#34;https://github.com/mikamai/telerik-meteor-integration-demo&#34;&gt;Mikamai&amp;rsquo;s Github&lt;/a&gt;&lt;/p&gt;
 </description>

@@ -124,8 +124,7 @@ Dokku has detected the PHP app and instructed Docker to create an isolated conta
 
 &lt;p&gt;Our wp-config is empty right now, the server will reply with&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/JzhJclD.png&#34; alt=&#34;WP Error&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/JzhJclD.png&#34; alt=&#34;WP Error&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;That&amp;rsquo;s good news, it means it is actually responding to our request.&lt;/p&gt;
 

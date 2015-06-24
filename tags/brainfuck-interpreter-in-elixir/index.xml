@@ -111,12 +111,10 @@ We just had to follow the language specs and we obtained a working implementatio
 The following are the representations of the two ways to define loops&lt;/p&gt;
 
 &lt;p&gt;the &lt;code&gt;while&lt;/code&gt; loop
-&lt;img src=&#34;http://i.imgur.com/IiIEPo8.jpg&#34; alt=&#34;flow chart of while loop&#34; /&gt;
-&lt;/p&gt;
+&lt;img src=&#34;http://i.imgur.com/IiIEPo8.jpg&#34; alt=&#34;flow chart of while loop&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;the &lt;code&gt;do until&lt;/code&gt; loop
-&lt;img src=&#34;http://i.imgur.com/Joke2ar.jpg&#34; alt=&#34;do until loop&#34; /&gt;
-&lt;/p&gt;
+&lt;img src=&#34;http://i.imgur.com/Joke2ar.jpg&#34; alt=&#34;do until loop&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In Elixir specs they are defined as&lt;/p&gt;
 
@@ -202,8 +200,7 @@ Every time a &lt;code&gt;[&lt;/code&gt; command is found,  the program is split 
 &lt;p&gt;We have now a complete implementation of a brainfuck interpreter that can run any brainfuck program.&lt;br /&gt;
 To test it let&amp;rsquo;s run it inside &lt;code&gt;iex&lt;/code&gt; the Elixir shell&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/1lTQqee.gif&#34; alt=&#34;iex brainfuck session&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/1lTQqee.gif&#34; alt=&#34;iex brainfuck session&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In the next post I&amp;rsquo;ll talk about testing the code, creating a project and compiling down to an executable and the command line tools.&lt;/p&gt;
 
@@ -229,8 +226,7 @@ To test it let&amp;rsquo;s run it inside &lt;code&gt;iex&lt;/code&gt; the Elixir
 One of its best features are autocompletion of module and function names and the integrated documentation accessible with the command &lt;code&gt;h&lt;/code&gt;.
 This is an example of an &lt;code&gt;iex&lt;/code&gt; session:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/IigY3j3.jpg&#34; alt=&#34;image&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/IigY3j3.jpg&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;brainfuck-the-language:5e8426109aae4353298eac2be50da78b&#34;&gt;Brainfuck, the language&lt;/h3&gt;
 
@@ -452,8 +448,7 @@ The new memory will have &lt;code&gt;val&lt;/code&gt; value at &lt;code&gt;addr&
 
 &lt;p&gt;Not hard at all until now.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/6oA7eED.png&#34; alt=&#34;very easy&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/6oA7eED.png&#34; alt=&#34;very easy&#34; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;let-s-talk-about-memory:5e8426109aae4353298eac2be50da78b&#34;&gt;Let&amp;rsquo;s talk about memory&lt;/h3&gt;
 

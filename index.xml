@@ -6,8 +6,18 @@
     <description>Recent content on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 05 Jun 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2015 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://massimoronca.it/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>The importance of freedom according to Erlich Bachman</title>
+      <link>http://massimoronca.it/2015/06/24/the-importance-of-freedom-according-to-erlich-bachman.html</link>
+      <pubDate>Wed, 24 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/06/24/the-importance-of-freedom-according-to-erlich-bachman.html</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/freedom_china.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Meteor and Kendo UI integration guide</title>
@@ -194,8 +204,7 @@ Template.tweets.rendered = function() {
 
 &lt;p&gt;And that could be all. If now you launch &lt;code&gt;meteor&lt;/code&gt; inside the project folder and navigate to &lt;code&gt;http://localhost:3000&lt;/code&gt; you should see a list of tweets automatically updating.&lt;br /&gt;
 It&amp;rsquo;s not the best looking app ever, but it works.&lt;br /&gt;
-&lt;img src=&#34;http://i.imgur.com/lXxC3Gg.png&#34; alt=&#34;&#34; /&gt;
-&lt;/p&gt;
+&lt;img src=&#34;http://i.imgur.com/lXxC3Gg.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Let&amp;rsquo;s do something to improve the presentation layer.&lt;br /&gt;
 I&amp;rsquo;m not a great designer, so I grabbed this &lt;a href=&#34;http://codepen.io/nerijusgood/pen/Ggqygo&#34; title=&#34;Twitter custom widget CSS&#34;&gt;Twitter widget customization&lt;/a&gt; from Codepen and copied the relevant bits inside &lt;code&gt;telerik-demo.css&lt;/code&gt;.&lt;br /&gt;
@@ -268,8 +277,7 @@ document.addEventListener(&amp;quot;animationend&amp;quot;, animationListener, f
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;much better now
-&lt;img src=&#34;http://i.imgur.com/gr9F232.png&#34; alt=&#34;&#34; /&gt;
-&lt;/p&gt;
+&lt;img src=&#34;http://i.imgur.com/gr9F232.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;You can see the application in action &lt;a href=&#34;http://telerik.meteor.com&#34;&gt;here&lt;/a&gt; and find the source code on &lt;a href=&#34;https://github.com/mikamai/telerik-meteor-integration-demo&#34;&gt;Mikamai&amp;rsquo;s Github&lt;/a&gt;&lt;/p&gt;
 </description>
@@ -370,7 +378,6 @@ Compilers just &lt;em&gt;transform&lt;/em&gt; a source code written in a program
 Most of the time, they are built following a common design, this one&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;http://twimgs.com/ddj/images/article/2012/0512/latfig1.gif&#34; alt=&#34;Compiler design&#34; /&gt;
-
 &amp;gt; copyright &lt;a href=&#34;http://www.drdobbs.com/architecture-and-design/the-design-of-llvm/240001128&#34;&gt;Dr. Dobb&amp;rsquo;s&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Our compiler will be much simpler: we will completely skip the optimizer (for now) and will directly execute the output of the fronted (AST or abstract syntax tree, from now on).&lt;/p&gt;
@@ -626,12 +633,10 @@ We just had to follow the language specs and we obtained a working implementatio
 The following are the representations of the two ways to define loops&lt;/p&gt;
 
 &lt;p&gt;the &lt;code&gt;while&lt;/code&gt; loop
-&lt;img src=&#34;http://i.imgur.com/IiIEPo8.jpg&#34; alt=&#34;flow chart of while loop&#34; /&gt;
-&lt;/p&gt;
+&lt;img src=&#34;http://i.imgur.com/IiIEPo8.jpg&#34; alt=&#34;flow chart of while loop&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;the &lt;code&gt;do until&lt;/code&gt; loop
-&lt;img src=&#34;http://i.imgur.com/Joke2ar.jpg&#34; alt=&#34;do until loop&#34; /&gt;
-&lt;/p&gt;
+&lt;img src=&#34;http://i.imgur.com/Joke2ar.jpg&#34; alt=&#34;do until loop&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In Elixir specs they are defined as&lt;/p&gt;
 
@@ -717,8 +722,7 @@ Every time a &lt;code&gt;[&lt;/code&gt; command is found,  the program is split 
 &lt;p&gt;We have now a complete implementation of a brainfuck interpreter that can run any brainfuck program.&lt;br /&gt;
 To test it let&amp;rsquo;s run it inside &lt;code&gt;iex&lt;/code&gt; the Elixir shell&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/1lTQqee.gif&#34; alt=&#34;iex brainfuck session&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/1lTQqee.gif&#34; alt=&#34;iex brainfuck session&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In the next post I&amp;rsquo;ll talk about testing the code, creating a project and compiling down to an executable and the command line tools.&lt;/p&gt;
 
@@ -734,8 +738,7 @@ To test it let&amp;rsquo;s run it inside &lt;code&gt;iex&lt;/code&gt; the Elixir
       <pubDate>Wed, 05 Nov 2014 00:00:00 +0000</pubDate>
       
       <guid>http://massimoronca.it/2014/11/05/create-an-animated-gif-of-your-console-sessions.html</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://s2.quickmeme.com/img/32/325fc351053e41d230961a71308d37937e68192130d11a82308ae619571ef942.jpg&#34; alt=&#34;animate all the things&#34; /&gt;
-&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;http://s2.quickmeme.com/img/32/325fc351053e41d230961a71308d37937e68192130d11a82308ae619571ef942.jpg&#34; alt=&#34;animate all the things&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;More often than not, our job involves opening up a console, typing some command and waiting for the output.&lt;br /&gt;
 When I write articles, sometimes I feel the need to show how the commands behave interactively, not only the sequence of commands you have to type.&lt;br /&gt;
@@ -744,8 +747,7 @@ It&amp;rsquo;s easier to understand by looking at an animation, than reading&lt;
 
 &lt;p&gt;For example, can you explain how the emmet plugin for VIM works, better than this, using only words?&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://qiita-image-store.s3.amazonaws.com/0/38647/86b91c27-f894-c969-89b0-5846408ad1db.gif&#34; alt=&#34;emmet plugin for VIM&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://qiita-image-store.s3.amazonaws.com/0/38647/86b91c27-f894-c969-89b0-5846408ad1db.gif&#34; alt=&#34;emmet plugin for VIM&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Fortunately, the solution is pretty easy.&lt;br /&gt;
 You need a few open source tools, if you&amp;rsquo;re on a Mac, like me, you should already have installed &lt;a href=&#34;http://brew.sh/&#34;&gt;Homebrew&lt;/a&gt;, and Imagemagick (&lt;code&gt;brew install imagemagick&lt;/code&gt;).&lt;/p&gt;
@@ -785,8 +787,7 @@ OPTIONS
 
 &lt;p&gt;Let&amp;rsquo;s see how it looks&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/q7NHxN0.gif&#34; alt=&#34;ttyrec session&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/q7NHxN0.gif&#34; alt=&#34;ttyrec session&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Now that we have a recorded sessions, we need to convert it to an animated GIF.&lt;br /&gt;
 We&amp;rsquo;ll use &lt;a href=&#34;https://github.com/icholy/ttygif&#34;&gt;&lt;code&gt;ttygif&lt;/code&gt;&lt;/a&gt; for the task.&lt;br /&gt;
@@ -834,8 +835,7 @@ I usually add a fixed delay between frames, make it loop forever and optimize th
 One of its best features are autocompletion of module and function names and the integrated documentation accessible with the command &lt;code&gt;h&lt;/code&gt;.
 This is an example of an &lt;code&gt;iex&lt;/code&gt; session:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/IigY3j3.jpg&#34; alt=&#34;image&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/IigY3j3.jpg&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;brainfuck-the-language:5e8426109aae4353298eac2be50da78b&#34;&gt;Brainfuck, the language&lt;/h3&gt;
 
@@ -1057,8 +1057,7 @@ The new memory will have &lt;code&gt;val&lt;/code&gt; value at &lt;code&gt;addr&
 
 &lt;p&gt;Not hard at all until now.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/6oA7eED.png&#34; alt=&#34;very easy&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/6oA7eED.png&#34; alt=&#34;very easy&#34; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;let-s-talk-about-memory:5e8426109aae4353298eac2be50da78b&#34;&gt;Let&amp;rsquo;s talk about memory&lt;/h3&gt;
 
@@ -1109,21 +1108,18 @@ It is always good news when something catch search engines attention and traffic
 Well actually not always &amp;hellip;&lt;br /&gt;
 The keywords used to get to me were definitely a bit OT.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/ronca-knives-stats.png&#34; alt=&#34;Ronca Knives&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/ronca-knives-stats.png&#34; alt=&#34;Ronca Knives&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;My name&amp;rsquo;s Ronca, I wrote an article about &lt;a href=&#34;http://massimoronca.it/2014/05/14/writing-custom-commands-for-drush-the-drupal-swiss-army-knife.html&#34;&gt;Drush, the swiss army knife for Drupal&lt;/a&gt;, but this is totally not my line of work :)&lt;/p&gt;
 
 &lt;p&gt;To be honest, I love knives and I always carry a small one with me.
 My grandfather taught me how to recognize them, he used to be a tailor, but he also lived in the country, so he was competent in the fieldwork and had a superb collection of working knives, like this baby here&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/coltello-da-innesto-6.png&#34; alt=&#34;graft knife&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/coltello-da-innesto-6.png&#34; alt=&#34;graft knife&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I imagine that I would have loved to sell knives, maybe not on TV, I don&amp;rsquo;t really like showing myself to big audiences, but I also seriously think that you guys where looking for this knives, not the metaphorical ones I wrote about&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/44356.jpg&#34; alt=&#34;ronco knives&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/44356.jpg&#34; alt=&#34;ronco knives&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I invite you to go to &lt;a href=&#34;https://www.roncocutlery.com/&#34;&gt;their website&lt;/a&gt; and buy everything! those knives look great, as seen on TV!&lt;/p&gt;
 </description>
@@ -1397,8 +1393,7 @@ Dokku has detected the PHP app and instructed Docker to create an isolated conta
 
 &lt;p&gt;Our wp-config is empty right now, the server will reply with&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/JzhJclD.png&#34; alt=&#34;WP Error&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/JzhJclD.png&#34; alt=&#34;WP Error&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;That&amp;rsquo;s good news, it means it is actually responding to our request.&lt;/p&gt;
 
@@ -1480,8 +1475,7 @@ In a next article we&amp;rsquo;ll see how to create a Dokku plugin to automate t
 
 &lt;p&gt;Like this one&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://scontent-b-ams.xx.fbcdn.net/hphotos-ash3/t1.0-9/994503_10151525258526336_667825845_n.jpg&#34; alt=&#34;image&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://scontent-b-ams.xx.fbcdn.net/hphotos-ash3/t1.0-9/994503_10151525258526336_667825845_n.jpg&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Seriously, we did it.&lt;/p&gt;
 
@@ -1583,8 +1577,7 @@ For example, if you need to keep track of the environment and/or the previous st
       <pubDate>Tue, 08 Apr 2014 00:00:00 +0000</pubDate>
       
       <guid>http://massimoronca.it/2014/04/08/le-email-di-tumblr-le-scrive-beppe-grillo.html</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/tumblr-email.jpg&#34; alt=&#34;LOL&#34; /&gt;
-&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/tumblr-email.jpg&#34; alt=&#34;LOL&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;LOL&lt;/p&gt;
 </description>
@@ -1700,239 +1693,6 @@ For example, &lt;code&gt;myapp.dev&lt;/code&gt; will point to &lt;code&gt;~/Site
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;You can finally reload Apache configuration with &lt;code&gt;sudo apachectl graceful&lt;/code&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Building web apps with Traffic, the Go micro framework.</title>
-      <link>http://massimoronca.it/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html</link>
-      <pubDate>Fri, 29 Nov 2013 00:00:00 +0000</pubDate>
-      
-      <guid>http://massimoronca.it/2013/11/29/building-web-apps-with-traffic-the-go-micro-framework..html</guid>
-      <description>
-
-&lt;p&gt;Written by the long time Ruby developer &lt;a href=&#34;http://gravityblast.com/&#34;&gt;Andrea Franz&lt;/a&gt;,  &lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;&lt;strong&gt;Traffic&lt;/strong&gt;&lt;/a&gt; is a &lt;a href=&#34;http://flask.pocoo.org/docs/foreword/#what-does-micro-mean&#34;&gt;&lt;em&gt;micro framework&lt;/em&gt;&lt;/a&gt; for Web development inspired by &lt;a href=&#34;http://www.sinatrarb.com&#34;&gt;Sinatra&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;In times when software development is moving towards creating services for other applications, micro frameworks serve very well this paradigm by providing an easy way to create the building blocks, such as a REST API, on top of which larger applications can rely.&lt;/p&gt;
-
-&lt;p&gt;Micro frameworks do not cover every single aspect of application building, most of them are left to the developer, for example you decide which database to use and how to access it or not to use a DB at all, but the codebase is so compact that a single person can master it in a matter of few days.&lt;/p&gt;
-
-&lt;p&gt;Like other popular frameworks, &lt;em&gt;Traffic&lt;/em&gt; features include&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;regexp routing&lt;/li&gt;
-&lt;li&gt;chainable request filters&lt;/li&gt;
-&lt;li&gt;middlewares&lt;/li&gt;
-&lt;li&gt;templates&lt;/li&gt;
-&lt;li&gt;serving of static files&lt;/li&gt;
-&lt;li&gt;custom error handlers&lt;/li&gt;
-&lt;li&gt;facilities to render in various format (HTML, JSON and XML)&lt;/li&gt;
-&lt;li&gt;errors and stacktraces in the browser&lt;/li&gt;
-&lt;li&gt;command line utility to generate new projects (although very basic)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Documentation is a little bit scarce at the moment, but there are many &lt;a href=&#34;https://github.com/pilu/traffic/blob/master/examples/&#34;&gt;examples&lt;/a&gt; that make it easy to figure out how to use the various components.&lt;/p&gt;
-
-&lt;p&gt;We are going to analyze each one of them, by writing a small demo application, a simple clone of the placehold.it service powered by the Grumpy cat, instead of gray boxes.&lt;br /&gt;
-As usual, code is available on &lt;a href=&#34;https://github.com/wstucco/purrraceholder&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;###Installing Traffic&lt;br /&gt;
-Assuming you already have a working installation of Go, download Traffic&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ go get github.com/pilu/traffic
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and the command line tool&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ go get github.com/pilu/traffic/traffic
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;create a new project&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ traffic new demo_project
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;run it&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd demo_project  
-$ go build &amp;amp;&amp;amp; ./demo_project
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and point your browser to &lt;a href=&#34;http://127.0.0.1:7000/&#34;&gt;http://127.0.0.1:7000/&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;routing:c0e6095a1875dedd0808509e8b75160b&#34;&gt;Routing&lt;/h3&gt;
-
-&lt;p&gt;The first thing we need for our application is a router.&lt;br /&gt;
-Traffic routes are a pair of an HTTP method and a URL pattern that, if matched,
-call a function that act as route-handler.&lt;/p&gt;
-
-&lt;p&gt;Our first route&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
-
-import (
-	&amp;quot;github.com/pilu/traffic&amp;quot;
-)
-
-var router *traffic.Router
-
-func main() {
-	router = traffic.New()
-	router.Get(&amp;quot;/&amp;quot;, RootHandler)
-	router.Run()
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Routes are matched in the same order they are declared, the first that match is executed.&lt;/p&gt;
-
-&lt;p&gt;Routes can contain named parameters that are accesible using the &lt;code&gt;Param&lt;/code&gt; function.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;router.Get(`/:width/:height/?`, ImageHandler)
-
-func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
-	width := r.Param(&amp;quot;width&amp;quot;)
-	height := r.Param(&amp;quot;height&amp;quot;)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and parameters can be optional&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;router.Get(`/:width)/(:height)?`, ImageHandler)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Route patterns can also include wildcards and regular expressions&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;router.Get(`/:width/*`, ImageHandler)
-
-// match (width)x(height) format
-router.Get(`/(?P&amp;lt;width&amp;gt;\d+)(x(?P&amp;lt;height&amp;gt;\d+)?)?/?`, ImageHandler)
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;before-filters:c0e6095a1875dedd0808509e8b75160b&#34;&gt;Before filters&lt;/h3&gt;
-
-&lt;p&gt;Traffic allows to prepend the request handler with filters, which are like regular request handlers that get executed before the real handler.&lt;br /&gt;
-Before fitlers can be chained and can be attached to all routes or just some of them.&lt;br /&gt;
-If a before filters write something in the Response Body, the request chain is interrupted.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// if route match, before executing ImageHandler, Traffic executes the two filters
-// RequireValidImageParameters and GenerateImageCache in order  
-// If one of them fails and write to the response body, the execution stops
-// before reaching the actual handler
-router.Get(`/:width/?(:height)?/?`, ImageHandler).
-	AddBeforeFilter(RequireValidImageParameters).
-	AddBeforeFilter(GenerateImageCache)
-
-func RequireValidImageParameters(w traffic.ResponseWriter, r *traffic.Request) {
-	width, err := strconv.Atoi(r.Param(&amp;quot;width&amp;quot;))
-	if err != nil { // conversion error, either var is empty or not a number
-		// cannot continue
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	height, err := strconv.Atoi(r.Param(&amp;quot;height&amp;quot;))
-	if err != nil {
-		// if height is omitted the image is gonna be a square
-		height = width
-	}
-
-	if (width &amp;lt;= 2560 &amp;amp;&amp;amp; width &amp;gt; 0) &amp;amp;&amp;amp; (height &amp;lt;= 2560 &amp;amp;&amp;amp; height &amp;gt; 0) {
-		// set vars for the next filter
-	} else {
-		// bad request
-		w.WriteHeader(http.StatusBadRequest)
-		w.Render(&amp;quot;400&amp;quot;, nil)
-	}
-}
-
-func GenerateImageCache(w traffic.ResponseWriter, r *traffic.Request) {
-	// pseudo code
-	if not cache_folder_exists and create_folder_fails
-		throw error with panic
-
-	write_image_file_according_to_parameters
-}
-
-func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
-	// output the image with the correct content-type
-	w.Header().Set(&amp;quot;Content-Type&amp;quot;, &amp;quot;image/jpeg&amp;quot;)
-
-	// at this point we can safely assume that the image file already exists
-}
-
-// this filter is global to the router and is applied before each request
-router.AddBeforeFilter(PoweredByHandler)
-
-func PoweredByHandler(w traffic.ResponseWriter, r *traffic.Request) {
-	w.Header().Set(&amp;quot;X-Powered-By&amp;quot;, &amp;quot;Grumpy cat&amp;quot;)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;templates-and-static-files:c0e6095a1875dedd0808509e8b75160b&#34;&gt;Templates and static files&lt;/h3&gt;
-
-&lt;p&gt;Traffic supports templates in the standard Go format.&lt;br /&gt;
-Template library documentation can be found &lt;a href=&#34;http://golang.org/pkg/html/template/&#34;&gt;here&lt;/a&gt;.&lt;br /&gt;
-Traffic Response Writer has a method to render templates called &lt;code&gt;Render&lt;/code&gt;, that takes the template name (without the extension) and an optional param that contains the data to be rendered.
-By default templates are placed in the &lt;code&gt;/view&lt;/code&gt; folder.&lt;br /&gt;
-Templates can be nested one isnide the other like in our &lt;code&gt;404&lt;/code&gt; example&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-django&#34;&gt;{% raw %}
-{{ template &amp;quot;includes/header&amp;quot; }}
-	&amp;lt;div class=&amp;quot;error error-404&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
-{{ template &amp;quot;includes/footer&amp;quot; }}
-{% endraw %}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If you are writing an API you might find the methods &lt;code&gt;WriteJSON&lt;/code&gt; and &lt;code&gt;WriteXML&lt;/code&gt; useful too.&lt;/p&gt;
-
-&lt;p&gt;Traffic also support serving static assets: every file placed in the &lt;code&gt;/public&lt;/code&gt; folder is directly accessible.&lt;br /&gt;
-For example if we put a css inside &lt;code&gt;/public/css/app.css&lt;/code&gt; it will be automatically accessible as&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-http://address/css/app.css```.&#34;&gt;
-**Update**:  static files are served through `StaticMiddleware` that is added automatically only if environment is *‘development’*.
-Environment is set using the `TRAFFIC_ENV` variable, so if you set it to`production`, you have to manually add the `StaticMiddleware`  
-
-```go  
-if traffic.Env() == &amp;quot;production&amp;quot; {
-    router.Use(traffic.NewStaticMiddleware(traffic.PublicPath()))
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;custom-error-handlers:c0e6095a1875dedd0808509e8b75160b&#34;&gt;Custom error handlers&lt;/h3&gt;
-
-&lt;p&gt;The Traffic router has builtin handlers for &lt;code&gt;404&lt;/code&gt; and &lt;code&gt;500&lt;/code&gt; erros that can be customized.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// Custom not found handler
-router.NotFoundHandler = NotFoundHandler
-
-func NotFoundHandler(w traffic.ResponseWriter, r *traffic.Request) {
-	w.Render(&amp;quot;404&amp;quot;)
-}
-
-// Custom error handler
-router.ErrorHandler = ErrorHandler
-
-func ErrorHandler(w traffic.ResponseWriter, r *traffic.Request) {
-	w.Render(&amp;quot;500&amp;quot;)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;conclusions:c0e6095a1875dedd0808509e8b75160b&#34;&gt;Conclusions&lt;/h3&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;Traffic&lt;/a&gt; is a young framework specifically crafte for small to medium applications.&lt;br /&gt;
-I was able to create the demo app &lt;a href=&#34;https://github.com/wstucco/purrraceholder&#34;&gt;Purrraceholder&lt;/a&gt; (read it with a japanese accent) in a couple of hours, without previous knowledge of Traffic internals.&lt;br /&gt;
-I know there are people that can write a blog in 15 minutes, but I think hours is a more realistic time frame and, most of all, you are really in control of what&amp;rsquo;s happening.&lt;br /&gt;
-If you wanna play with &lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;Traffic&lt;/a&gt;, you can start by forking &lt;a href=&#34;https://github.com/wstucco/purrraceholder&#34;&gt;Purraceholder&lt;/a&gt; and adding some features.
-These are the firsts that come to mind:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;add more cats, there are never enough cats on the internet&lt;/li&gt;
-&lt;li&gt;treat special cases with special cats: longcat for vertical images, monorail cat for horizontal ones&lt;/li&gt;
-&lt;li&gt;add support for text overlay&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;happy coding with &lt;a href=&#34;https://github.com/pilu/traffic/&#34;&gt;Traffic&lt;/a&gt;.&lt;/p&gt;
 </description>
     </item>
     
