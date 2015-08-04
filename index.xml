@@ -6,8 +6,223 @@
     <description>Recent content on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 27 Jul 2015 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://massimoronca.it/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A month with Atom: my first package</title>
+      <link>http://massimoronca.it/2015/07/27/a-month-with-atom-my-first-package.html</link>
+      <pubDate>Mon, 27 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/07/27/a-month-with-atom-my-first-package.html</guid>
+      <description>&lt;p&gt;Exactly one month ago, Github relaesed version 1.0 of their open source editor Atom.
+ Giovanni &lt;a href=&#34;http://dev.mikamai.com/post/122755410549/a-month-long-atom-test-drive-from-an-emacs-fanatic&#34;&gt;already blogged&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/124331931184/atom-18-days-in&#34;&gt;about it&lt;/a&gt;, from the perspective of a long time Emacs lover: Atom still has a long way to go, but he also admitted that&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;There are several things going for Atom though. Coffeescript is a more popular language than Lisp, also, I know it better, so writing my own Atom extensions won’t be as hard as writing my Emacs extensions.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I&amp;rsquo;ve never been proficient enough with Lisp to write a package for Emacs, and Vimscript is really too hackish for the undisciplined developer I am.&lt;br /&gt;
+I know Javascript better, but I don&amp;rsquo;t love it.&lt;br /&gt;
+Atom packages can be written in Coffeescript, a language that I really enjoy.&lt;br /&gt;
+Language alone is surely not enough to declare that writing a package is going to be easy, but it gave me the confidence to try.&lt;/p&gt;
+
+&lt;p&gt;Our package will be very simple: it will put a live clock on the right side of the status bar that can be toggled on and off.&lt;/p&gt;
+
+&lt;p&gt;To begin, we create a &lt;code&gt;status-bar-clock&lt;/code&gt; folder inside &lt;code&gt;~/.atom/packages/&lt;/code&gt; and add a &lt;code&gt;package.json&lt;/code&gt;, in the same way we dot for regular node packages.&lt;br /&gt;
+Atom added a &lt;a href=&#34;https://atom.io/docs/v0.186.0/creating-a-package#packagejson&#34;&gt;few unique keys&lt;/a&gt;, where &lt;code&gt;main&lt;/code&gt; is the only one required and points to the entry point of our package.&lt;/p&gt;
+
+&lt;p&gt;The base version of our &lt;code&gt;package.json&lt;/code&gt; will look like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-json&#34;&gt;{
+  &amp;quot;name&amp;quot;: &amp;quot;status-bar-clock&amp;quot;,
+  &amp;quot;main&amp;quot;: &amp;quot;./lib/status-bar-clock&amp;quot;,
+  &amp;quot;version&amp;quot;: &amp;quot;0.0.1&amp;quot;,
+  &amp;quot;description&amp;quot;: &amp;quot;Show a clock inside the status bar&amp;quot;,
+  &amp;quot;repository&amp;quot;: &amp;quot;https://github.com/wstucco/status-bar-clock&amp;quot;,
+  &amp;quot;license&amp;quot;: &amp;quot;MIT&amp;quot;,
+  &amp;quot;engines&amp;quot;: {
+    &amp;quot;atom&amp;quot;: &amp;quot;&amp;gt;=1.0.0 &amp;lt;2.0.0&amp;quot;
+  }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then we create the package main and put it in &lt;code&gt;lib/ststus-bar-clock.coffee&lt;/code&gt;.&lt;br /&gt;
+Atom packages are simple objects that implement the two methods &lt;code&gt;activate&lt;/code&gt; and &lt;code&gt;deactivate&lt;/code&gt;; only &lt;code&gt;activate&lt;/code&gt; is required, &lt;code&gt;deactivate&lt;/code&gt; is called when the package is removed or deactivated from the preferences and is useful to clean up: in OO terms it&amp;rsquo;s the destructor.&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;ll start with the most basic package possible&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-coffeescript&#34;&gt;module.exports = StatusBarClock =
+  activate: (state) -&amp;gt;
+    console.log &#39;Clock was activated&#39;
+  deactivate: -&amp;gt;
+    console.log &#39;Clock was deactivated&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Save it and press &lt;code&gt;ctrl-alt-cmd-l&lt;/code&gt;, it will reload the editor, including our package code. If you open up the developer tools with &lt;code&gt;cmd-alt-i&lt;/code&gt; you should see the message &lt;code&gt;Clock was activated&lt;/code&gt; in the console.&lt;br /&gt;
+If you disable the package from the preferences, the message &lt;code&gt;Clock was deactivated&lt;/code&gt; will show up.&lt;br /&gt;
+We&amp;rsquo;re in business!&lt;/p&gt;
+
+&lt;p&gt;Enabling and disabling the package from the preferences is not very convenient, moreover it&amp;rsquo;s not what we really want, we just want to toggle the clock on or off, without having to disable the entire package.&lt;br /&gt;
+We&amp;rsquo;ll add a keyboard shortcut, &lt;code&gt;keymaps&lt;/code&gt; in Atom: keymaps are &lt;code&gt;json&lt;/code&gt; or &lt;code&gt;cson&lt;/code&gt; files inside the &lt;code&gt;keymaps&lt;/code&gt; folder (for documentation &lt;a href=&#34;https://atom.io/docs/latest/behind-atom-keymaps-in-depth&#34;&gt;see here&lt;/a&gt;).
+We bind the toggle command to &lt;code&gt;ctrl-alt-t&lt;/code&gt; (the same action should be present in the action menu if you press &lt;code&gt;cmd-shift-p&lt;/code&gt;)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-coffeescript&#34;&gt;# keymaps/status-bar-clock.cson
+&#39;atom-workspace&#39;:
+  &#39;ctrl-alt-t&#39;: &#39;status-bar-clock:toggle&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once we declared the mapping between keys and commands, we write the code to handle it.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;note: the binding will only work if we are inside the Atom workspace, so if, for example, the developer console has the focus, the binding won&amp;rsquo;t work&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-coffeescript&#34;&gt;{CompositeDisposable} = require &#39;atom&#39;
+
+module.exports = StatusBarClock =
+  active: false
+
+  activate: (state) -&amp;gt;
+    @subscriptions = new CompositeDisposable
+    # Register command that toggles this view
+    @subscriptions.add atom.commands.add &#39;atom-workspace&#39;, &#39;status-bar-clock:toggle&#39;: =&amp;gt; @toggle()
+
+    console.log &#39;Clock was activated&#39;
+  deactivate: -&amp;gt;
+    console.log &#39;Clock was deactivated&#39;
+
+  toggle: -&amp;gt;
+    console.log &#39;Clock was toggled on&#39; if @active
+    console.log &#39;Clock was toggled off&#39; if !@active
+
+    @active = ! !!@active
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we need to add the message to the status bar, the status bar in Atom is a &lt;code&gt;service&lt;/code&gt; and exposes an API that can be consumed.&lt;br /&gt;
+We declare this dependency in &lt;code&gt;package.json&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-json&#34;&gt;  &amp;quot;consumedServices&amp;quot;: {
+    &amp;quot;status-bar&amp;quot;: {
+      &amp;quot;versions&amp;quot;: {
+        &amp;quot;^1.0.0&amp;quot;: &amp;quot;consumeStatusBar&amp;quot;
+      }
+    }
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When the status bar is initialized, it will call a method in our package, passing an instance of itself as parameter.&lt;br /&gt;
+Status bar API docs can be found &lt;a href=&#34;https://github.com/atom/status-bar&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-coffeescript&#34;&gt;
+consumeStatusBar: (statusBar) -&amp;gt;
+  @statusBar = statusBar
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Status bar can display different blocks called &lt;code&gt;titles&lt;/code&gt; on the left and right side. The displayed element must be a view which &lt;em&gt;&amp;ldquo;can be a DOM element, a jQuery object, or a model object for which a view provider has been registered in the &lt;a href=&#34;https://atom.io/docs/api/v1.0.2/ViewRegistry&#34;&gt;view registry&lt;/a&gt;&amp;ldquo;&lt;/em&gt;&lt;br /&gt;
+We&amp;rsquo;re going the simple route and create a DOM element&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-coffeescript&#34;&gt;class StatusBarClockView extends HTMLElement
+  init: -&amp;gt;
+    @classList.add(&#39;status-bar-clock&#39;, &#39;inline-block&#39;)
+    @activate()
+
+  activate: -&amp;gt;
+    @intervalId = setInterval @updateClock.bind(@), 100
+
+  deactivate: -&amp;gt;
+    clearInterval @intervalId
+
+  getTime: -&amp;gt;
+    date = new Date
+
+    seconds = date.getSeconds()
+    minutes = date.getMinutes()
+    hour = date.getHours()
+
+    minutes = &#39;0&#39; + minutes if minutes &amp;lt; 10
+    seconds = &#39;0&#39; + seconds if seconds &amp;lt; 10
+
+    &amp;quot;#{hour}:#{minutes}:#{seconds}&amp;quot;
+
+  updateClock: -&amp;gt;
+    @textContent = @getTime()
+
+module.exports = document.registerElement &#39;status-bar-clock&#39;,
+  prototype: StatusBarClockView.prototype, extends: &#39;div&#39;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and display it&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-coffeescript&#34;&gt;{CompositeDisposable} = require &#39;atom&#39;
+StatusBarClockView = require &#39;./status-bar-clock-view&#39;
+
+module.exports = StatusBarClock =
+  active: false
+
+  activate: (state) -&amp;gt;
+    console.log &#39;Clock was activated&#39;
+
+    @subscriptions = new CompositeDisposable
+    # Register command that toggles this view
+    @subscriptions.add atom.commands.add &#39;atom-workspace&#39;,     &#39;status-bar-clock:toggle&#39;: =&amp;gt; @toggle()
+
+    @statusBarClockView = new StatusBarClockView()
+    @statusBarClockView.init()
+
+  deactivate: -&amp;gt;
+    console.log &#39;Clock was deactivated&#39;
+    @subscriptions.dispose()
+    @statusBarClockView.destroy()
+    @statusBarTile?.destroy()
+
+  toggle: -&amp;gt;
+    if @active
+      @statusBarTile.destroy()
+      @statusBarClockView.deactivate()
+    else
+      console.log &#39;Clock was toggled on&#39;
+      @statusBarClockView.activate()
+      @statusBarTile = @statusBar.addRightTile
+        item: @statusBarClockView, priority: -1
+
+    @active = ! !!@active
+
+  consumeStatusBar: (statusBar) -&amp;gt;
+    @statusBar = statusBar
+    # auto activate as soon as status bar activates
+    @toggle()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Last we add a submenu inside the &lt;code&gt;Package&lt;/code&gt; menu that executes the toggle command.&lt;br /&gt;
+Create a &lt;code&gt;menus/status-bar-clock.cson&lt;/code&gt; and add&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-coffeescript&#34;&gt;
+# See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
+&#39;menu&#39;: [
+  {
+    &#39;label&#39;: &#39;Packages&#39;
+    &#39;submenu&#39;: [
+      &#39;label&#39;: &#39;Clock&#39;
+      &#39;submenu&#39;: [
+        {
+          &#39;label&#39;: &#39;Toggle&#39;
+          &#39;command&#39;: &#39;status-bar-clock:toggle&#39;
+        }
+      ]
+    ]
+  }
+]
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Reload. The clock should be there at the bottom right, updating itself.&lt;br /&gt;
+The final package can be viewed at &lt;a href=&#34;https://github.com/wstucco/status-bar-clock&#34;&gt;https://github.com/wstucco/status-bar-clock&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>The importance of freedom according to Erlich Bachman</title>
@@ -1580,119 +1795,6 @@ For example, if you need to keep track of the environment and/or the previous st
       <description>&lt;p&gt;&lt;img src=&#34;http://massimoronca.it/assets/images/tumblr-email.jpg&#34; alt=&#34;LOL&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;LOL&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Start running your own DNS server</title>
-      <link>http://massimoronca.it/2014/02/10/start-running-your-own-dns-server.html</link>
-      <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
-      
-      <guid>http://massimoronca.it/2014/02/10/start-running-your-own-dns-server.html</guid>
-      <description>&lt;p&gt;A common problem in web development is simulating the final environment and, specifically, running your apps in their own private domain.&lt;br /&gt;
-One solution is editing the &lt;code&gt;/etc/hosts&lt;/code&gt; every time you need to add a new domain, but this can quickly become a very tedious process.&lt;br /&gt;
-If you work on OS X, you probably have heard of &lt;a href=&#34;http://pow.cx/&#34;&gt;Pow&lt;/a&gt;, but if you only need the domain resolution and don&amp;rsquo;t use Rails, it is probaly overkill to install a full featured application server just to create some dev domain.
-&lt;a href=&#34;http://www.mamp.info/en/mamp-pro/index.html?utm_medium=twitter&amp;amp;utm_source=twitterfeed&#34;&gt;MAMP Pro&lt;/a&gt; offers domain resolution too, but it&amp;rsquo;s not free.&lt;/p&gt;
-
-&lt;p&gt;There is, however, another solution: running your own instance of a DNS server.&lt;br /&gt;
-What you need it&amp;rsquo;s a copy of &lt;a href=&#34;http://www.thekelleys.org.uk/dnsmasq/doc.html&#34;&gt;dnsmasq&lt;/a&gt; and &lt;em&gt;stop worrying and love the shell.&lt;/em&gt;.&lt;/p&gt;
-
-&lt;p&gt;First of all install dnsmasq and put it in autostart&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;brew install dnsmasq  
-sudo cp -v $(brew --prefix dnsmasq)/*.plist /Library/LaunchDaemons
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Configure the dns intance&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat &amp;lt;&amp;lt;- EOF &amp;gt; $(brew --prefix)/etc/dnsmasq.conf
-# IPV4
-address=/dev/127.0.0.1
-# IPV6, otherwise virtual hosts in Maverick won&#39;t work
-address=/dev/::1
-listen-address=127.0.0.1
-EOF
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then we configure the resolvers for all domains and create the one for the &lt;code&gt;.dev&lt;/code&gt; suffixes&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo mkdir -p /etc/resolver
-# .dev domains
-sudo bash -c &#39;echo &amp;quot;nameserver 127.0.0.1&amp;quot; &amp;gt; /etc/resolver/dev&#39;
-# universal catcher
-sudo bash -c &#39;echo &amp;quot;nameserver 127.0.0.1&amp;quot; &amp;gt; /etc/resolver/catchall&#39;
-sudo bash -c &#39;echo &amp;quot;domain .&amp;quot; &amp;gt;&amp;gt; /etc/resolver/catchall&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Set localhost as main DNS server, unfortunately you can&amp;rsquo;t automatically prepend localhost to the list of DNSs your DHCP assigned to you.&lt;br /&gt;
-You have to change it manually and put 127.0.0.1 on top of the list.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;networksetup -setdnsservers Ethernet 127.0.0.1
-networksetup -setdnsservers Wi-Fi 127.0.0.1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If everything&amp;rsquo;s ok, running &lt;code&gt;scutil --dns&lt;/code&gt; should return something like this&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;resolver #8
-domain   : dev
-nameserver[0] : 127.0.0.1
-flags    : Request A records, Request AAAA records
-reach    : Reachable,Local Address
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now you can start dnsmasq&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# start dnsmasq
-sudo launchctl -w load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
-
-# make some tests
-$ ping -c 1 anyhostname.dev
-PING anyhostname.dev (127.0.0.1): 56 data bytes
-64 bytes from 127.0.0.1: icmp_seq=0 ttl=64 time=0.058 ms
-
-$ dig anyhostname.dev
-;; ANSWER SECTION:
-anyhostname.dev.	0	IN	A	127.0.0.1
-;; Query time: 3 msec
-;; SERVER: 127.0.0.1#53(127.0.0.1)
-
-
-$ dig google-public-dns-a.google.com @127.0.0.1
-;; ANSWER SECTION:
-google-public-dns-a.google.com.	25451 IN A	8.8.8.8
-;; Query time: 30 msec
-;; SERVER: 127.0.0.1#53(127.0.0.1)
-
-# cache will speedup subsequent DNS queries
-$ dig google-public-dns-a.google.com @127.0.0.1
-;; Query time: 0 msec
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Bonus: if you run Apache on your dev machine, you can easily setup the &lt;em&gt;one virtual host to rule them all&lt;/em&gt; through &lt;a href=&#34;http://httpd.apache.org/docs/2.4/vhosts/mass.html&#34;&gt;mass vistrual hosting&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Edit &lt;code&gt;/etc/apache2/extra/httpd-vhosts.conf&lt;/code&gt; and add this configuration, every &lt;code&gt;.dev&lt;/code&gt; domain will point to a folder with the same name, but without the extension, in &lt;code&gt;~/Sites&lt;/code&gt; folder.&lt;br /&gt;
-For example, &lt;code&gt;myapp.dev&lt;/code&gt; will point to &lt;code&gt;~/Sites/myapp&lt;/code&gt;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-apache&#34;&gt;&amp;lt;VirtualHost *:80&amp;gt;
-    ServerAdmin you@localhost
-    ServerName anyhostname.dev
-    ServerAlias *.dev
-
-    UseCanonicalName Off
-    # %1.0 is the domain without the extension, in this case
-    # everything before .dev
-    # more info: http://httpd.apache.org/docs/2.4/mod/mod_vhost_alias.html
-    VirtualDocumentRoot /Users/[your_login]/Sites/%1.0
-    ErrorLog &amp;quot;/var/log/apache2/dev_hosts_error_log&amp;quot;
-    CustomLog &amp;quot;/var/log/apache2/dev_hosts_access_log&amp;quot; common
-
-    &amp;lt;Directory /Users/[your_login]/Sites/*&amp;gt;
-        AllowOverride All
-    &amp;lt;/Directory&amp;gt;
-&amp;lt;/VirtualHost&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You can finally reload Apache configuration with &lt;code&gt;sudo apachectl graceful&lt;/code&gt;.&lt;/p&gt;
 </description>
     </item>
     
