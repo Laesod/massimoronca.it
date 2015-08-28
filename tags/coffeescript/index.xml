@@ -220,7 +220,7 @@ Create a &lt;code&gt;menus/status-bar-clock.cson&lt;/code&gt; and add&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Reload. The clock should be there at the bottom right, updating itself.&lt;br /&gt;
-The final package can be viewed at &lt;a href=&#34;https://github.com/wstucco/status-bar-clock&#34;&gt;https://github.com/wstucco/status-bar-clock&lt;/a&gt;.&lt;/p&gt;
+You can find the source code on &lt;a href=&#34;https://github.com/wstucco/status-bar-&#34;&gt;GitHub&lt;/a&gt; and the final package on &lt;a href=&#34;https://atom.io/packages/status-bar-clock&#34;&gt;atom.io&lt;/a&gt;.&lt;/p&gt;
 </description>
     </item>
     
