@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>{{ .Site.Title }}</title>
+    <title>{{ .Site.Title }}{{if ne .URL "/"}} - {{ .Title }}{{end}}</title>
 
-    <base href="{{ .Site.BaseUrl }}">
+    <base href="{{ .Site.BaseURL }}">
 
     {{ if isset .Params "tags" }}
-    <meta name="description" content="Welcome to Massimo Ronca website, this post is about: {{ range .Params.tags }} . {{ end }}">
+    <meta name="description" content="Welcome to Massimo Ronca website, this post is about: {{delimit .Params.tags ", "}}">
     {{ else }}
     <meta name="description" content="Welcome to Massimo Ronca website. I am a full stack developer, and definitely a tech enthusiast. This is about what I do."/>
     {{ end }}
@@ -20,11 +20,16 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
+    <link href="{{ .RSSlink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
+
     <link rel="icon" type="image/png" href="/assets/images/icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
+    <meta name="og:title" content="{{ .Title }}">
+    <meta name="og:type" content="website">
   </head>
   <body>
     <div class="wrapper">
