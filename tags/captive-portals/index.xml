@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Captive Portals on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://localhost:1313/tags/captive-portals.html</link>
+    <description>Recent content in Captive Portals on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 20 May 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/captive-portals.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Disable captive network support in OS X</title>
+      <link>http://localhost:1313/2015/05/20/disable-captive-network-support-in-os-x.html</link>
+      <pubDate>Wed, 20 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/2015/05/20/disable-captive-network-support-in-os-x.html</guid>
+      <description>&lt;p&gt;iOS4+ and OS X (10.7+) Devices have a feature called Captive Network Support, which when you connect to an access point tries to download:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.apple.com/library/test/success.html&#34;&gt;http://www.apple.com/library/test/success.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;to see if the device is connected to the internet. If it doesn&amp;rsquo;t get the success response it assumes you are behind a captive portal and pops a webkit window so you can do the portal dance.  This is mostly useful if you are using thick-client apps, since if you&amp;rsquo;re using a browser you&amp;rsquo;re going to see the portal page as soon as you go anywhere.&lt;/p&gt;
+
+&lt;p&gt;To disable it, set this preference:&lt;/p&gt;
+
+&lt;p&gt;sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control Active -boolean false`&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

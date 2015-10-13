@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ruby Extensions on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
+    <link>http://massimoronca.it/tags/ruby-extensions.html</link>
+    <description>Recent content in Ruby Extensions on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 12 Oct 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://massimoronca.it/tags/ruby-extensions.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Writing Ruby extensions in Go - an in depth review</title>
+      <link>http://massimoronca.it/2015/10/12/writing-ruby-extensions-in-go---an-in-depth-review.html</link>
+      <pubDate>Mon, 12 Oct 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/10/12/writing-ruby-extensions-in-go---an-in-depth-review.html</guid>
+      <description>
+
+&lt;p&gt;For a very long time the only way to extend Ruby with native estensions has been using &lt;code&gt;C&lt;/code&gt;.&lt;br /&gt;
+I don&amp;rsquo;t have the numbers with me, but I guess &lt;code&gt;C&lt;/code&gt; is not the first choice for Ruby programmers when they have to pick up a secondary/complentary language.&lt;br /&gt;
+So I started investigating the possibility of writing them in other languages, taking advantage of the favorable moment: in the past 3-4 years we had an explosion of new languages that compile down to native code and can be easily used to produce a &lt;code&gt;C&lt;/code&gt; equivalent shared library that Ruby can pick up and load.&lt;/p&gt;
+
+&lt;p&gt;My main goal was to find languages that a Ruby programmer would understand effortlessly or with a minimum investment.&lt;br /&gt;
+This first episode will focus on Go.&lt;/p&gt;
+
+&lt;h2 id=&#34;you-will-need-go-1-5-or-above:e8d41cd2ae3d619118c1ce574d5f3b9a&#34;&gt;You will need Go 1.5 or above&lt;/h2&gt;
+
+&lt;p&gt;Up until version 1.4, there was really no point in building a native extension in Go, you&amp;rsquo;d have to create a &lt;code&gt;C&lt;/code&gt; proxy function for every Go function being called, at the point that there was literally no benefit compared to writing everything in pure &lt;code&gt;C&lt;/code&gt;.&lt;br /&gt;
+With version 1.5, Go made a step forward, introducing the support for building shared objects; this opens up a lot of new possibilities for writing shared code that gets executed outside the Go environment, including Ruby.&lt;/p&gt;
+
+&lt;h2 id=&#34;done-in-60-seconds:e8d41cd2ae3d619118c1ce574d5f3b9a&#34;&gt;Done in 60 seconds&lt;/h2&gt;
+
+&lt;p&gt;This is all your &amp;ldquo;hello world&amp;rdquo; extension will just be:&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=hello_world.go&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Compile it with&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=build.sh&#34;&gt;&lt;/script&gt;
+    
+
+&lt;p&gt;Have I already told you that &lt;a href=&#34;https://github.com/ffi/ffi/wiki&#34;&gt;FFI&lt;/a&gt; is awesome?&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=hello_world.rb&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;There are a few things you need to pay attention to:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It is better to put &lt;code&gt;import &amp;quot;C&amp;quot;&lt;/code&gt; on its own line, separated from other imports, we&amp;rsquo;ll see why in a moment&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;//export&lt;/code&gt; is a special &lt;a href=&#34;https://golang.org/cmd/cgo/&#34;&gt;Cgo&lt;/a&gt; comment that instructs the compiler to emit a &lt;code&gt;C&lt;/code&gt; function with the same name and parameters. The name of the exported &lt;code&gt;C&lt;/code&gt; function must match the name of the Go function or it will fail. The comment must start exactly with &lt;code&gt;//export&lt;/code&gt;, no spaces anywhere.&lt;/li&gt;
+&lt;li&gt;a &lt;code&gt;func main&lt;/code&gt; is required, but then ignored&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;autarchy-or-writing-extensions-the-hard-way:e8d41cd2ae3d619118c1ce574d5f3b9a&#34;&gt;Autarchy, or writing extensions the hard way&lt;/h2&gt;
+
+&lt;p&gt;This could be all, but of course it is not.&lt;br /&gt;
+Writing a Ruby extensions in a different language is one thing, writing it because the other language really offers some noticeable advantage, is entirely different.&lt;br /&gt;
+As a base for this series of articles, I will port the &lt;a href=&#34;https://github.com/SamSaffron/fast_blank&#34;&gt;&lt;code&gt;fast_blank&lt;/code&gt;&lt;/a&gt; &lt;code&gt;C&lt;/code&gt; extension.&lt;br /&gt;
+I&amp;rsquo;ve chosen it for very simple reasons:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;it is deadly easy to port, even to languages that I&amp;rsquo;m not particularly familiar with&lt;/li&gt;
+&lt;li&gt;it bundles a benchmark suite, so we can measure the performance gains/losses&lt;/li&gt;
+&lt;li&gt;it is real life code that&amp;rsquo;s been downloaded a quarter million times so far&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;For the impatients: you can clone the &lt;a href=&#34;https://github.com/mikamai/go_fast_blank&#34;&gt;repo of the &lt;code&gt;go_fast_blank&lt;/code&gt; gem on Github&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Even if &lt;code&gt;FFI&lt;/code&gt; is great, it is still a dependency, that needs to be installed and maintained.&lt;br /&gt;
+&lt;code&gt;C&lt;/code&gt; extensions are usually self contained and take advantage of the &lt;code&gt;MRI&lt;/code&gt; &lt;code&gt;C&lt;/code&gt; programming interface to build the necessary exported APIs.&lt;br /&gt;
+Go has a very good support for interfacing to &lt;code&gt;C&lt;/code&gt; as you can see in this file&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=go_fast_blank.go&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;There are some new tricks here, that need an explanation.&lt;br /&gt;
+Just before &lt;code&gt;import &amp;quot;C&amp;quot;&lt;/code&gt; we find what&amp;rsquo;s called &amp;ldquo;preamble&amp;rdquo; by Cgo, and it&amp;rsquo;s just &lt;code&gt;C&lt;/code&gt; code that the compiler put at the beginning of the generated file, as it is, before starting the compilation.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;IMPORTANT&lt;/strong&gt;: there must be no empty line between the end of the preamble and the &lt;code&gt;import &amp;quot;C&amp;quot;&lt;/code&gt; directive or the compilation will fail.&lt;br /&gt;
+that&amp;rsquo;s the reason why I told you to put &lt;code&gt;import &amp;quot;C&amp;quot;&lt;/code&gt; on its own line.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In other words, the generated code will start with&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=preamble.c&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;You probably have guessed that the &lt;code&gt;C&lt;/code&gt; prefix gives access to the &lt;code&gt;C&lt;/code&gt; world directly from Go, with some added benefit: for example the &lt;code&gt;C.CString&lt;/code&gt; converts Go native strings to &lt;code&gt;C&lt;/code&gt; (&lt;code&gt;char*&lt;/code&gt;) strings. This function allocates memory, so you &lt;em&gt;must&lt;/em&gt; free the memory using &lt;code&gt;C.free&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;We do that in &lt;code&gt;defer C.free(unsafe.Pointer(cs))&lt;/code&gt;, that tells Go to free the memory as soon as the surroinding function returns and is a very common pattern.&lt;br /&gt;
+The pointer to the string is declared as &lt;code&gt;unsafe.Pointer&lt;/code&gt; because it does not belong to the Go world.&lt;/p&gt;
+
+&lt;p&gt;Another thing you might have noticed is the reverse twin function &lt;code&gt;C.GoString&lt;/code&gt; that takes a &lt;code&gt;C&lt;/code&gt; string and returns a Go string.  In this case no memory is allocated, the GC takes care of everything, so no freeing is required.&lt;/p&gt;
+
+&lt;p&gt;Some of the code just refers to the &lt;code&gt;MRI&lt;/code&gt; programming interface, defined in &lt;code&gt;ruby.h&lt;/code&gt; and related headers.&lt;br /&gt;
+For example &lt;code&gt;C.VALUE&lt;/code&gt; is a macro for various types of pointers to data structures (from strings to function pointers) and &lt;code&gt;C.rb_define_method&lt;/code&gt; defines a new method.&lt;br /&gt;
+It takes four parameters: the class to which the method belongs to (in this case &lt;code&gt;C.rb_cString&lt;/code&gt; which is the Ruby equivalent of the builtin &lt;code&gt;String&lt;/code&gt; class), the name of the method (in this case &lt;code&gt;blank?&lt;/code&gt;) a callback and the number of arguments (zero in our case).&lt;/p&gt;
+
+&lt;p&gt;Basically we are writing something like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;class String
+    def blank?
+    ...
+    end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The third argument of &lt;code&gt;C.rb_define_method&lt;/code&gt; is the &lt;code&gt;C&lt;/code&gt; function that gets executed when the method is invoked on the Ruby side.&lt;br /&gt;
+The Go runtime and the &lt;code&gt;C&lt;/code&gt; code are executed in different threads, with different stacks, it it prohibited to pass a pointer to Go code to &lt;code&gt;C&lt;/code&gt;, so we can&amp;rsquo;t take a pointer to a Go function and simly pass it to &lt;code&gt;C&lt;/code&gt;, because it won&amp;rsquo;t work.&lt;/p&gt;
+
+&lt;p&gt;There is a workaround, we can &lt;code&gt;//export&lt;/code&gt; our Go function and pass the pointer to it instead, after casting it to &lt;code&gt;*[0]byte&lt;/code&gt; (the Go equivalent of &lt;code&gt;void*&lt;/code&gt;): &lt;code&gt;(*[0]byte)(C.go_fast_blank)&lt;/code&gt;.&lt;br /&gt;
+There is only a small problem: &lt;code&gt;C.go_fast_blank&lt;/code&gt; does not exists until the &lt;code&gt;C&lt;/code&gt; files are compiled, so we cannot implicitly refer to it.&lt;br /&gt;
+We need to add a forward declaration to tell the compiler we know this function exists and it&amp;rsquo;s imlpemented somewhere else outside here.&lt;br /&gt;
+That&amp;rsquo;s what the line &lt;code&gt;extern inline VALUE go_fast_blank(VALUE);&lt;/code&gt; is for, and it&amp;rsquo;s a standar declaration for &lt;code&gt;rb_define_method&lt;/code&gt; callbacks (&lt;code&gt;function_name(VALUE) -&amp;gt; VALUE&lt;/code&gt;).&lt;br /&gt;
+The rest is quite straightforward:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;gs := C.GoString(C.rb_string_value_cstr(&amp;amp;s))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Take a &lt;code&gt;VALUE&lt;/code&gt; convert it to a &lt;code&gt;C&lt;/code&gt; string and then convert the result to a Go string.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;if gs == &amp;quot;&amp;quot; || strings.TrimLeftFunc(gs, unicode.IsSpace) == &amp;quot;&amp;quot; {
+    return C.Qtrue
+}
+
+return C.Qfalse
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If the string is empty or after removing all the unicode spaces on the left side, it is still empty, we found a blank string. Otherwise we return false.&lt;br /&gt;
+&lt;code&gt;Qtrue&lt;/code&gt; and &lt;code&gt;Qfalse&lt;/code&gt; are just two &lt;code&gt;C&lt;/code&gt; #defines that map to a Ruby boolean.&lt;/p&gt;
+
+&lt;p&gt;Each extension has an &lt;code&gt;Init&lt;/code&gt; function, and it&amp;rsquo;s automatically called when the extension is &lt;code&gt;require&lt;/code&gt;d.&lt;br /&gt;
+The name of the function must be &lt;code&gt;Init_#{extension_name}&lt;/code&gt;, in our case &lt;code&gt;Init_go_fast_blank&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Last but not least, to compile our self contained extension, we need to pass some flags to the compiler. We&amp;rsquo;ll do it using a specific Cgo comment: &lt;code&gt;#cgo&lt;/code&gt;.&lt;br /&gt;
+just before the &lt;code&gt;#include &amp;quot;ruby.h&amp;quot;&lt;/code&gt; add these lines&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-C&#34;&gt;
+#cgo: CFLAGS: -I#{RbConfig::CONFIG[&#39;rubyhdrdir&#39;]} -I#{RbConfig::CONFIG[&#39;rubyarchhdrdir&#39;]}
+#cgo: LDFLAGS: -L#{RbConfig::CONFIG[&#39;libdir&#39;]} #{RbConfig::CONFIG[&#39;LIBRUBYARG&#39;]}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The interpolation codes must be replaced with the actual value.&lt;br /&gt;
+I&amp;rsquo;ve put it there for reference.&lt;br /&gt;
+Hint: the output must have &lt;code&gt;.bundle&lt;/code&gt; extension and not &lt;code&gt;.so&lt;/code&gt; as we did before, othewise Ruby will refuse to laod it.&lt;br /&gt;
+In the &lt;a href=&#34;https://github.com/mikamai/go_fast_blank&#34;&gt;repo of the &lt;code&gt;go_fast_blank&lt;/code&gt; gem&lt;/a&gt; you can find an ad hoc &lt;code&gt;extconf.rb&lt;/code&gt; that will take care of everything.&lt;/p&gt;
+
+&lt;h2 id=&#34;race-for-the-prize-https-www-youtube-com-watch-v-bs56ygzplqa:e8d41cd2ae3d619118c1ce574d5f3b9a&#34;&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=bs56ygZplQA&#34;&gt;Race for the prize&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;Now we have a compiled, native, Ruby extension, launch &lt;code&gt;irb&lt;/code&gt; and type&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;2.2.2 :001 &amp;gt; require &#39;go_fast_blank&#39;
+go_fast_blank init
+ =&amp;gt; true 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You should see our extension announcing itself by printing &lt;code&gt;go_fast_blank init&lt;/code&gt;.&lt;br /&gt;
+It&amp;rsquo;s time to measure the performances and comment the results.&lt;br /&gt;
+After launching &lt;code&gt;benchmark&lt;/code&gt;, the numbers are:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/4YddNT2.png&#34; alt=&#34;Ruby VS Go&#34; title=&#34;Ruby VS Go&#34; /&gt;&lt;br /&gt;
+Go is between 2 and 4 times slower than the original Ruby implementation!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/48BOGlI.png&#34; alt=&#34;GO, Y U SO SLOW&#34; title=&#34;Y U SO SLOW?&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Well, first of all Go is not only slower than Ruby, but it&amp;rsquo;s plateuing, looks like the speed
+of the Go extension is not influenced byt the length of the string, but it&amp;rsquo;s just going as fast as it can,
+and that is the fastest speed possible.&lt;br /&gt;
+A loss in performance was to be expected, Go generate code that interacts with its memory manager and scheduler, it is somewhat in between Java and compiled languages.&lt;br /&gt;
+But honestly actually running slower than Ruby code was a real surprise.&lt;br /&gt;
+According to this &lt;a href=&#34;https://groups.google.com/forum/#!msg/golang-nuts/RTtMsgZi88Q/61hgyGSkWiQJ&#34;&gt;Russ Cox answer&lt;/a&gt;, calling &lt;code&gt;C&lt;/code&gt; from Go has an aoverhead
+similar to calling ten Go functions, looks like Go is one of those languages that can run faster ported code, than calling
+the &lt;code&gt;C&lt;/code&gt; implementation.&lt;br /&gt;
+If every function call counts for ten, it&amp;rsquo;s no wonder that calling it thousands of time in a tight loop, would cause such
+a tremendous loss in performances.&lt;br /&gt;
+To test this assumption, I moved the tight loop from Ruby to the Go extension: I ran the same comparison one thousand times
+inside a Go loop and the same I did on the Ruby side.&lt;br /&gt;
+These are the new results:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/hCDdCfA.png&#34; alt=&#34;Ruby VS Go updated&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This time Go ran a bit faster, but with long strings the same slowness arises.&lt;br /&gt;
+I suspect the conversions routines from Ruby VALUE to Go strings are responsible for most of the overhead.&lt;br /&gt;
+Removing it from the equation gave me much better results (between 300 and 16 times faster than Ruby), but it&amp;rsquo;s a low level optimization that makes sense only for three lines functions that are called over and over again, like this one.&lt;br /&gt;
+These numbers are not to be taken as a real benchmark, they are just the results of a micro benchmark and are not representetive of real performances in a real world application.
+But they clearly show that running Go in a tight loop has a serious performance overhead, while if you delegate to
+Go some heavy lifting work, it can give some performance boost.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:e8d41cd2ae3d619118c1ce574d5f3b9a&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;Writing Ruby extensions in Go, especially in conjunction with the great &lt;code&gt;FFI&lt;/code&gt; library, can be real fun.&lt;br /&gt;
+You got the feeling of &lt;em&gt;&amp;ldquo;scripting Ruby&amp;rdquo;&lt;/em&gt; without any of the drawbacks of writing low level &lt;code&gt;C&lt;/code&gt; code.&lt;br /&gt;
+Writing completely auto contained extensions, it&amp;rsquo;s a lot more work, but it&amp;rsquo;s more tedious than hard.
+The situation could improve vastly when someone will wrap the Ruby programming interface in a nice Go package to hide the &lt;code&gt;C&lt;/code&gt; inheritance and maybe
+write a &lt;a href=&#34;https://blog.golang.org/generate&#34;&gt;&lt;code&gt;go:generate&lt;/code&gt;&lt;/a&gt; plugin to automate all the boilperplate code (for example
+exporting the functions to &lt;code&gt;C&lt;/code&gt;). But in the end it is still a lot easier than writing pure &lt;code&gt;C&lt;/code&gt;.&lt;br /&gt;
+Perfomance wise though, I&amp;rsquo;m doubtful that you could have some gain just by rewriting parts of you app in Go.&lt;br /&gt;
+It is in fact quite possibly the opposite.&lt;br /&gt;
+Go has a performance problem when intercating with &lt;code&gt;C&lt;/code&gt; and it&amp;rsquo;s by design.&lt;/p&gt;
+
+&lt;p&gt;However, there could be patterns where Go could be really helpful.&lt;br /&gt;
+I&amp;rsquo;m sure Go channles and concurrency are worth exploring.&lt;br /&gt;
+Maybe in a next episode.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
