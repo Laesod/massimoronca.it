@@ -4,6 +4,8 @@ date: "2015-10-12"
 description: "For a very long time the only way to extend Ruby with native estensions has been using <i>C</i>.<br>
 My goal is to find languages that we can use to create extensions, that a Ruby programmer would understand effortlessly or with a minimum investment.<br>
 This first episode will focus on Go"
+source_name: MIKAMAYHEM
+source_url: http://dev.mikamai.com/post/130986121064/writing-ruby-extensions-in-go-an-in-depth-review
 tags:
 - Ruby
 - Ruby extensions
