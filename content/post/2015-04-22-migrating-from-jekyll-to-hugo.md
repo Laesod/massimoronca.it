@@ -2,7 +2,6 @@
 title: "Migrating from Jekyll to Hugo"
 date: "2015-04-22"
 description: I was ok with Jekyll, with Hugo I'm happy.
-draft: true
 tags:
   - Jekyll
   - Hugo

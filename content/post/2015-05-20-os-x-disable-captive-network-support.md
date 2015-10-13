@@ -2,7 +2,6 @@
 title: Disable captive network support in OS X
 date: "2015-05-20"
 description: 
-draft: true
 tags:
 - OS X
 - captive network support
