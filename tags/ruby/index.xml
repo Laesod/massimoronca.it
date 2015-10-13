@@ -33,16 +33,45 @@ With version 1.5, Go made a step forward, introducing the support for building s
 
 &lt;p&gt;This is all your &amp;ldquo;hello world&amp;rdquo; extension will just be:&lt;/p&gt;
 
-&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=hello_world.go&#34;&gt;&lt;/script&gt;
+&lt;pre&gt;&lt;code class=&#34;language-golang&#34;&gt;package main
+
+import &amp;quot;C&amp;quot;
+import &amp;quot;fmt&amp;quot;
+
+//export hello_world
+func hello_world() {
+    fmt.Println(&amp;quot;hello world&amp;quot;)
+}
+
+func main() {} // Required but ignored
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Compile it with&lt;/p&gt;
 
-&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=build.sh&#34;&gt;&lt;/script&gt;
-    
+&lt;pre&gt;&lt;code class=&#34;language-shell&#34;&gt;go build -buildmode=c-shared -o hello.so hello.go
+
+# if no error is returned you can check that the shared library is exporting
+# the right symbols by executing
+# $ nm -gU ./hello.so | grep hello
+# 0000000000002050 T __cgoexp_d4a435ec6890_hello_world
+# 0000000000001ae0 T _hello_world &amp;lt;--- ALL SYSTEMS ARE GO
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Have I already told you that &lt;a href=&#34;https://github.com/ffi/ffi/wiki&#34;&gt;FFI&lt;/a&gt; is awesome?&lt;/p&gt;
 
-&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=hello_world.rb&#34;&gt;&lt;/script&gt;
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;# copy and paste inside irb or other ruby repl
+require &#39;ffi&#39;
+
+module Say
+  extend FFI::Library
+  ffi_lib &#39;./hello.so&#39;
+  attach_function :hello_world, [], :void
+end
+
+Say.hello_world
+# hello world
+#  =&amp;gt; nil 
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;There are a few things you need to pay attention to:&lt;/p&gt;
 
@@ -73,7 +102,42 @@ I&amp;rsquo;ve chosen it for very simple reasons:&lt;/p&gt;
 &lt;code&gt;C&lt;/code&gt; extensions are usually self contained and take advantage of the &lt;code&gt;MRI&lt;/code&gt; &lt;code&gt;C&lt;/code&gt; programming interface to build the necessary exported APIs.&lt;br /&gt;
 Go has a very good support for interfacing to &lt;code&gt;C&lt;/code&gt; as you can see in this file&lt;/p&gt;
 
-&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=go_fast_blank.go&#34;&gt;&lt;/script&gt;
+&lt;pre&gt;&lt;code class=&#34;language-golang&#34;&gt;package main
+
+/*
+#include &amp;quot;ruby.h&amp;quot;
+extern inline VALUE go_fast_blank(VALUE);
+*/
+import &amp;quot;C&amp;quot;
+import (
+    &amp;quot;fmt&amp;quot;
+    &amp;quot;strings&amp;quot;
+    &amp;quot;unicode&amp;quot;
+    &amp;quot;unsafe&amp;quot;
+)
+
+//export go_fast_blank
+func go_fast_blank(s C.VALUE) C.VALUE {
+    gs := C.GoString(C.rb_string_value_cstr(&amp;amp;s))
+
+    if gs == &amp;quot;&amp;quot; || strings.TrimLeftFunc(gs, unicode.IsSpace) == &amp;quot;&amp;quot; {
+        return C.Qtrue
+    }
+
+    return C.Qfalse
+}
+
+//export Init_go_fast_blank
+func Init_go_fast_blank() {
+    fmt.Println(&amp;quot;go_fast_blank init&amp;quot;)
+    cs := C.CString(&amp;quot;blank?&amp;quot;)
+    defer C.free(unsafe.Pointer(cs))
+
+    C.rb_define_method(C.rb_cString, cs, (*[0]byte)(C.go_fast_blank), 0)
+}
+
+func main() {} // Required but ignored
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;There are some new tricks here, that need an explanation.&lt;br /&gt;
 Just before &lt;code&gt;import &amp;quot;C&amp;quot;&lt;/code&gt; we find what&amp;rsquo;s called &amp;ldquo;preamble&amp;rdquo; by Cgo, and it&amp;rsquo;s just &lt;code&gt;C&lt;/code&gt; code that the compiler put at the beginning of the generated file, as it is, before starting the compilation.&lt;/p&gt;
@@ -85,7 +149,23 @@ that&amp;rsquo;s the reason why I told you to put &lt;code&gt;import &amp;quot;C
 
 &lt;p&gt;In other words, the generated code will start with&lt;/p&gt;
 
-&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=preamble.c&#34;&gt;&lt;/script&gt;
+&lt;pre&gt;&lt;code class=&#34;language-C&#34;&gt;/* Created by &amp;quot;go tool cgo&amp;quot; - DO NOT EDIT. */
+
+/* package command-line-arguments */
+
+/* Start of preamble from import &amp;quot;C&amp;quot; comments.  */
+
+
+#line 3 &amp;quot;/Users/name/path/ext/go_fast_blank/go_fast_blank.go&amp;quot;
+
+#include &amp;quot;ruby.h&amp;quot;
+
+extern inline VALUE go_fast_blank(VALUE);
+
+
+
+/* End of preamble from import &amp;quot;C&amp;quot; comments.  */
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;You probably have guessed that the &lt;code&gt;C&lt;/code&gt; prefix gives access to the &lt;code&gt;C&lt;/code&gt; world directly from Go, with some added benefit: for example the &lt;code&gt;C.CString&lt;/code&gt; converts Go native strings to &lt;code&gt;C&lt;/code&gt; (&lt;code&gt;char*&lt;/code&gt;) strings. This function allocates memory, so you &lt;em&gt;must&lt;/em&gt; free the memory using &lt;code&gt;C.free&lt;/code&gt;.&lt;/p&gt;
 

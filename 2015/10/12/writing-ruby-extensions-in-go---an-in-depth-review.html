@@ -13,10 +13,10 @@
 
     <link rel="stylesheet" href="/assets/stylesheets/fonts.css">
     <link rel="stylesheet" href="/assets/stylesheets/styles.css">
-    <link rel="stylesheet" href="/assets/stylesheets/highlight/solarized-dark.css">
-    <link rel="stylesheet" href="/assets/stylesheets/gist/line-number-fix.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/solarized_dark.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
 
     <link href="" rel="alternate" type="application/rss+xml" title="Massimo Ronca ~ a reckless programmer with a sarcastic wit" />
 
@@ -67,16 +67,45 @@ With version 1.5, Go made a step forward, introducing the support for building s
 
 <p>This is all your &ldquo;hello world&rdquo; extension will just be:</p>
 
-<script src="https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=hello_world.go"></script>
+<pre><code class="language-golang">package main
+
+import &quot;C&quot;
+import &quot;fmt&quot;
+
+//export hello_world
+func hello_world() {
+    fmt.Println(&quot;hello world&quot;)
+}
+
+func main() {} // Required but ignored
+</code></pre>
 
 <p>Compile it with</p>
 
-<script src="https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=build.sh"></script>
-    
+<pre><code class="language-shell">go build -buildmode=c-shared -o hello.so hello.go
+
+# if no error is returned you can check that the shared library is exporting
+# the right symbols by executing
+# $ nm -gU ./hello.so | grep hello
+# 0000000000002050 T __cgoexp_d4a435ec6890_hello_world
+# 0000000000001ae0 T _hello_world &lt;--- ALL SYSTEMS ARE GO
+</code></pre>
 
 <p>Have I already told you that <a href="https://github.com/ffi/ffi/wiki">FFI</a> is awesome?</p>
 
-<script src="https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=hello_world.rb"></script>
+<pre><code class="language-ruby"># copy and paste inside irb or other ruby repl
+require 'ffi'
+
+module Say
+  extend FFI::Library
+  ffi_lib './hello.so'
+  attach_function :hello_world, [], :void
+end
+
+Say.hello_world
+# hello world
+#  =&gt; nil 
+</code></pre>
 
 <p>There are a few things you need to pay attention to:</p>
 
@@ -107,7 +136,42 @@ I&rsquo;ve chosen it for very simple reasons:</p>
 <code>C</code> extensions are usually self contained and take advantage of the <code>MRI</code> <code>C</code> programming interface to build the necessary exported APIs.<br />
 Go has a very good support for interfacing to <code>C</code> as you can see in this file</p>
 
-<script src="https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=go_fast_blank.go"></script>
+<pre><code class="language-golang">package main
+
+/*
+#include &quot;ruby.h&quot;
+extern inline VALUE go_fast_blank(VALUE);
+*/
+import &quot;C&quot;
+import (
+    &quot;fmt&quot;
+    &quot;strings&quot;
+    &quot;unicode&quot;
+    &quot;unsafe&quot;
+)
+
+//export go_fast_blank
+func go_fast_blank(s C.VALUE) C.VALUE {
+    gs := C.GoString(C.rb_string_value_cstr(&amp;s))
+
+    if gs == &quot;&quot; || strings.TrimLeftFunc(gs, unicode.IsSpace) == &quot;&quot; {
+        return C.Qtrue
+    }
+
+    return C.Qfalse
+}
+
+//export Init_go_fast_blank
+func Init_go_fast_blank() {
+    fmt.Println(&quot;go_fast_blank init&quot;)
+    cs := C.CString(&quot;blank?&quot;)
+    defer C.free(unsafe.Pointer(cs))
+
+    C.rb_define_method(C.rb_cString, cs, (*[0]byte)(C.go_fast_blank), 0)
+}
+
+func main() {} // Required but ignored
+</code></pre>
 
 <p>There are some new tricks here, that need an explanation.<br />
 Just before <code>import &quot;C&quot;</code> we find what&rsquo;s called &ldquo;preamble&rdquo; by Cgo, and it&rsquo;s just <code>C</code> code that the compiler put at the beginning of the generated file, as it is, before starting the compilation.</p>
@@ -119,7 +183,23 @@ that&rsquo;s the reason why I told you to put <code>import &quot;C&quot;</code> 
 
 <p>In other words, the generated code will start with</p>
 
-<script src="https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=preamble.c"></script>
+<pre><code class="language-C">/* Created by &quot;go tool cgo&quot; - DO NOT EDIT. */
+
+/* package command-line-arguments */
+
+/* Start of preamble from import &quot;C&quot; comments.  */
+
+
+#line 3 &quot;/Users/name/path/ext/go_fast_blank/go_fast_blank.go&quot;
+
+#include &quot;ruby.h&quot;
+
+extern inline VALUE go_fast_blank(VALUE);
+
+
+
+/* End of preamble from import &quot;C&quot; comments.  */
+</code></pre>
 
 <p>You probably have guessed that the <code>C</code> prefix gives access to the <code>C</code> world directly from Go, with some added benefit: for example the <code>C.CString</code> converts Go native strings to <code>C</code> (<code>char*</code>) strings. This function allocates memory, so you <em>must</em> free the memory using <code>C.free</code>.</p>
 

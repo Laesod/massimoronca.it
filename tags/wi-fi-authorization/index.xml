@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Wi Fi Authorization on Massimo Ronca ~ a reckless programmer with a sarcastic wit</title>
-    <link>http://localhost:1313/tags/wi-fi-authorization.html</link>
+    <link>http://massimoronca.it/tags/wi-fi-authorization.html</link>
     <description>Recent content in Wi Fi Authorization on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 20 May 2015 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/wi-fi-authorization.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://massimoronca.it/tags/wi-fi-authorization.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Disable captive network support in OS X</title>
-      <link>http://localhost:1313/2015/05/20/disable-captive-network-support-in-os-x.html</link>
+      <link>http://massimoronca.it/2015/05/20/disable-captive-network-support-in-os-x.html</link>
       <pubDate>Wed, 20 May 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/2015/05/20/disable-captive-network-support-in-os-x.html</guid>
+      <guid>http://massimoronca.it/2015/05/20/disable-captive-network-support-in-os-x.html</guid>
       <description>&lt;p&gt;iOS4+ and OS X (10.7+) Devices have a feature called Captive Network Support, which when you connect to an access point tries to download:&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;http://www.apple.com/library/test/success.html&#34;&gt;http://www.apple.com/library/test/success.html&lt;/a&gt;&lt;/p&gt;

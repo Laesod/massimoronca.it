@@ -33,16 +33,45 @@ With version 1.5, Go made a step forward, introducing the support for building s
 
 &lt;p&gt;This is all your &amp;ldquo;hello world&amp;rdquo; extension will just be:&lt;/p&gt;
 
-&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=hello_world.go&#34;&gt;&lt;/script&gt;
+&lt;pre&gt;&lt;code class=&#34;language-golang&#34;&gt;package main
+
+import &amp;quot;C&amp;quot;
+import &amp;quot;fmt&amp;quot;
+
+//export hello_world
+func hello_world() {
+    fmt.Println(&amp;quot;hello world&amp;quot;)
+}
+
+func main() {} // Required but ignored
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Compile it with&lt;/p&gt;
 
-&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=build.sh&#34;&gt;&lt;/script&gt;
-    
+&lt;pre&gt;&lt;code class=&#34;language-shell&#34;&gt;go build -buildmode=c-shared -o hello.so hello.go
+
+# if no error is returned you can check that the shared library is exporting
+# the right symbols by executing
+# $ nm -gU ./hello.so | grep hello
+# 0000000000002050 T __cgoexp_d4a435ec6890_hello_world
+# 0000000000001ae0 T _hello_world &amp;lt;--- ALL SYSTEMS ARE GO
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Have I already told you that &lt;a href=&#34;https://github.com/ffi/ffi/wiki&#34;&gt;FFI&lt;/a&gt; is awesome?&lt;/p&gt;
 
-&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=hello_world.rb&#34;&gt;&lt;/script&gt;
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;# copy and paste inside irb or other ruby repl
+require &#39;ffi&#39;
+
+module Say
+  extend FFI::Library
+  ffi_lib &#39;./hello.so&#39;
+  attach_function :hello_world, [], :void
+end
+
+Say.hello_world
+# hello world
+#  =&amp;gt; nil 
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;There are a few things you need to pay attention to:&lt;/p&gt;
 
@@ -73,7 +102,42 @@ I&amp;rsquo;ve chosen it for very simple reasons:&lt;/p&gt;
 &lt;code&gt;C&lt;/code&gt; extensions are usually self contained and take advantage of the &lt;code&gt;MRI&lt;/code&gt; &lt;code&gt;C&lt;/code&gt; programming interface to build the necessary exported APIs.&lt;br /&gt;
 Go has a very good support for interfacing to &lt;code&gt;C&lt;/code&gt; as you can see in this file&lt;/p&gt;
 
-&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=go_fast_blank.go&#34;&gt;&lt;/script&gt;
+&lt;pre&gt;&lt;code class=&#34;language-golang&#34;&gt;package main
+
+/*
+#include &amp;quot;ruby.h&amp;quot;
+extern inline VALUE go_fast_blank(VALUE);
+*/
+import &amp;quot;C&amp;quot;
+import (
+    &amp;quot;fmt&amp;quot;
+    &amp;quot;strings&amp;quot;
+    &amp;quot;unicode&amp;quot;
+    &amp;quot;unsafe&amp;quot;
+)
+
+//export go_fast_blank
+func go_fast_blank(s C.VALUE) C.VALUE {
+    gs := C.GoString(C.rb_string_value_cstr(&amp;amp;s))
+
+    if gs == &amp;quot;&amp;quot; || strings.TrimLeftFunc(gs, unicode.IsSpace) == &amp;quot;&amp;quot; {
+        return C.Qtrue
+    }
+
+    return C.Qfalse
+}
+
+//export Init_go_fast_blank
+func Init_go_fast_blank() {
+    fmt.Println(&amp;quot;go_fast_blank init&amp;quot;)
+    cs := C.CString(&amp;quot;blank?&amp;quot;)
+    defer C.free(unsafe.Pointer(cs))
+
+    C.rb_define_method(C.rb_cString, cs, (*[0]byte)(C.go_fast_blank), 0)
+}
+
+func main() {} // Required but ignored
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;There are some new tricks here, that need an explanation.&lt;br /&gt;
 Just before &lt;code&gt;import &amp;quot;C&amp;quot;&lt;/code&gt; we find what&amp;rsquo;s called &amp;ldquo;preamble&amp;rdquo; by Cgo, and it&amp;rsquo;s just &lt;code&gt;C&lt;/code&gt; code that the compiler put at the beginning of the generated file, as it is, before starting the compilation.&lt;/p&gt;
@@ -85,7 +149,23 @@ that&amp;rsquo;s the reason why I told you to put &lt;code&gt;import &amp;quot;C
 
 &lt;p&gt;In other words, the generated code will start with&lt;/p&gt;
 
-&lt;script src=&#34;https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=preamble.c&#34;&gt;&lt;/script&gt;
+&lt;pre&gt;&lt;code class=&#34;language-C&#34;&gt;/* Created by &amp;quot;go tool cgo&amp;quot; - DO NOT EDIT. */
+
+/* package command-line-arguments */
+
+/* Start of preamble from import &amp;quot;C&amp;quot; comments.  */
+
+
+#line 3 &amp;quot;/Users/name/path/ext/go_fast_blank/go_fast_blank.go&amp;quot;
+
+#include &amp;quot;ruby.h&amp;quot;
+
+extern inline VALUE go_fast_blank(VALUE);
+
+
+
+/* End of preamble from import &amp;quot;C&amp;quot; comments.  */
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;You probably have guessed that the &lt;code&gt;C&lt;/code&gt; prefix gives access to the &lt;code&gt;C&lt;/code&gt; world directly from Go, with some added benefit: for example the &lt;code&gt;C.CString&lt;/code&gt; converts Go native strings to &lt;code&gt;C&lt;/code&gt; (&lt;code&gt;char*&lt;/code&gt;) strings. This function allocates memory, so you &lt;em&gt;must&lt;/em&gt; free the memory using &lt;code&gt;C.free&lt;/code&gt;.&lt;/p&gt;
 
@@ -732,6 +812,34 @@ document.addEventListener(&amp;quot;animationend&amp;quot;, animationListener, f
     &lt;p&gt;Make sure your browser is updated&lt;/p&gt;
     &lt;p&gt;If you haven&amp;rsquo;t already, set your browser to update automatically. This eliminates security vulnerabilities caused by outdated browsers. Many cookie-based exploits are based on exploiting&amp;nbsp;older browsers&amp;rsquo; security shortcomings.&lt;/p&gt;
     &lt;p&gt;Cookies are everywhere and can&amp;rsquo;t really be avoided if you wish to enjoy the biggest and best websites out there. With a clear understanding of how they operate and how they help your browsing experience, you can take the necessary security measures to ensure that you browse the Net confidently.&lt;/p&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Disable captive network support in OS X</title>
+      <link>http://massimoronca.it/2015/05/20/disable-captive-network-support-in-os-x.html</link>
+      <pubDate>Wed, 20 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/05/20/disable-captive-network-support-in-os-x.html</guid>
+      <description>&lt;p&gt;iOS4+ and OS X (10.7+) Devices have a feature called Captive Network Support, which when you connect to an access point tries to download:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.apple.com/library/test/success.html&#34;&gt;http://www.apple.com/library/test/success.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;to see if the device is connected to the internet. If it doesn&amp;rsquo;t get the success response it assumes you are behind a captive portal and pops a webkit window so you can do the portal dance.  This is mostly useful if you are using thick-client apps, since if you&amp;rsquo;re using a browser you&amp;rsquo;re going to see the portal page as soon as you go anywhere.&lt;/p&gt;
+
+&lt;p&gt;To disable it, set this preference:&lt;/p&gt;
+
+&lt;p&gt;sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control Active -boolean false`&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Migrating from Jekyll to Hugo</title>
+      <link>http://massimoronca.it/2015/04/22/migrating-from-jekyll-to-hugo.html</link>
+      <pubDate>Wed, 22 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2015/04/22/migrating-from-jekyll-to-hugo.html</guid>
+      <description>&lt;p&gt;This webiste is not run by &lt;a href=&#34;http://jekyllrb.com/&#34;&gt;Jekyll&lt;/a&gt; anymore, say hello to &lt;a href=&#34;http://gohugo.io/&#34;&gt;Hugo&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -1688,299 +1796,6 @@ Aliases: drrd
 
 &lt;p&gt;Consult the &lt;a href=&#34;http://api.drush.org/&#34;&gt;Drush api&lt;/a&gt; for a complete list of hooks &lt;a href=&#34;http://api.drush.org/api/drush/functions/6.x&#34;&gt;functions&lt;/a&gt; and &lt;a href=&#34;http://api.drush.org/api/drush/constants/6.x&#34;&gt;constants&lt;/a&gt; or launch &lt;code&gt;drush topic docs-api&lt;/code&gt; from the command line.&lt;br /&gt;
 For a complete implementation of a command example, see &lt;code&gt;drush topic docs-examplecommand&lt;/code&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>A modern workflow for Wordpress using Docker and Dokku</title>
-      <link>http://massimoronca.it/2014/05/13/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</link>
-      <pubDate>Tue, 13 May 2014 00:00:00 +0000</pubDate>
-      
-      <guid>http://massimoronca.it/2014/05/13/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</guid>
-      <description>&lt;p&gt;Every developer, sooner or later, had to deal with &lt;a href=&#34;http://wordpress.org/&#34;&gt;WordPress&lt;/a&gt;, given it is one of the most popular Blog/CMS platform, if not &lt;strong&gt;the&lt;/strong&gt; most popular.&lt;br /&gt;
-According to Wikipedia, roughly 22% of the web sites run on it, (it means one web site in five) it is widely know by users, &lt;a href=&#34;https://wordpress.org/plugins/&#34;&gt;it has a large community&lt;/a&gt; (over 30 thousand contributed plugins) and it is easily supported by designers.&lt;/p&gt;
-
-&lt;p&gt;Unfortunately WP was targeted at non-developer people, it had a great success as hosted platform, but working with it from the developer perspective, especially if we look at the workflow, looks clunky and outdated.&lt;/p&gt;
-
-&lt;p&gt;Usually it involves:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;downloading a tar ball of the latest WordPress stable version&lt;/li&gt;
-&lt;li&gt;rename &lt;code&gt;wp-config-sample.php&lt;/code&gt; to &lt;code&gt;wp-config.php&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;if you&amp;rsquo;re using &lt;code&gt;git&lt;/code&gt; (and you should!), add the &lt;code&gt;wp-config.php&lt;/code&gt; to &lt;code&gt;.gitignore&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;open a connection (possibly not FTP, but probably it will be FTP) and (slowly) upload everything on the dest server&lt;/li&gt;
-&lt;li&gt;create a remote&lt;code&gt;wp-config.php&lt;/code&gt; with the production configuration&lt;/li&gt;
-&lt;li&gt;launch the installer&lt;/li&gt;
-&lt;li&gt;hope nobody will overwrite &lt;code&gt;wp-config.php&lt;/code&gt; with the local copy&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;On the other hand, modern workflows are built around some kind of version control system (usually &lt;code&gt;git&lt;/code&gt;) where the deploy is managed just by pushing a branch on the public server.&lt;br /&gt;
-This is called push-to-deploy and is the one used by &lt;a href=&#34;http://heroku.com&#34;&gt;Heroku&lt;/a&gt;.&lt;br /&gt;
-Fortunately, some smart guys created &lt;a href=&#34;http://www.docker.io&#34;&gt;Docker&lt;/a&gt; and &lt;a href=&#34;https://github.com/progrium/dokku&#34;&gt;Dokku&lt;/a&gt;, two projects that make possible to build you own personal-heroku-like &lt;a href=&#34;http://en.wikipedia.org/wiki/Platform_as_a_service&#34;&gt;PaaS&lt;/a&gt; in a matter of minutes (If you want to try it, &lt;a href=&#34;https://www.digitalocean.com/&#34;&gt;Digital Ocean&lt;/a&gt; offers cloud servers with Dokku preinstalled at a starting price of 5$/month).&lt;br /&gt;
-Let&amp;rsquo;s see how it applies to WordPress.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;In the rest of the article I&amp;rsquo;m going to use a few placeholders&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;app&lt;/code&gt; is the application name&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;dokku&lt;/code&gt; is the address (or hostanme if configured) of the destination server running Docker &amp;amp; Dokku&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;dokku-user&lt;/code&gt; is the user running Dokku on the remote machine&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;First of all we&amp;rsquo;re going to clone WP from &lt;a href=&#34;http://www.github.com&#34;&gt;github&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git clone git@github.com:WordPress/WordPress.git app
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then we create &lt;code&gt;wp-config.php&lt;/code&gt;, replace the configuration parameters with environment variables, and commit it.&lt;br /&gt;
-This way we won&amp;rsquo;t have to hardcode them.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;same technique can be used to configure the &lt;a href=&#34;http://codex.wordpress.org/Editing_wp-config.php#Security_Keys&#34;&gt;security keys&lt;/a&gt;, I didn&amp;rsquo;t, to keep things short.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;define(&#39;DB_NAME&#39;, getenv(&#39;WP_DB_NAME&#39;));
-
-/** MySQL database username */
-define(&#39;DB_USER&#39;, getenv(&#39;WP_DB_USER&#39;));
-
-/** MySQL database password */
-define(&#39;DB_PASSWORD&#39;, getenv(&#39;WP_DB_PASS&#39;));
-
-/** MySQL hostname */
-define(&#39;DB_HOST&#39;, getenv(&#39;WP_DB_HOST&#39;));
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git add wp-config.php
-git commit -m &#39;added WordPress configuration&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If you use &lt;a href=&#34;http://apache.org/&#34;&gt;Apache&lt;/a&gt;, you can set the values with &lt;a href=&#34;http://httpd.apache.org/docs/2.2/mod/mod_env.html&#34;&gt;&lt;code&gt;SetEnv&lt;/code&gt;&lt;/a&gt;, if you&amp;rsquo;re running &lt;a href=&#34;http://nginx.org/&#34;&gt;Nginx&lt;/a&gt; and &lt;a href=&#34;http://php-fpm.org/&#34;&gt;phpf-pm&lt;/a&gt;, you can use the &lt;a href=&#34;http://www.php.net/manual/it/install.fpm.configuration.php#example-73&#34;&gt;&lt;code&gt;ENV&lt;/code&gt; section&lt;/a&gt; of your application pool.&lt;br /&gt;
-You don&amp;rsquo;t need any of that when deploying through Dokku.&lt;/p&gt;
-
-&lt;p&gt;For our first deploy, we need to add a new &lt;code&gt;remote&lt;/code&gt; pointing at the Dokku  server&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git remote add dokku dokku-user@dokku:app
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and push the code&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git push dokku master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You will see something like this&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Counting objects: 163187, done.
-Delta compression using up to 4 threads.
-Compressing objects: 100% (33726/33726), done.
-Writing objects: 100% (163187/163187), 84.87 MiB | 4.95 MiB/s, done.
-Total 163187 (delta 128758), reused 163156 (delta 128730)
------&amp;gt; Building app ...
-       PHP (classic) app detected
------&amp;gt; Bundling NGINX 1.4.3
------&amp;gt; Bundling PHP 5.5.5
------&amp;gt; Bundling extensions
-       phpredis
-       mongo
------&amp;gt; Setting up default configuration
------&amp;gt; Vendoring binaries into slug
------&amp;gt; Discovering process types
-       Default process types for PHP (classic) -&amp;gt; web
------&amp;gt; Releasing app ...
------&amp;gt; Deploying app ...
------&amp;gt; Cleaning up ...
-=====&amp;gt; Application deployed:
-       http://app_url
-
-To dokku@dokku:app
- * [new branch]      master -&amp;gt; master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;As you can see, everything is already bundled with the PHP buildpack.&lt;br /&gt;
-Dokku has detected the PHP app and instructed Docker to create an isolated container that could run the application.&lt;/p&gt;
-
-&lt;p&gt;You can now open up a browser and point to app_url (it can have two formats: &lt;a href=&#34;http://ip_adress:port&#34;&gt;http://ip_adress:port&lt;/a&gt; or &lt;a href=&#34;http://app.defaultdomain&#34;&gt;http://app.defaultdomain&lt;/a&gt;. Either way, it should launch your app).&lt;/p&gt;
-
-&lt;p&gt;Our wp-config is empty right now, the server will reply with&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/JzhJclD.png&#34; alt=&#34;WP Error&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;That&amp;rsquo;s good news, it means it is actually responding to our request.&lt;/p&gt;
-
-&lt;p&gt;To finish our setup we need a couple more things:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;create a database&lt;/li&gt;
-&lt;li&gt;configure the app environment with the credentials&lt;br /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;To create a db in our app container, we&amp;rsquo;ll use the &lt;a href=&#34;https://github.com/Kloadut/dokku-md-plugin&#34;&gt;MariaDB plugin for Dokku&lt;/a&gt;.&lt;br /&gt;
-There&amp;rsquo;s also a &lt;a href=&#34;https://github.com/hughfletcher/dokku-mysql-plugin&#34;&gt;MySQL plugin&lt;/a&gt;, but it has some annoying bug and since MySQL and MariaDB
-are virtually identical, we&amp;rsquo;ll stick with the last one.&lt;br /&gt;
-Installing a plugin for Dokku is as easy as running&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cd /var/lib/dokku/plugins
-git clone https://github.com/Kloadut/dokku-md-plugin mariadb
-dokku plugins-install
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Some of them don&amp;rsquo;t require the final &lt;code&gt;plugins-install&lt;/code&gt; step, but it won&amp;rsquo;t hurt if you run it anyway.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Tip: you can run dokku commands on your local machine and execute them on the remote one with:
-&lt;code&gt;ssh dokku-host dokku-command&lt;/code&gt; (i.e. &lt;code&gt;ssh dokku help&lt;/code&gt;)&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;We can now create the database&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
- ssh dokku mariadb:create app
-
- -----&amp;gt; Creating /home/dokku/app/ENV
------&amp;gt; Setting config vars and restarting app
-DATABASE_URL: mysql2://root:VQpzDZRrEUAkUuAI@172.17.42.1:49170/db
------&amp;gt; Releasing app ...
------&amp;gt; Release complete!
------&amp;gt; Deploying app ...
------&amp;gt; Deploy complete!
-
------&amp;gt; app linked to mariadb/app database
-
------&amp;gt; MariaDB container created: mariadb/app
-
-       Host: 172.17.42.1
-       Port: 49170
-       User: &#39;root&#39;
-       Password: &#39;VQpzDZRrEUAkUuAI&#39;
-       Database: &#39;db&#39;
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and set set the Environment variables&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt; # the format is dokku config:set app key=value key=value
- # I splitted up the command on different lines for clarity
- ssh dokku config:set app WP_DB_HOST=&#39;172.17.42.1:49170&#39;
- ssh dokku config:set app WP_DB_NAME=&#39;db&#39;
- ssh dokku config:set app WP_DB_USER=&#39;root&#39;
- ssh dokku config:set app WP_DB_PASS=&#39;VQpzDZRrEUAkUuAI&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If everything went right, you should now see the standard WordPress install.&lt;br /&gt;
-Choose a title, create an admin user and you&amp;rsquo;re ready to go.&lt;br /&gt;
-You can work on your local copy, add plugins, work on your theme, and when you&amp;rsquo;re happy with it, you push all the changes and the app is automatically deployed and configured.&lt;/p&gt;
-
-&lt;p&gt;We just scratched the surface of what is possible with Docker &amp;amp; Dokku.&lt;br /&gt;
-In a next article we&amp;rsquo;ll see how to create a Dokku plugin to automate the entire process.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Taming the processing loop</title>
-      <link>http://massimoronca.it/2014/04/09/taming-the-processing-loop.html</link>
-      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
-      
-      <guid>http://massimoronca.it/2014/04/09/taming-the-processing-loop.html</guid>
-      <description>&lt;p&gt;In Mikamai we do a lot of reasearch on &lt;a href=&#34;http://dev.mikamai.com/post/78652180658/how-to-program-an-attiny85-or-attiny45-with-an&#34;&gt;non&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/78453410376/let-your-raspberry-pi-see-this-wonderful-world&#34;&gt;conventional&lt;/a&gt; &lt;a href=&#34;http://dev.mikamai.com/post/69163914657/intel-galileo-getting-started-with-mac-os-x&#34;&gt;hardware&lt;/a&gt;, we make &lt;a href=&#34;http://dev.mikamai.com/post/76945627390/you-cant-touch-this-an-evil-arduino-based-alarm&#34;&gt;prototypes&lt;/a&gt; or create unsual interfaces that are very domain specific.&lt;/p&gt;
-
-&lt;p&gt;Like this one&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://scontent-b-ams.xx.fbcdn.net/hphotos-ash3/t1.0-9/994503_10151525258526336_667825845_n.jpg&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Seriously, we did it.&lt;/p&gt;
-
-&lt;p&gt;To quickly sketch ideas, we often rely on &lt;a href=&#34;http://www.processing.org/&#34;&gt;Processing&lt;/a&gt;, it&amp;rsquo;s super easy and its loop based execution model gives the feeling of programming a video game.&lt;br /&gt;
-The drawback is that it is so fast to get something working, that you will be tempted to make the mistake of creating a &lt;a href=&#34;http://foxdellfolio.com/the-perils-of-a-polished-prototype/&#34;&gt;polished prototpe&lt;/a&gt;.&lt;br /&gt;
-Your prototype code ends up in production and there&amp;rsquo;s no way back from there.&lt;/p&gt;
-
-&lt;p&gt;To resist the temptation of releasing a blob of code, I borrowed &lt;a href=&#34;https://www.youtube.com/watch?v=HxaD_trXwRE&#34;&gt;a technique from  one of the Rob Pike&amp;rsquo;s talks&lt;/a&gt; to keep things easy, while keeping them clean at the same time.&lt;/p&gt;
-
-&lt;p&gt;It is basically an implementation of a state machime.&lt;br /&gt;
-We&amp;rsquo;re gonna have a &lt;code&gt;StateMachine&lt;/code&gt; class that handles the inputs and the state changes, and several state classes that implement the &lt;code&gt;State&lt;/code&gt; interface.&lt;br /&gt;
-The interface is very simple and contains only one method&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;interface State {
-	  public State nextState();  
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The loop of our Processing application is really simple too&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;StateMachine sm = new StateMachine(initialstate);
-void draw() {
-  sm = sm.nextState();  
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and this is the most basic implementation possible of the &lt;code&gt;StateMachine&lt;/code&gt; class&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class StateMachine(State initialstate) {
-  private State currentstate;
-
-  StateMachine(State initialstate) {
-    this.currentstate = initialstate;
-  }
-
-  public StateMachine nextState() {
-    this.currentstate = this.currentstate.nextState();
-   	return this;
-  }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Each class must implement the &lt;code&gt;nextState&lt;/code&gt; method and return an istance of the next state that will be executed.&lt;br /&gt;
-With this knowledge in mind, this is how you build an infinite loop inside an inifinite loop&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class InfiniteLoopState implements State {
-	public State nextState() {
-	    return this;
-  	}
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;But we can do better!&lt;br /&gt;
-How about a ping pong?&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class Ping implements State {
-	public State nextState() {
-		println(&amp;quot;ping?&amp;quot;);
-	    return new PongState();
-  	}
-}
-
-class Pong implements State {
-	public State nextState() {
-		println(&amp;quot;pong!&amp;quot;);
-	    return new PingState();
-  	}
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;We moved the logic of the application out of the central &lt;code&gt;switch/case&lt;/code&gt; statement in the &lt;code&gt;draw&lt;/code&gt; function and deconstruted it into smaller pieces, that only know about themselves and the next state they are going to emit.&lt;/p&gt;
-
-&lt;p&gt;As long as your state classes implement the &lt;code&gt;State&lt;/code&gt; interface you can exapnd the concept to fit your needs.&lt;br /&gt;
-For example, if you need to keep track of the environment and/or the previous state, you can adjust the &lt;code&gt;State&lt;/code&gt; interface to support it.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;interface State {
-	  public State nextState(State previousstate, StateMachine sm);  
-	  // StateMachine holds the environment for us
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and modify &lt;code&gt;StateMachine&lt;/code&gt; accordingly&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public StateMachine nextState() {
-  this.currentstate = this.currentstate.nextState(this.currentstate, this);
- 	return this;
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;TL;DR:&lt;/strong&gt; state machines are easy, use them!&lt;/p&gt;
-
-&lt;p&gt;You can find examples on how to use this pattern and how to add more features in the &lt;a href=&#34;https://github.com/wstucco/processing_state_machine&#34;&gt;github repository&lt;/a&gt;.&lt;/p&gt;
 </description>
     </item>
     
