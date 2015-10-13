@@ -30,15 +30,48 @@ With version 1.5, Go made a step forward, introducing the support for building s
 
 This is all your "hello world" extension will just be:
 
-<script src="https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=hello_world.go"></script>
+```golang
+package main
+
+import "C"
+import "fmt"
+
+//export hello_world
+func hello_world() {
+    fmt.Println("hello world")
+}
+
+func main() {} // Required but ignored
+```
 
 Compile it with
 
-<script src="https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=build.sh"></script>
+```shell
+go build -buildmode=c-shared -o hello.so hello.go
+
+# if no error is returned you can check that the shared library is exporting
+# the right symbols by executing
+# $ nm -gU ./hello.so | grep hello
+# 0000000000002050 T __cgoexp_d4a435ec6890_hello_world
+# 0000000000001ae0 T _hello_world <--- ALL SYSTEMS ARE GO
+```
     
 Have I already told you that [FFI](https://github.com/ffi/ffi/wiki) is awesome?
 
-<script src="https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=hello_world.rb"></script>
+```ruby
+# copy and paste inside irb or other ruby repl
+require 'ffi'
+
+module Say
+  extend FFI::Library
+  ffi_lib './hello.so'
+  attach_function :hello_world, [], :void
+end
+
+Say.hello_world
+# hello world
+#  => nil 
+```
 
 There are a few things you need to pay attention to:  
 
@@ -66,7 +99,43 @@ Even if `FFI` is great, it is still a dependency, that needs to be installed and
 `C` extensions are usually self contained and take advantage of the `MRI` `C` programming interface to build the necessary exported APIs.   
 Go has a very good support for interfacing to `C` as you can see in this file
 
-<script src="https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=go_fast_blank.go"></script>
+```golang
+package main
+
+/*
+#include "ruby.h"
+extern inline VALUE go_fast_blank(VALUE);
+*/
+import "C"
+import (
+    "fmt"
+    "strings"
+    "unicode"
+    "unsafe"
+)
+
+//export go_fast_blank
+func go_fast_blank(s C.VALUE) C.VALUE {
+    gs := C.GoString(C.rb_string_value_cstr(&s))
+
+    if gs == "" || strings.TrimLeftFunc(gs, unicode.IsSpace) == "" {
+        return C.Qtrue
+    }
+
+    return C.Qfalse
+}
+
+//export Init_go_fast_blank
+func Init_go_fast_blank() {
+    fmt.Println("go_fast_blank init")
+    cs := C.CString("blank?")
+    defer C.free(unsafe.Pointer(cs))
+
+    C.rb_define_method(C.rb_cString, cs, (*[0]byte)(C.go_fast_blank), 0)
+}
+
+func main() {} // Required but ignored
+```
 
 There are some new tricks here, that need an explanation.   
 Just before `import "C"` we find what's called "preamble" by Cgo, and it's just `C` code that the compiler put at the beginning of the generated file, as it is, before starting the compilation.   
@@ -76,8 +145,24 @@ Just before `import "C"` we find what's called "preamble" by Cgo, and it's just 
 
 In other words, the generated code will start with  
 
-<script src="https://gist.github.com/wstucco/7b0c424cf8dddbc8fd6a.js?file=preamble.c"></script>
+```C
+/* Created by "go tool cgo" - DO NOT EDIT. */
 
+/* package command-line-arguments */
+
+/* Start of preamble from import "C" comments.  */
+
+
+#line 3 "/Users/name/path/ext/go_fast_blank/go_fast_blank.go"
+
+#include "ruby.h"
+
+extern inline VALUE go_fast_blank(VALUE);
+
+
+
+/* End of preamble from import "C" comments.  */
+```
 
 You probably have guessed that the `C` prefix gives access to the `C` world directly from Go, with some added benefit: for example the `C.CString` converts Go native strings to `C` (`char*`) strings. This function allocates memory, so you *must* free the memory using `C.free`.   
 
@@ -203,4 +288,3 @@ Go has a performance problem when intercating with `C` and it's by design.
 However, there could be patterns where Go could be really helpful.  
 I'm sure Go channles and concurrency are worth exploring.  
 Maybe in a next episode.   
-
