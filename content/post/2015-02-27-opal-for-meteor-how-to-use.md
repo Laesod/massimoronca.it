@@ -1,7 +1,8 @@
 ---
 title: "Bootstap Opal for Meteor"
 date: "2015-02-27"
-description: <a href="/2015/02/27/bootstap-opal-for-meteor.html#content"><img src='/assets/images/meteor-loves-opal.png' class='fill'></a>
+description: "If you wanna use the Opal build plugin for Meteor I've recently published, but don't know how, here it is a Gist showing how to integrate Opal with Meteor builtin functionalities"
+image: /assets/images/meteor-loves-opal.png
 tags:
   - Opal
   - Meteor

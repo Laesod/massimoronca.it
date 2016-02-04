@@ -4,6 +4,7 @@ date: "2014-05-13"
 description: Deploying Wordpress is cumbersome and based on old standards. With Docker and Dokku you can improve your workflow and deploy your apps like a boss.
 source_name: MIKAMAYHEM
 source_url: http://dev.mikamai.com/post/85531658709/a-modern-workflow-for-wordpress-using-docker-and-dokku
+image: /assets/images/dockerdokku.jpg
 tags:
 - WordPress
 - WordPress modern workflow

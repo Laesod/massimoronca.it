@@ -1,9 +1,10 @@
 ---
 title: Create an animated GIF of your console sessions
 date: "2014-11-05"
-description: "<img class='left-side' title='animate all the things' src='http://s2.quickmeme.com/img/32/325fc351053e41d230961a71308d37937e68192130d11a82308ae619571ef942.jpg'>More often than not, our job involves opening up a console, typing some command and waiting for the output.   
+description: "More often than not, our job involves opening up a console, typing some command and waiting for the output.   
 When I write articles, sometimes I feel the need to show how the commands behave interactively, not only the sequence of commands you have to type.  
 Fortunately, the solution is pretty easy."
+image: http://s2.quickmeme.com/img/32/325fc351053e41d230961a71308d37937e68192130d11a82308ae619571ef942.jpg
 tags:
 - animated gif bash
 - console session animated gif

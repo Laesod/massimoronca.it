@@ -2,8 +2,8 @@
 title: "A month with Atom: my first package"
 date: "2015-07-27"
 description: "One month ago, Github relaesed version 1.0 of their open source editor Atom.<br>  
-After a 4 weeks test drive, I decided it was time to build my first package.<br>
-<a href='2015/07/27/my-first-atom-package.html#content'><img src='/assets/images/atom-mark@1200x630.png' title='Atom'></a>"
+After a 4 weeks test drive, I decided it was time to build my first package."
+image: "/assets/images/atom-mark@1200x630.png"
 tags:
 - Atom
 - Atom Package

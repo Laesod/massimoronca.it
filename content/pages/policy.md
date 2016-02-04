@@ -2,6 +2,7 @@
 title: About cookies
 date: "2015-06-02"
 description:
+draft: true
 tags:
 - cookie policy
 ---

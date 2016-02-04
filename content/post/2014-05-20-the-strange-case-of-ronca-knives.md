@@ -1,7 +1,8 @@
 ---
 title: The strange case of 'Ronca Knives'
 date: "2014-05-20"
-description: <img src="/assets/images/ronco.jpg" class="left-side"> Have you ever looked at your webistes stats and found something amusing?   
+description: Have you ever looked at your webistes stats and found something amusing?   
+image: /assets/images/ronco.jpg
 tags:
 - Ronca
 - knives

@@ -4,6 +4,7 @@ date: "2013-11-04"
 description: Created inside Google by Ken Thompson and Rob Pike, fathers of Unix and UTF-8, to overcome the limitations of C++ (compile times being the most annoying), Go is a concurrent, garbage-collected language with fast compilation. This article will introduce you to the main language features and present you real life code snippets.
 source_name: MIKAMAYHEM
 source_url: http://dev.mikamai.com/post/65984358855/i-tried-go-and-i-liked-it
+image: /assets/images/go.png
 tags:
   - golang
   - go language

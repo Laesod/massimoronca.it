@@ -1,8 +1,9 @@
 ---
 title: Opal for Meteor
 date: 2015-02-18T00:00:01+02:00
-description: <img src='https://secure.gravatar.com/avatar/88298620949a6534d403da2e356c9339' class='left-side'> Compile Ruby to Javascript in Meteor
+description: Compile Ruby to Javascript in Meteor
 type: post
+image: https://secure.gravatar.com/avatar/88298620949a6534d403da2e356c9339?s=420
 tags:
   - Opal
   - Meteor

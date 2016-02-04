@@ -1,6 +1,7 @@
 ---
 title: Le email di Tumblr le scrive Beppe Grillo
 date: "2014-04-08"
+image: /assets/images/tumblr-email.jpg
 tags:
 - Beppe Grillo
 - Tumblr

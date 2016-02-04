@@ -1,9 +1,10 @@
 ---
 title: Meteor and Kendo UI integration guide
 date: "2015-06-05"
-description: "Wanna know what people are talking about in your city?<br>Build a reactive application with Meteor and Kendo UI and find out!<br><img src='/assets/images/meteor-kendo.png'>"
+description: "Wanna know what people are talking about in your city?<br>Build a reactive application with Meteor and Kendo UI and find out!"
 source_name: MIKAMAYHEM
 source_url: http://dev.mikamai.com/post/120684737224/integrate-meteor-with-kendo-ui
+image: /assets/images/meteor-kendo.png
 tags:
 - Telerik
 - Meteor

@@ -6,6 +6,7 @@ My goal is to find languages that we can use to create extensions, that a Ruby p
 This first episode will focus on Go"
 source_name: MIKAMAYHEM
 source_url: http://dev.mikamai.com/post/130986121064/writing-ruby-extensions-in-go-an-in-depth-review
+image: /assets/images/ruby-go-ext.png
 tags:
 - Ruby
 - Ruby extensions
