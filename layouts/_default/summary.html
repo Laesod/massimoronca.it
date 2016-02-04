@@ -2,7 +2,12 @@
   <h2 class="post-title jedi">
     <a href="{{ .Permalink }}#content">{{ .Title }}</a>
   </h2>
-  <p class="post-excerpt">{{ .Description | safeHTML }}</p>
+  <p class="post-excerpt">
+    {{ if isset .Params "image" }}
+    <a href="{{ .Permalink }}#content"><img src="{{.Params.image }}" title="" class="left-side"></a>
+    {{ end }}
+    {{ .Description | safeHTML }}
+  </p>
   <div class='post-meta'>
     <i class="fa fa-clock-o"></i>
     <span class="small">
