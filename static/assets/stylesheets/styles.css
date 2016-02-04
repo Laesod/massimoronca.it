@@ -247,7 +247,7 @@ footer a:hover {
   left: 0;
 }
 
-.post-title.jedi:before {
+/*.post-title.jedi:before {
   content: "";
   position: absolute;
   top: 0;
@@ -266,6 +266,7 @@ footer a:hover {
 
   transition-property: opacity, margin, padding, left;
 }
+*/
 
 .post-title.jedi:after {
   display: block;
@@ -293,10 +294,10 @@ footer a:hover {
   -o-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
 
-  text-indent: 40px;
+  /*text-indent: 40px;*/
   padding-right: 0;
 
-  background-position: 0px 5px;
+  /*background-position: 0px 5px;*/
   transition-property: padding, width, text-indent;
 }
 
