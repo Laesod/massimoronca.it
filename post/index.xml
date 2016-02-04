@@ -6,8 +6,396 @@
     <description>Recent content in Posts on Massimo Ronca ~ a reckless programmer with a sarcastic wit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 12 Oct 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 04 Feb 2016 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://massimoronca.it/post.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Phoenix Framework: to the basics and beyond</title>
+      <link>http://massimoronca.it/2016/02/04/phoenix-framework-to-the-basics-and-beyond.html</link>
+      <pubDate>Thu, 04 Feb 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://massimoronca.it/2016/02/04/phoenix-framework-to-the-basics-and-beyond.html</guid>
+      <description>
+
+&lt;h1 id=&#34;introduction:ad00a000d7265c798569549c3f329247&#34;&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Phoenix is the exciting new kid on the block in the vast world of web frameworks.&lt;br /&gt;
+Its roots are in Rails, with the bonus of the performances of a compiled language.&lt;br /&gt;
+This isn&amp;rsquo;t exactly a getting started guide, but a (albeit short) list of things you&amp;rsquo;ll have to know very soon in the process of writing a Phoenix application, that are just a bit beyond the &lt;em&gt;&lt;q&gt;writing a blog engine in 15 minutes by using only the default generators&lt;/q&gt;&lt;/em&gt;.&lt;br /&gt;
+I assume previous knowledge of the Elixir language, the Phoenix framework and the command line tools&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;mix ecto.create         # Create the storage for the repo
+mix ecto.drop           # Drop the storage for the repo
+mix ecto.gen.migration  # Generate a new migration for the repo
+mix ecto.gen.repo       # Generate a new repository
+mix ecto.migrate        # Run migrations up on a repo
+mix ecto.rollback       # Rollback migrations from a repo
+mix phoenix.digest      # Digests and compress static files
+mix phoenix.gen.channel # Generates a Phoenix channel
+mix phoenix.gen.html    # Generates controller, model and views for an HTML based resource
+mix phoenix.gen.json    # Generates a controller and model for a JSON based resource
+mix phoenix.gen.model   # Generates an Ecto model
+mix phoenix.gen.secret  # Generates a secret
+mix phoenix.new         # Create a new Phoenix v1.1.2 application
+mix phoenix.routes      # Prints all routes
+mix phoenix.server      # Starts applications and their servers
+mix test                # Runs a project&#39;s tests
+iex -S mix              # Starts IEx and run the default task
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;command line tools cheat sheet&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&#34;first-a-digression-development-environments:ad00a000d7265c798569549c3f329247&#34;&gt;First, a digression: development environments&lt;/h1&gt;
+
+&lt;p&gt;If you want to skip this section, &lt;a href=&#34;#models&#34;&gt;go directly where the action is&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;emacs:ad00a000d7265c798569549c3f329247&#34;&gt;Emacs&lt;/h3&gt;
+
+&lt;p&gt;Emacs and &lt;a href=&#34;http://www.alchemist-elixir.org/&#34;&gt;Alchemist&lt;/a&gt; are the most advanced programming environment for Elixir and Phoenix development.&lt;br /&gt;
+The features range from the simple syntax highlighting, to autocomplete, mix and iex integration, testing, compiling, running and evaluating code on the fly, everything you would expect from a modern IDE.&lt;br /&gt;
+Unfortunately (for me) I can&amp;rsquo;t really Emacs, the fact that my favourite Emacs distribution is &lt;a href=&#34;http://spacemacs.org/&#34;&gt;Spacemacs&lt;/a&gt; says a lot about which one of the two kind of people I am.&lt;br /&gt;
+Just for reference, if you are like me, &lt;code&gt;SPC m t a&lt;/code&gt; launch &lt;code&gt;mix test&lt;/code&gt; in a new buffer and rerun it every time you save a file.&lt;br /&gt;
+As simple as it might look, Alchemist is the only environment that offers this feature out of the box (everytime in Spacemacs you see &lt;code&gt;, somekey someotherkey&lt;/code&gt;, that comma is translated to &lt;code&gt;m&lt;/code&gt; in Spacemacs bindings).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/zkhBOii.png&#34; alt=&#34;, somekey someotherkey&#34; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;, somekey someotherkey&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt;: for hardcore Emacs users &lt;a href=&#34;http://www.alchemist-elixir.org/&#34;&gt;Alchemist&lt;/a&gt; is a must have.&lt;/p&gt;
+
+&lt;h3 id=&#34;sublime-textmate:ad00a000d7265c798569549c3f329247&#34;&gt;Sublime/Textmate&lt;/h3&gt;
+
+&lt;p&gt;Sublime is my editor of choice on OS X and is the one that I use to write Elixir too.&lt;br /&gt;
+There is a single bundle to be installed, it&amp;rsquo;s called Elixir and it&amp;rsquo;s the same for Sublime and Textmate.&lt;br /&gt;
+It provides syntax highlighting, autocomplete, snippets and a couple of commands (&lt;code&gt;Build with: elixir-mix-test&lt;/code&gt; and &lt;code&gt;Build with: elixir&lt;/code&gt;) to run tests and projects directly from the editor.&lt;br /&gt;
+I&amp;rsquo;ve also installed &lt;a href=&#34;https://sublimerepl.readthedocs.org/en/latest/&#34;&gt;SublimeREPL&lt;/a&gt; which currently supports Elixir and iex, so you can split the screen between and iex shell and a code editor pane.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt;: All the usual goodies of Sublime applies.&lt;/p&gt;
+
+&lt;h3 id=&#34;atom:ad00a000d7265c798569549c3f329247&#34;&gt;Atom&lt;/h3&gt;
+
+&lt;p&gt;Atom is great, but actually is not.&lt;br /&gt;
+This sentiment strucks me everytime I use it, something is awesome, something else is awful, there is no middle ground when it comes to the Github editor.&lt;br /&gt;
+For example I find unacceptable that in 2016 an editor cannot soft wrap on column 78 by default and I&amp;rsquo;ve found no package that does it.&lt;br /&gt;
+Coming from node, Atom inherits its problems, specifically the need to install many small packages to just get what you need.&lt;br /&gt;
+This time I installed &lt;code&gt;language elixir&lt;/code&gt;, &lt;code&gt;autocomplete-elixir&lt;/code&gt;, &lt;code&gt;elixir-cmd&lt;/code&gt; (I&amp;rsquo;m not very convinced it is useful at all) and &lt;code&gt;iex&lt;/code&gt;. The last one is the best of them all, it is actually pretty great honestly, letting you run an iex console and tests inside it (by pressing &lt;code&gt;ALT+CMD+a&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt;: Sorry Atom, I&amp;rsquo;ve tried, but you did not convince me.&lt;/p&gt;
+
+&lt;h3 id=&#34;beauty-contest:ad00a000d7265c798569549c3f329247&#34;&gt;Beauty contest&lt;/h3&gt;
+
+&lt;p&gt;I use Solarized Dark theme everywhere, from my editor, to the shell, I even used the Solarized palette in my personal website.&lt;br /&gt;
+Based on that, I will share my opinions on the different syntax highlighting engines.&lt;/p&gt;
+
+&lt;p&gt;IMHO the winner is SublimeText (and Textmate, the bundle is the same).&lt;br /&gt;
+The different elements are clearly highlighted and less prominent ones (like comments) are low contrast, you can almost &lt;q&gt;not see them&lt;/q&gt; after a little bit of training.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/kgCAyls.png&#34; alt=&#34;SublimeText 3&#34; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;SublimeText 3&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Emacs comes second, we have a clear distinction here too, but the different colours are too soft/pastel and comments look too bright.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/CSripmC.png&#34; alt=&#34;Emacs&#34; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Emacs&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Atom is the loser here.&lt;br /&gt;
+I like a lot the polished interface and the look of the theme (the best of the lot), but the syntax highlighting is actually pretty cheap.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/aL2Jmot.png&#34; alt=&#34;Atom&#34; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Atom&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a name=&#34;models&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;models:ad00a000d7265c798569549c3f329247&#34;&gt;Models&lt;/h1&gt;
+
+&lt;p&gt;Phoenix models are a very thin layer around &lt;a href=&#34;https://hexdocs.pm/ecto/Ecto.Model.html&#34;&gt;&lt;code&gt;Ecto models&lt;/code&gt;&lt;/a&gt;.&lt;br /&gt;
+The &lt;a href=&#34;https://hexdocs.pm/ecto/Ecto.Schema.html&#34;&gt;schema dsl&lt;/a&gt; is very lightweight making it super easy to model the data layer.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;What a minimal model looks like&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule App.Email do
+  use App.Web, :model
+
+  schema &amp;quot;emails&amp;quot; do
+    field :address, :string
+    timestamps # the ususal timestamps: created_at, updated_at
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With &lt;code&gt;use App.Web, :model&lt;/code&gt; you just import some packages defined in &lt;code&gt;web/web.ex&lt;/code&gt; that you can customize.&lt;br /&gt;
+Specifically, by default Phoenix &lt;code&gt;use&lt;/code&gt;s &lt;code&gt;Ecto.model&lt;/code&gt; and &lt;code&gt;import&lt;/code&gt;s from &lt;code&gt;Ecto.Changeset&lt;/code&gt; and &lt;code&gt;Ecto.Query&lt;/code&gt;.&lt;br /&gt;
+The difference between &lt;code&gt;use&lt;/code&gt; and &lt;code&gt;import&lt;/code&gt; is that &lt;code&gt;use&lt;/code&gt; calls the &lt;code&gt;__using__&lt;/code&gt; macro and inject code in the module that uses it, while &lt;code&gt;import&lt;/code&gt; make functions in the imported module available to the caller and let you chose to import everything or just some of them.&lt;/p&gt;
+
+&lt;h3 id=&#34;custom-primary-keys:ad00a000d7265c798569549c3f329247&#34;&gt;Custom primary keys&lt;/h3&gt;
+
+&lt;p&gt;The first “beyond the basics” we can do is to personalize the primary key of our model.&lt;br /&gt;
+By default they are autogenerated, autoincrementing &lt;code&gt;integers&lt;/code&gt; and are called &lt;code&gt;id&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Suppose we want to use a &lt;a href=&#34;https://en.wikipedia.org/wiki/Globally_unique_identifier&#34;&gt;GUID&lt;/a&gt;, how can we do that?&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s pretty simple: first of all we have to tell the model that we don&amp;rsquo;t want Phoenix to autogenerate the primary key.&lt;br /&gt;
+We do that at the &lt;code&gt;migration&lt;/code&gt; level, where we also tell Phoenix to generate a field of type &lt;code&gt;:uuid&lt;/code&gt;, &lt;a href=&#34;https://github.com/phoenixframework/phoenix/blob/5f230cf52a5f601e4a1cd35dbb6a2d8ba8082728/lib/mix/tasks/phoenix.gen.model.ex#L209&#34;&gt;it&amp;rsquo;s a predefined type that maps to &lt;code&gt;Ecto.UUID&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule App.Repo.Migrations.CreateEmail do
+  use Ecto.Migration
+
+  def change do
+    create table(:emails, primary_key: false) do
+      add :key, :uuid, primary_key: true
+
+      # ... rest of the table definition
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then we instruct the model to use our new primary key&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule App.Email do
+  use App.Web, :model
+
+  # autogenerate GUIDs through the included GUID generator
+  # the type is binary_id
+  # by passing --binary-id to &#39;mix phoenix.new&#39; 
+  # binary_id is assumed as the default format for ids
+  @primary_key {:key, :binary_id, autogenerate: true}
+
+  # instruct Phoenix on how to extract the primary key for this model
+  @derive {Phoenix.Param, key: :key}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s all.&lt;br /&gt;
+We can now safely browse urls like
+&lt;code&gt;http://localhost/emails/1b72fe0b-5977-48bd-a19c-38140d1d1fed&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;custom-validators:ad00a000d7265c798569549c3f329247&#34;&gt;Custom validators&lt;/h3&gt;
+
+&lt;p&gt;Validators in Phoenix are just functions that accept a changeset and optionally other parameters and return the same changeset or a new one filled with errors.&lt;br /&gt;
+&lt;a href=&#34;https://hexdocs.pm/ecto/Ecto.Changeset.html&#34;&gt;Changeset&lt;/a&gt; are the data structure Phoenix uses to keep track of the changes in the model and provide constraints and validations facilities.&lt;/p&gt;
+
+&lt;p&gt;Changesets provide the following default validators&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;validate_change(changeset, field, validator)
+# Validates the given field change
+validate_confirmation(changeset, field, opts \\ [])
+# Validates that the given field matches the confirmation parameter of that field
+validate_exclusion(changeset, field, data, opts \\ [])
+# Validates a change is not included in the given enumerable
+validate_format(changeset, field, format, opts \\ [])
+# Validates a change has the given format
+validate_inclusion(changeset, field, data, opts \\ [])
+# Validates a change is included in the given enumerable
+validate_length(changeset, field, opts)
+# Validates a change is a string or list of the given length
+validate_number(changeset, field, opts)
+# Validates the properties of a number
+validate_subset(changeset, field, data, opts \\ [])
+# Validates a change, of type enum, is a subset of the given enumerable. 
+# Like validate_inclusion/4 for lists
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;default validators&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;On a first look, it seems like Ecto developers have been lazy and provided only a handful of validators.&lt;br /&gt;
+In reality it&amp;rsquo;s incredibly easy to build custom validators, thank to the &lt;code&gt;|&amp;gt;&lt;/code&gt; operator we actually build validation pipelines.&lt;/p&gt;
+
+&lt;p&gt;For example this code validates an Email model by ensuring the presence of the fields name and address and enforcing the format for the address field.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule Wejustsend.Email do
+  # all the usual imports and schema omitted  
+
+  @doc &amp;quot;&amp;quot;&amp;quot;
+  Creates a changeset based on the `model` and `params`.
+
+  If no params are provided, an invalid changeset is returned
+  with no validation performed.
+  &amp;quot;&amp;quot;&amp;quot;
+  def changeset(model, params \\ :empty) do
+    model
+    # build a changeset from params
+    # cast enforce the type of the fields and the presence of the required 
+    |&amp;gt; cast(params, @required_fields, @optional_fields) 
+    |&amp;gt; validate_name
+    |&amp;gt; validate_address
+  end
+
+  defp validate_name(changeset) do
+    # name cannot be shorter than 4 characters
+    changeset |&amp;gt; validate_length(:name, min: 4)
+  end
+
+  defp validate_address(changeset) do
+    changeset
+    |&amp;gt; validate_length(:address, min: 5) # a@a.a is 5 characters long
+    |&amp;gt; validate_address_list
+  end
+
+  defp validate_address_list(changeset) do
+    # validate a list of one or more email addresses separated by &#39;,&#39;
+    # an email address is considered valid if it matches the regex
+    # ^\S+@\S+\.\S+$
+    changeset |&amp;gt; to_address_list |&amp;gt; Enum.reduce(changeset, fn(address, acc) -&amp;gt;
+      if address =~ address_format do
+        # if matches we return the changeset as it is
+        acc
+      else
+        # if it doesn&#39;t, we add the error to the changeset and return the new invalid changeset
+        add_error(acc, :address, &amp;quot;#{address} is not a valid email address&amp;quot;)
+      end
+    end)
+  end
+
+  defp to_address_list(changeset) do
+    # if get_change returns the default value, it means that the change is empty
+    # and we return the empty list
+    # otherwise we split the string on &#39;,&#39; and strip the spaces around them
+    case get_change(changeset, :address, []) do
+      []      -&amp;gt; []
+      address -&amp;gt; address |&amp;gt; String.split(&amp;quot;,&amp;quot;) |&amp;gt; Enum.map(&amp;amp;String.strip/1)
+    end
+  end
+
+  defp address_format do
+    ~r/^\S+@\S+\.\S+$/
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;validations for an Email model&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It is a little verbose, honestly, but it is also very clear and required a basic knowledge of the framework to build it.&lt;br /&gt;
+Of course validation code, being just pure functions, can be generalized and moved somewhere else (a different Module for example) to be used in different models or in different applications.&lt;/p&gt;
+
+&lt;h1 id=&#34;the-repository-pattern-and-the-macros:ad00a000d7265c798569549c3f329247&#34;&gt;The Repository Pattern and the macros&lt;/h1&gt;
+
+&lt;p&gt;Phoenix does not supply any ORM or ORM like library for accesing data, instead it relies on the Repository Pattern (and the awesome &lt;a href=&#34;http://hexdocs.pm/ecto/Ecto.Query.html&#34;&gt;&lt;code&gt;Ecto.Query&lt;/code&gt;&lt;/a&gt;), which, IMHO, is superior to Active Record any day of the week.&lt;br /&gt;
+Phoenix implemented it in a very generic way, using the facilities provided by &lt;code&gt;Ecto&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule App.Repo do
+  use Ecto.Repo, otp_app: :app, adapter: Sqlite.Ecto # default adapter is PostgreSQL
+end
+
+# then you can query the repository
+
+Repo.all(Email)                                    # -&amp;gt; all emails
+Repo.all(User)                                     # -&amp;gt; all users
+Repo.get(User, 2)                                  # -&amp;gt; user with id 2
+Repo.get_by(User, {name: &#39;Rambo&#39;)                  # -&amp;gt; first user whose name is Rambo
+Repo.insert(%Email{address: &#39;marsrover@nasa.gov&#39;}) # -&amp;gt; insert a new email
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;However, Active Record is a very well established and recognized pattern in web applications, it is perfectly possible that its absence could let some developer down.&lt;br /&gt;
+Let&amp;rsquo;s add something that resembles it to our models:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule App.Email do
+  # all the usual imports and schema omitted
+
+  alias App.Repo
+
+  # returns all Emails
+  def all(opts \\ []) do
+    Repo.all(Email, opts)
+  end
+
+  # find Emails by filtering out all emails not respecting clauses  
+  # for example: {domain: &#39;email.com&#39;}
+  def find(clauses, opts \\ []) do
+    Enum.filter all(opts), fn map -&amp;gt;
+      Enum.all?(clauses, fn {key, val} -&amp;gt; Map.get(map, key) == val end)
+    end
+  end
+
+  # get the Email with id equal to id
+  def get(id, opts \\ []) do
+    Repo.get(Email, id, opts)
+  end
+
+  # more functions
+  # I suppose you get the pattern…
+end
+
+# now you can do this
+Email.all
+Email.find({domain: &#39;email.com&#39;})
+Email.get(1)
+# etc. etc.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Elixir has a powerful mechanism to write generic code, &lt;a href=&#34;http://elixir-lang.org/getting-started/meta/macros.html&#34;&gt;macros&lt;/a&gt;.&lt;br /&gt;
+Phoenix is an Elixir app after all, so we can use macros to write a generic &lt;code&gt;ActiveRecord&lt;/code&gt; like wrapper for the &lt;code&gt;Repo&lt;/code&gt; and inject it into the &lt;code&gt;Model&lt;/code&gt; code at compile time (yes, at compile time, it will be like we actually wrote that code with no loss of performance whatsoever).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-elixir&#34;&gt;defmodule App.Activerecord do
+  # when we &amp;quot;use&amp;quot; a Module, Elixir calls the relative __using__ macro inside it  
+  defmacro __using__(_) do
+    quote do
+      alias App.Repo
+
+      # __MODULE__ is resolved at compile time with the name
+      # of the caller, inside &amp;quot;quote do&amp;quot; we are in the caller context
+      def all(opts \\ []) do
+        Repo.all __MODULE__, opts
+      end
+
+      def find(clauses, opts \\ []) do
+        Enum.filter all(opts), fn map -&amp;gt;
+          Enum.all?(clauses, fn {key, val} -&amp;gt; Map.get(map, key) == val end)
+        end
+      end
+
+      def get(id, opts \\ []) do
+        Repo.get __MODULE__, id, opts
+      end
+
+      def get_by(clauses, opts \\ []) do
+        Repo.get_by __MODULE__, clauses, opts
+      end
+
+    end
+
+  end
+
+end
+
+# and then do
+defmodule App.Email do
+  # all the usual imports and schema omitted
+  use App.Activerecord # &amp;lt;- this injects the code into the Email module
+end
+
+# now you can do this
+Email.all
+Email.find({domain: &#39;email.com&#39;})
+Email.get(1)
+
+# but also this, if you use the ActiveRecord module in the User model
+User.all
+User.find({role: &#39;admin&#39;})
+User.get(1)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I don&amp;rsquo;t know if this is a good idea, but it is very easy to implement and the mechanism is so powerful that opens up the way for writing well organized and understandable code.&lt;/p&gt;
+
+&lt;p&gt;Next time we&amp;rsquo;ll talk about the assets pipeline and long running processes.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Writing Ruby extensions in Go - an in depth review</title>
@@ -1757,193 +2145,6 @@ Aliases: drrd
 
 &lt;p&gt;Consult the &lt;a href=&#34;http://api.drush.org/&#34;&gt;Drush api&lt;/a&gt; for a complete list of hooks &lt;a href=&#34;http://api.drush.org/api/drush/functions/6.x&#34;&gt;functions&lt;/a&gt; and &lt;a href=&#34;http://api.drush.org/api/drush/constants/6.x&#34;&gt;constants&lt;/a&gt; or launch &lt;code&gt;drush topic docs-api&lt;/code&gt; from the command line.&lt;br /&gt;
 For a complete implementation of a command example, see &lt;code&gt;drush topic docs-examplecommand&lt;/code&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>A modern workflow for Wordpress using Docker and Dokku</title>
-      <link>http://massimoronca.it/2014/05/13/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</link>
-      <pubDate>Tue, 13 May 2014 00:00:00 +0000</pubDate>
-      
-      <guid>http://massimoronca.it/2014/05/13/a-modern-workflow-for-wordpress-using-docker-and-dokku.html</guid>
-      <description>&lt;p&gt;Every developer, sooner or later, had to deal with &lt;a href=&#34;http://wordpress.org/&#34;&gt;WordPress&lt;/a&gt;, given it is one of the most popular Blog/CMS platform, if not &lt;strong&gt;the&lt;/strong&gt; most popular.&lt;br /&gt;
-According to Wikipedia, roughly 22% of the web sites run on it, (it means one web site in five) it is widely know by users, &lt;a href=&#34;https://wordpress.org/plugins/&#34;&gt;it has a large community&lt;/a&gt; (over 30 thousand contributed plugins) and it is easily supported by designers.&lt;/p&gt;
-
-&lt;p&gt;Unfortunately WP was targeted at non-developer people, it had a great success as hosted platform, but working with it from the developer perspective, especially if we look at the workflow, looks clunky and outdated.&lt;/p&gt;
-
-&lt;p&gt;Usually it involves:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;downloading a tar ball of the latest WordPress stable version&lt;/li&gt;
-&lt;li&gt;rename &lt;code&gt;wp-config-sample.php&lt;/code&gt; to &lt;code&gt;wp-config.php&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;if you&amp;rsquo;re using &lt;code&gt;git&lt;/code&gt; (and you should!), add the &lt;code&gt;wp-config.php&lt;/code&gt; to &lt;code&gt;.gitignore&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;open a connection (possibly not FTP, but probably it will be FTP) and (slowly) upload everything on the dest server&lt;/li&gt;
-&lt;li&gt;create a remote&lt;code&gt;wp-config.php&lt;/code&gt; with the production configuration&lt;/li&gt;
-&lt;li&gt;launch the installer&lt;/li&gt;
-&lt;li&gt;hope nobody will overwrite &lt;code&gt;wp-config.php&lt;/code&gt; with the local copy&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;On the other hand, modern workflows are built around some kind of version control system (usually &lt;code&gt;git&lt;/code&gt;) where the deploy is managed just by pushing a branch on the public server.&lt;br /&gt;
-This is called push-to-deploy and is the one used by &lt;a href=&#34;http://heroku.com&#34;&gt;Heroku&lt;/a&gt;.&lt;br /&gt;
-Fortunately, some smart guys created &lt;a href=&#34;http://www.docker.io&#34;&gt;Docker&lt;/a&gt; and &lt;a href=&#34;https://github.com/progrium/dokku&#34;&gt;Dokku&lt;/a&gt;, two projects that make possible to build you own personal-heroku-like &lt;a href=&#34;http://en.wikipedia.org/wiki/Platform_as_a_service&#34;&gt;PaaS&lt;/a&gt; in a matter of minutes (If you want to try it, &lt;a href=&#34;https://www.digitalocean.com/&#34;&gt;Digital Ocean&lt;/a&gt; offers cloud servers with Dokku preinstalled at a starting price of 5$/month).&lt;br /&gt;
-Let&amp;rsquo;s see how it applies to WordPress.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;In the rest of the article I&amp;rsquo;m going to use a few placeholders&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;app&lt;/code&gt; is the application name&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;dokku&lt;/code&gt; is the address (or hostanme if configured) of the destination server running Docker &amp;amp; Dokku&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;dokku-user&lt;/code&gt; is the user running Dokku on the remote machine&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;First of all we&amp;rsquo;re going to clone WP from &lt;a href=&#34;http://www.github.com&#34;&gt;github&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git clone git@github.com:WordPress/WordPress.git app
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then we create &lt;code&gt;wp-config.php&lt;/code&gt;, replace the configuration parameters with environment variables, and commit it.&lt;br /&gt;
-This way we won&amp;rsquo;t have to hardcode them.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;same technique can be used to configure the &lt;a href=&#34;http://codex.wordpress.org/Editing_wp-config.php#Security_Keys&#34;&gt;security keys&lt;/a&gt;, I didn&amp;rsquo;t, to keep things short.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;define(&#39;DB_NAME&#39;, getenv(&#39;WP_DB_NAME&#39;));
-
-/** MySQL database username */
-define(&#39;DB_USER&#39;, getenv(&#39;WP_DB_USER&#39;));
-
-/** MySQL database password */
-define(&#39;DB_PASSWORD&#39;, getenv(&#39;WP_DB_PASS&#39;));
-
-/** MySQL hostname */
-define(&#39;DB_HOST&#39;, getenv(&#39;WP_DB_HOST&#39;));
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git add wp-config.php
-git commit -m &#39;added WordPress configuration&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If you use &lt;a href=&#34;http://apache.org/&#34;&gt;Apache&lt;/a&gt;, you can set the values with &lt;a href=&#34;http://httpd.apache.org/docs/2.2/mod/mod_env.html&#34;&gt;&lt;code&gt;SetEnv&lt;/code&gt;&lt;/a&gt;, if you&amp;rsquo;re running &lt;a href=&#34;http://nginx.org/&#34;&gt;Nginx&lt;/a&gt; and &lt;a href=&#34;http://php-fpm.org/&#34;&gt;phpf-pm&lt;/a&gt;, you can use the &lt;a href=&#34;http://www.php.net/manual/it/install.fpm.configuration.php#example-73&#34;&gt;&lt;code&gt;ENV&lt;/code&gt; section&lt;/a&gt; of your application pool.&lt;br /&gt;
-You don&amp;rsquo;t need any of that when deploying through Dokku.&lt;/p&gt;
-
-&lt;p&gt;For our first deploy, we need to add a new &lt;code&gt;remote&lt;/code&gt; pointing at the Dokku  server&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git remote add dokku dokku-user@dokku:app
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and push the code&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git push dokku master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You will see something like this&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Counting objects: 163187, done.
-Delta compression using up to 4 threads.
-Compressing objects: 100% (33726/33726), done.
-Writing objects: 100% (163187/163187), 84.87 MiB | 4.95 MiB/s, done.
-Total 163187 (delta 128758), reused 163156 (delta 128730)
------&amp;gt; Building app ...
-       PHP (classic) app detected
------&amp;gt; Bundling NGINX 1.4.3
------&amp;gt; Bundling PHP 5.5.5
------&amp;gt; Bundling extensions
-       phpredis
-       mongo
------&amp;gt; Setting up default configuration
------&amp;gt; Vendoring binaries into slug
------&amp;gt; Discovering process types
-       Default process types for PHP (classic) -&amp;gt; web
------&amp;gt; Releasing app ...
------&amp;gt; Deploying app ...
------&amp;gt; Cleaning up ...
-=====&amp;gt; Application deployed:
-       http://app_url
-
-To dokku@dokku:app
- * [new branch]      master -&amp;gt; master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;As you can see, everything is already bundled with the PHP buildpack.&lt;br /&gt;
-Dokku has detected the PHP app and instructed Docker to create an isolated container that could run the application.&lt;/p&gt;
-
-&lt;p&gt;You can now open up a browser and point to app_url (it can have two formats: &lt;a href=&#34;http://ip_adress:port&#34;&gt;http://ip_adress:port&lt;/a&gt; or &lt;a href=&#34;http://app.defaultdomain&#34;&gt;http://app.defaultdomain&lt;/a&gt;. Either way, it should launch your app).&lt;/p&gt;
-
-&lt;p&gt;Our wp-config is empty right now, the server will reply with&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/JzhJclD.png&#34; alt=&#34;WP Error&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;That&amp;rsquo;s good news, it means it is actually responding to our request.&lt;/p&gt;
-
-&lt;p&gt;To finish our setup we need a couple more things:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;create a database&lt;/li&gt;
-&lt;li&gt;configure the app environment with the credentials&lt;br /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;To create a db in our app container, we&amp;rsquo;ll use the &lt;a href=&#34;https://github.com/Kloadut/dokku-md-plugin&#34;&gt;MariaDB plugin for Dokku&lt;/a&gt;.&lt;br /&gt;
-There&amp;rsquo;s also a &lt;a href=&#34;https://github.com/hughfletcher/dokku-mysql-plugin&#34;&gt;MySQL plugin&lt;/a&gt;, but it has some annoying bug and since MySQL and MariaDB
-are virtually identical, we&amp;rsquo;ll stick with the last one.&lt;br /&gt;
-Installing a plugin for Dokku is as easy as running&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cd /var/lib/dokku/plugins
-git clone https://github.com/Kloadut/dokku-md-plugin mariadb
-dokku plugins-install
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Some of them don&amp;rsquo;t require the final &lt;code&gt;plugins-install&lt;/code&gt; step, but it won&amp;rsquo;t hurt if you run it anyway.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Tip: you can run dokku commands on your local machine and execute them on the remote one with:
-&lt;code&gt;ssh dokku-host dokku-command&lt;/code&gt; (i.e. &lt;code&gt;ssh dokku help&lt;/code&gt;)&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;We can now create the database&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
- ssh dokku mariadb:create app
-
- -----&amp;gt; Creating /home/dokku/app/ENV
------&amp;gt; Setting config vars and restarting app
-DATABASE_URL: mysql2://root:VQpzDZRrEUAkUuAI@172.17.42.1:49170/db
------&amp;gt; Releasing app ...
------&amp;gt; Release complete!
------&amp;gt; Deploying app ...
------&amp;gt; Deploy complete!
-
------&amp;gt; app linked to mariadb/app database
-
------&amp;gt; MariaDB container created: mariadb/app
-
-       Host: 172.17.42.1
-       Port: 49170
-       User: &#39;root&#39;
-       Password: &#39;VQpzDZRrEUAkUuAI&#39;
-       Database: &#39;db&#39;
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and set set the Environment variables&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt; # the format is dokku config:set app key=value key=value
- # I splitted up the command on different lines for clarity
- ssh dokku config:set app WP_DB_HOST=&#39;172.17.42.1:49170&#39;
- ssh dokku config:set app WP_DB_NAME=&#39;db&#39;
- ssh dokku config:set app WP_DB_USER=&#39;root&#39;
- ssh dokku config:set app WP_DB_PASS=&#39;VQpzDZRrEUAkUuAI&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If everything went right, you should now see the standard WordPress install.&lt;br /&gt;
-Choose a title, create an admin user and you&amp;rsquo;re ready to go.&lt;br /&gt;
-You can work on your local copy, add plugins, work on your theme, and when you&amp;rsquo;re happy with it, you push all the changes and the app is automatically deployed and configured.&lt;/p&gt;
-
-&lt;p&gt;We just scratched the surface of what is possible with Docker &amp;amp; Dokku.&lt;br /&gt;
-In a next article we&amp;rsquo;ll see how to create a Dokku plugin to automate the entire process.&lt;/p&gt;
 </description>
     </item>
     
