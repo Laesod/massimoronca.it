@@ -17,7 +17,7 @@ tags:
 For a very long time the only way to extend Ruby with native estensions has been using `C`.  
 I don't have the numbers with me, but I guess `C` is not the first choice for Ruby programmers when they have to pick up a secondary/complentary language.   
 So I started investigating the possibility of writing them in other languages, taking advantage of the favorable moment: in the past 3-4 years we had an explosion of new languages that compile down to native code and can be easily used to produce a `C` equivalent shared library that Ruby can pick up and load.   
-  
+
 My main goal was to find languages that a Ruby programmer would understand effortlessly or with a minimum investment.   
 This first episode will focus on Go.   
 
@@ -47,7 +47,7 @@ func main() {} // Required but ignored
 
 Compile it with
 
-```shell
+```bash
 go build -buildmode=c-shared -o hello.so hello.go
 
 # if no error is returned you can check that the shared library is exporting
@@ -56,7 +56,7 @@ go build -buildmode=c-shared -o hello.so hello.go
 # 0000000000002050 T __cgoexp_d4a435ec6890_hello_world
 # 0000000000001ae0 T _hello_world <--- ALL SYSTEMS ARE GO
 ```
-    
+
 Have I already told you that [FFI](https://github.com/ffi/ffi/wiki) is awesome?
 
 ```ruby
@@ -71,7 +71,7 @@ end
 
 Say.hello_world
 # hello world
-#  => nil 
+#  => nil
 ```
 
 There are a few things you need to pay attention to:  
@@ -94,7 +94,7 @@ I've chosen it for very simple reasons:
 - it is real life code that's been downloaded a quarter million times so far
 
 > For the impatients: you can clone the [repo of the `go_fast_blank` gem on Github](https://github.com/mikamai/go_fast_blank).   
-> 
+>
 
 Even if `FFI` is great, it is still a dependency, that needs to be installed and maintained.   
 `C` extensions are usually self contained and take advantage of the `MRI` `C` programming interface to build the necessary exported APIs.   
@@ -175,7 +175,7 @@ Another thing you might have noticed is the reverse twin function `C.GoString` t
 Some of the code just refers to the `MRI` programming interface, defined in `ruby.h` and related headers.   
 For example `C.VALUE` is a macro for various types of pointers to data structures (from strings to function pointers) and `C.rb_define_method` defines a new method.   
 It takes four parameters: the class to which the method belongs to (in this case `C.rb_cString` which is the Ruby equivalent of the builtin `String` class), the name of the method (in this case `blank?`) a callback and the number of arguments (zero in our case).  
- 
+
 Basically we are writing something like
 
 ```ruby
@@ -237,7 +237,7 @@ Now we have a compiled, native, Ruby extension, launch `irb` and type
 ```ruby
 2.2.2 :001 > require 'go_fast_blank'
 go_fast_blank init
- => true 
+ => true
 ```
 
 You should see our extension announcing itself by printing `go_fast_blank init`.   
@@ -250,11 +250,11 @@ Go is between 2 and 4 times slower than the original Ruby implementation!
 ![GO, Y U SO SLOW](http://i.imgur.com/48BOGlI.png "Y U SO SLOW?")
 
 Well, first of all Go is not only slower than Ruby, but it's plateuing, looks like the speed
-of the Go extension is not influenced byt the length of the string, but it's just going as fast as it can, 
+of the Go extension is not influenced byt the length of the string, but it's just going as fast as it can,
 and that is the fastest speed possible.   
 A loss in performance was to be expected, Go generate code that interacts with its memory manager and scheduler, it is somewhat in between Java and compiled languages.   
 But honestly actually running slower than Ruby code was a real surprise.   
-According to this [Russ Cox answer](https://groups.google.com/forum/#!msg/golang-nuts/RTtMsgZi88Q/61hgyGSkWiQJ), calling `C` from Go has an aoverhead 
+According to this [Russ Cox answer](https://groups.google.com/forum/#!msg/golang-nuts/RTtMsgZi88Q/61hgyGSkWiQJ), calling `C` from Go has an aoverhead
 similar to calling ten Go functions, looks like Go is one of those languages that can run faster ported code, than calling
 the `C` implementation.   
 If every function call counts for ten, it's no wonder that calling it thousands of time in a tight loop, would cause such
@@ -277,14 +277,14 @@ Go some heavy lifting work, it can give some performance boost.
 
 Writing Ruby extensions in Go, especially in conjunction with the great `FFI` library, can be real fun.   
 You got the feeling of *"scripting Ruby"* without any of the drawbacks of writing low level `C` code.   
-Writing completely auto contained extensions, it's a lot more work, but it's more tedious than hard. 
+Writing completely auto contained extensions, it's a lot more work, but it's more tedious than hard.
 The situation could improve vastly when someone will wrap the Ruby programming interface in a nice Go package to hide the `C` inheritance and maybe
 write a [`go:generate`](https://blog.golang.org/generate) plugin to automate all the boilperplate code (for example
 exporting the functions to `C`). But in the end it is still a lot easier than writing pure `C`.    
 Perfomance wise though, I'm doubtful that you could have some gain just by rewriting parts of you app in Go.   
 It is in fact quite possibly the opposite.   
 Go has a performance problem when intercating with `C` and it's by design.   
-   
+
 
 However, there could be patterns where Go could be really helpful.  
 I'm sure Go channles and concurrency are worth exploring.  
