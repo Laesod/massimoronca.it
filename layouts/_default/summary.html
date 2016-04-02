@@ -8,8 +8,8 @@
   <div class='post-meta'>
     <i class="fa fa-clock-o"></i>
     <span class="small">
-    posted {{ if and (isset .Params "sourceurl") (isset .Params "sourcename") }}
-    in <a href="{{ .Params.sourceurl }}">{{ .Params.sourcename }}</a>
+    posted {{ if and (isset .Params "source_url") (isset .Params "source_name") }}
+    in <a href="{{ .Params.source_url }}">{{ .Params.source_name }}</a>
     {{ end }}
     on {{ .Date.Format "Monday, Jan 2 2006" }}
     </span>
