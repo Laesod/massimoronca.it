@@ -16,7 +16,7 @@ tags:
 
 
 
-![animate all the things](http://s2.quickmeme.com/img/32/325fc351053e41d230961a71308d37937e68192130d11a82308ae619571ef942.jpg)
+{{% figure src="http://s2.quickmeme.com/img/32/325fc351053e41d230961a71308d37937e68192130d11a82308ae619571ef942.jpg" title="animate all the things" %}}
 
 More often than not, our job involves opening up a console, typing some command and waiting for the output.   
 When I write articles, sometimes I feel the need to show how the commands behave interactively, not only the sequence of commands you have to type.  
@@ -25,7 +25,7 @@ It's easier to understand by looking at an animation, than reading
 
 For example, can you explain how the emmet plugin for VIM works, better than this, using only words?   
 
-![emmet plugin for VIM](https://qiita-image-store.s3.amazonaws.com/0/38647/86b91c27-f894-c969-89b0-5846408ad1db.gif)
+{{% figure src="https://qiita-image-store.s3.amazonaws.com/0/38647/86b91c27-f894-c969-89b0-5846408ad1db.gif" title="emmet plugin for VIM" %}}
 
 Fortunately, the solution is pretty easy.   
 You need a few open source tools, if you're on a Mac, like me, you should already have installed [Homebrew](http://brew.sh/), and Imagemagick (`brew install imagemagick`).  
@@ -69,7 +69,7 @@ OPTIONS
 
 Let's see how it looks
 
-![ttyrec session](http://i.imgur.com/q7NHxN0.gif)
+{{% figure src="http://i.imgur.com/q7NHxN0.gif" title="ttyrec session" %}}
 
 Now that we have a recorded sessions, we need to convert it to an animated GIF.   
 We'll use [`ttygif`](https://github.com/icholy/ttygif) for the task.  

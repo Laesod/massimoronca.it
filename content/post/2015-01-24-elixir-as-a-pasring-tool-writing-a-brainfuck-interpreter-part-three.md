@@ -26,7 +26,7 @@ Writing a performant compiler is probably one of the most challenging tasks for 
 Compilers just *transform* a source code written in a programming language to some other code, usually a different programming language (including intermediate languages and machine language).   
 Most of the time, they are built following a common design, this one
 
-![Compiler design](http://twimgs.com/ddj/images/article/2012/0512/latfig1.gif)
+{{% figure src="http://twimgs.com/ddj/images/article/2012/0512/latfig1.gif" title="Compiler design" %}}
 > copyright [Dr. Dobb's](http://www.drdobbs.com/architecture-and-design/the-design-of-llvm/240001128)
 
 Our compiler will be much simpler: we will completely skip the optimizer (for now) and will directly execute the output of the fronted (AST or abstract syntax tree, from now on).  

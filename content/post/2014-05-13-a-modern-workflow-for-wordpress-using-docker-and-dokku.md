@@ -120,7 +120,7 @@ You can now open up a browser and point to app_url (it can have two formats: htt
 
 Our wp-config is empty right now, the server will reply with  
 
-![WP Error](http://i.imgur.com/JzhJclD.png)
+{{% figure src="http://i.imgur.com/JzhJclD.png" title="WP Error" %}}
 
 That's good news, it means it is actually responding to our request.  
 

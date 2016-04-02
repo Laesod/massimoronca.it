@@ -21,7 +21,7 @@ To get used to the language and try some of the code in this post, you can start
 One of its best features are autocompletion of module and function names and the integrated documentation accessible with the command `h`.
 This is an example of an `iex` session:
 
-![image](http://i.imgur.com/IigY3j3.jpg)
+{{% figure src="http://i.imgur.com/IigY3j3.jpg" title="image" %}}
 
 
 ### Brainfuck, the language
@@ -261,7 +261,7 @@ The new memory will have `val` value at `addr` position.
 
 Not hard at all until now.
 
-![very easy](http://i.imgur.com/6oA7eED.png)
+{{% figure src="http://i.imgur.com/6oA7eED.png" title="very easy" %}}
 
 
 ### Let's talk about memory

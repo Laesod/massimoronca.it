@@ -108,10 +108,10 @@ Loops are a bit harder task though.
 The following are the representations of the two ways to define loops
 
 the `while` loop 
-![flow chart of while loop](http://i.imgur.com/IiIEPo8.jpg)  
+{{% figure src="http://i.imgur.com/IiIEPo8.jpg" title="flow chart of while loop" %}}  
 
 the `do until` loop
-![do until loop](http://i.imgur.com/Joke2ar.jpg)
+{{% figure src="http://i.imgur.com/Joke2ar.jpg" title="do until loop" %}}
 
 In Elixir specs they are defined as
 
@@ -193,7 +193,7 @@ Every time a `[` command is found,  the program is split in a smaller one and ex
 We have now a complete implementation of a brainfuck interpreter that can run any brainfuck program.  
 To test it let's run it inside `iex` the Elixir shell
 
-![iex brainfuck session](http://i.imgur.com/1lTQqee.gif) 
+{{% figure src="http://i.imgur.com/1lTQqee.gif" title="iex brainfuck session" %}} 
 
 In the next post I'll talk about testing the code, creating a project and compiling down to an executable and the command line tools.
 

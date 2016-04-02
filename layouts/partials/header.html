@@ -1,49 +1,12 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>{{ .Site.Title }}{{if ne .URL "/"}} - {{ .Title }}{{end}}</title>
+<header>
+  <a href="/"><img src="/assets/images/mr_logo.png" class="logo" alt="Massimo Ronca"></a>
+  <small>This is not the programmer you're looking for</small>
 
-    <!-- <base href="{{ .Site.BaseURL }}"> -->
-
-    {{ if isset .Params "tags" }}
-    <meta name="description" content="Welcome to Massimo Ronca website, this post is about: {{delimit .Params.tags ", "}}">
-    {{ else }}
-    <meta name="description" content="Welcome to Massimo Ronca website. I am a full stack developer, and definitely a tech enthusiast. This is about what I do."/>
-    {{ end }}
-
-    <link rel="stylesheet" href="/assets/stylesheets/fonts.css">
-    <link rel="stylesheet" href="/assets/stylesheets/styles.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-    <link rel="stylesheet" href="/assets/stylesheets/solarized-dark.css">
-    <script src="/assets/javascripts/highlight.pack.js"></script>
-
-    <link href="{{ .RSSlink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
-
-    <link rel="icon" type="image/png" href="/assets/images/icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <meta name="og:title" content="{{ .Title }}">
-    <meta name="og:type" content="website">
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header-title"><a href="/">Massimo Ronca</a></h1>
-
-        <img src="/assets/images/massimoronca.png" class="logo" alt="Massimo Ronca">
-        <p>This is not</p>
-        <p>the programmer</p>
-        <p>you're looking for</p>
-
-     <footer>
-       <a href="https://github.com/wstucco" title="Github"><img src="/assets/images/github-64.png" alt="Github" class="github-logo"> </a>
-       <a href="https://twitter.com/wstucco" title="Twitter"><img src="/assets/images/twitter-64.png" alt="Twitter" class="twitter-logo"> </a>
-       <a href="https://it.linkedin.com/in/massimoronca" title="Linkedin"><img src="/assets/images/linkedin-64.png" alt="Linkedin" class="linkedin-logo"> </a>
-      </footer>
-    </header>
+  <nav>
+    <ul>
+     <li><a href="https://github.com/wstucco" title="Github">Github</a></li>
+     <li><a href="https://twitter.com/wstucco" title="Twitter">Twitter</a></li>
+     <!-- <li><a href="https://it.linkedin.com/in/massimoronca" title="Linkedin"><img src="/assets/images/linkedin-64.png" alt="Linkedin" class="linkedin-logo"> </a></li> -->
+   </ul>
+  </nav>
+</header>

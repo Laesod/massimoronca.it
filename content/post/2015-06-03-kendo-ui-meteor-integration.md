@@ -203,7 +203,7 @@ Template.tweets.rendered = function() {
 
 And that could be all. If now you launch `meteor` inside the project folder and navigate to `http://localhost:3000` you should see a list of tweets automatically updating.   
 It's not the best looking app ever, but it works.   
-![](http://i.imgur.com/lXxC3Gg.png)
+{{% figure src="http://i.imgur.com/lXxC3Gg.png" title="" %}}
 
 Let's do something to improve the presentation layer.   
 I'm not a great designer, so I grabbed this [Twitter widget customization][6] from Codepen and copied the relevant bits inside `telerik-demo.css`.   
@@ -281,7 +281,7 @@ document.addEventListener("animationend", animationListener, false);
 ```
 
 much better now
-![](http://i.imgur.com/gr9F232.png)
+{{% figure src="http://i.imgur.com/gr9F232.png" title="" %}}
 
 You can see the application in action [here](http://telerik.meteor.com) and find the source code on [Mikamai's Github](https://github.com/mikamai/telerik-meteor-integration-demo)
 

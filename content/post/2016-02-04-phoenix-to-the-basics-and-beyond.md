@@ -55,9 +55,7 @@ Unfortunately (for me) I can't really Emacs, the fact that my favourite Emacs di
 Just for reference, if you are like me, `SPC m t a` launch `mix test` in a new buffer and rerun it every time you save a file.  
 As simple as it might look, Alchemist is the only environment that offers this feature out of the box (everytime in Spacemacs you see `, somekey someotherkey`, that comma is translated to `m` in Spacemacs bindings).
 
-![, somekey someotherkey](http://i.imgur.com/zkhBOii.png)
-
-> , somekey someotherkey
+{{% figure src="http://i.imgur.com/zkhBOii.png" title=", somekey someotherkey -> SPC m t a" %}}
 
 **TL;DR**: for hardcore Emacs users [Alchemist](http://www.alchemist-elixir.org/) is a must have.
 
@@ -88,25 +86,16 @@ Based on that, I will share my opinions on the different syntax highlighting eng
 IMHO the winner is SublimeText (and Textmate, the bundle is the same).  
 The different elements are clearly highlighted and less prominent ones (like comments) are low contrast, you can almost <q>not see them</q> after a little bit of training.
 
-![SublimeText 3](http://i.imgur.com/kgCAyls.png)
-
-> SublimeText 3
-
+{{% figure src="http://i.imgur.com/kgCAyls.png" title="SublimeText 3" %}}
 
 Emacs comes second, we have a clear distinction here too, but the different colours are too soft/pastel and comments look too bright.
 
-![Emacs](http://i.imgur.com/CSripmC.png)
+{{% figure src="http://i.imgur.com/CSripmC.png" title="Emacs" %}}
 
-> Emacs
-
-  
 Atom is the loser here.  
 I like a lot the polished interface and the look of the theme (the best of the lot), but the syntax highlighting is actually pretty cheap.
 
-![Atom](http://i.imgur.com/aL2Jmot.png)
-
-> Atom
-
+{{% figure src="http://i.imgur.com/aL2Jmot.png" title="Atom" %}}
 
 <a name="models"></a>
 
@@ -115,7 +104,6 @@ I like a lot the polished interface and the look of the theme (the best of the l
 Phoenix models are a very thin layer around [`Ecto models`](https://hexdocs.pm/ecto/Ecto.Model.html).  
 The [schema dsl](https://hexdocs.pm/ecto/Ecto.Schema.html) is very lightweight making it super easy to model the data layer.
 
-> What a minimal model looks like
 
 ```elixir
 defmodule App.Email do
@@ -127,6 +115,7 @@ defmodule App.Email do
   end
 end
 ```
+> What a minimal model looks like
 
 With `use App.Web, :model` you just import some packages defined in `web/web.ex` that you can customize.  
 Specifically, by default Phoenix `use`s `Ecto.model` and `import`s from `Ecto.Changeset` and `Ecto.Query`.  
@@ -161,7 +150,7 @@ defmodule App.Email do
 
   # autogenerate GUIDs through the included GUID generator
   # the type is binary_id
-  # by passing --binary-id to 'mix phoenix.new' 
+  # by passing --binary-id to 'mix phoenix.new'
   # binary_id is assumed as the default format for ids
   @primary_key {:key, :binary_id, autogenerate: true}
 
@@ -171,7 +160,7 @@ defmodule App.Email do
 ```
 
 That's all.  
-We can now safely browse urls like 
+We can now safely browse urls like
 `http://localhost/emails/1b72fe0b-5977-48bd-a19c-38140d1d1fed`.
 
 ### Custom validators
@@ -197,7 +186,7 @@ validate_length(changeset, field, opts)
 validate_number(changeset, field, opts)
 # Validates the properties of a number
 validate_subset(changeset, field, data, opts \\ [])
-# Validates a change, of type enum, is a subset of the given enumerable. 
+# Validates a change, of type enum, is a subset of the given enumerable.
 # Like validate_inclusion/4 for lists
 ```
 
@@ -221,8 +210,8 @@ defmodule Wejustsend.Email do
   def changeset(model, params \\ :empty) do
     model
     # build a changeset from params
-    # cast enforce the type of the fields and the presence of the required 
-    |> cast(params, @required_fields, @optional_fields) 
+    # cast enforce the type of the fields and the presence of the required
+    |> cast(params, @required_fields, @optional_fields)
     |> validate_name
     |> validate_address
   end

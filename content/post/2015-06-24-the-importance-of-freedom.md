@@ -11,4 +11,4 @@ tags:
 - Freedom in China
 ---
 
-![](/assets/images/freedom_china.jpg)
+{{% figure src="/assets/images/freedom_china.jpg" title="" %}}

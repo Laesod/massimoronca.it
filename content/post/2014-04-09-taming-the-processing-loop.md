@@ -15,7 +15,7 @@ In Mikamai we do a lot of reasearch on [non](http://dev.mikamai.com/post/7865218
 
 Like this one
 
-![image](https://scontent-b-ams.xx.fbcdn.net/hphotos-ash3/t1.0-9/994503_10151525258526336_667825845_n.jpg)  
+{{% figure src="https://scontent-b-ams.xx.fbcdn.net/hphotos-ash3/t1.0-9/994503_10151525258526336_667825845_n.jpg" title="image" %}}  
 
 Seriously, we did it.  
 

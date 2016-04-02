@@ -8,6 +8,6 @@ tags:
 - Tumblr email are hilarious
 ---
 
-![LOL](/assets/images/tumblr-email.jpg)
+{{% figure src="/assets/images/tumblr-email.jpg" title="LOL" %}}
 
 LOL
