@@ -3,9 +3,6 @@
     <a href="{{ .Permalink }}#content">{{ .Title }}</a>
   </h2>
   <p class="post-excerpt">
-    {{ if isset .Params "image" }}
-    <a href="{{ .Permalink }}#content"><img src="{{.Params.image }}" title="" class="left-side"></a>
-    {{ end }}
     {{ .Description | safeHTML }}
   </p>
   <div class='post-meta'>
@@ -24,4 +21,5 @@
     {{ delimit (apply . "partial" "post/tags" ".") ", " }}
     {{ end }}
     </span>
+  </div>
 </article>
