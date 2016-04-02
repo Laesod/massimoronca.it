@@ -6,6 +6,7 @@ draft: true
 tags:
 - cookie policy
 ---
+
     <h3>What are cookies in computers?</h3>
     <p>Also known as browser cookies or tracking cookies, cookies are small, often encrypted text files, located in browser directories. They are used by web developers to help users navigate their websites efficiently and perform certain functions. Due to their core role of enhancing/enabling usability or site processes,&nbsp;disabling cookies&nbsp;may prevent users from using certain websites.</p>
     <p>Cookies are created when a user's&nbsp;browser&nbsp;loads a particular website. The website sends information to the browser which then creates a text file. Every time the user goes back to the same website, the browser retrieves and sends this file to the website's server. Computer Cookies are created not just by the website the user is browsing but also by other websites that run ads, widgets, or other elements on the page being loaded. These cookies regulate how the ads appear or how the widgets and other elements function on the page.For Managing cookies for different browsers&nbsp;see here</p>

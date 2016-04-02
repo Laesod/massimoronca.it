@@ -244,10 +244,11 @@ You should see our extension announcing itself by printing `go_fast_blank init`.
 It's time to measure the performances and comment the results.   
 After launching `benchmark`, the numbers are:
 
-![Ruby VS Go](http://i.imgur.com/4YddNT2.png "Ruby VS Go")   
+{{% figure src="/assets/images/ruby-extensions-in-go/ruby-vs-go.png" title="Ruby VS Go" %}}
+
 Go is between 2 and 4 times slower than the original Ruby implementation!  
 
-![GO, Y U SO SLOW](http://i.imgur.com/48BOGlI.png "Y U SO SLOW?")
+{{% figure src="/assets/images/ruby-extensions-in-go/y-u-so-slow.png" title="GO, Y U SO SLOW?" %}}
 
 Well, first of all Go is not only slower than Ruby, but it's plateuing, looks like the speed
 of the Go extension is not influenced byt the length of the string, but it's just going as fast as it can,
@@ -263,7 +264,7 @@ To test this assumption, I moved the tight loop from Ruby to the Go extension: I
 inside a Go loop and the same I did on the Ruby side.   
 These are the new results:  
 
-![Ruby VS Go updated](http://i.imgur.com/hCDdCfA.png "")
+{{% figure src="/assets/images/ruby-extensions-in-go/ruby-vs-go-updated.png" title="Ruby VS Go updated" %}}
 
 This time Go ran a bit faster, but with long strings the same slowness arises.   
 I suspect the conversions routines from Ruby VALUE to Go strings are responsible for most of the overhead.   

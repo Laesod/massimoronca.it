@@ -430,7 +430,7 @@ pre code.hljs {
 }
 
 blockquote code {
-  font-size: 0.9em;
+  /*font-size: 1em;*/
   color: inherit;
   background: none;
   margin: 0 0.1em;

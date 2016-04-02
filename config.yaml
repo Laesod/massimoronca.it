@@ -4,3 +4,4 @@ title: "Massimo Ronca ~ a reckless programmer with a sarcastic wit"
 permalinks:
   post: /:year/:month/:day/:title.html
 uglyUrls: true
+Paginate: 20

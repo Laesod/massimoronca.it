@@ -222,4 +222,7 @@ Create a `menus/status-bar-clock.cson` and add
 ```
 
 Reload. The clock should be there at the bottom right, updating itself.  
+
+{{% figure src="https://i.github-camo.com/52956be24863412d823aa0ebc3404bae2a0ad373/68747470733a2f2f6769746875622e636f6d2f7773747563636f2f7374617475732d6261722d636c6f636b2f7261772f6d61737465722f73637265656e73686f742e706e67" %}}
+
 You can find the source code on [GitHub](https://github.com/wstucco/status-bar-) and the final package on [atom.io](https://atom.io/packages/status-bar-clock).

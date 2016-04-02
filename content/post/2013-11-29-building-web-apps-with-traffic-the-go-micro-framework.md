@@ -73,15 +73,15 @@ Our first route
 package main
 
 import (
-	"github.com/pilu/traffic"
+  "github.com/pilu/traffic"
 )
 
 var router *traffic.Router
 
 func main() {
-	router = traffic.New()
-	router.Get("/", RootHandler)
-	router.Run()
+  router = traffic.New()
+  router.Get("/", RootHandler)
+  router.Run()
 }
 ```
 
@@ -93,8 +93,8 @@ Routes can contain named parameters that are accesible using the `Param` functio
 router.Get(`/:width/:height/?`, ImageHandler)
 
 func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
-	width := r.Param("width")
-	height := r.Param("height")
+  width := r.Param("width")
+  height := r.Param("height")
 }
 ```
 
@@ -126,52 +126,52 @@ If a before filters write something in the Response Body, the request chain is i
 // If one of them fails and write to the response body, the execution stops
 // before reaching the actual handler
 router.Get(`/:width/?(:height)?/?`, ImageHandler).
-	AddBeforeFilter(RequireValidImageParameters).
-	AddBeforeFilter(GenerateImageCache)
+  AddBeforeFilter(RequireValidImageParameters).
+  AddBeforeFilter(GenerateImageCache)
 
 func RequireValidImageParameters(w traffic.ResponseWriter, r *traffic.Request) {
-	width, err := strconv.Atoi(r.Param("width"))
-	if err != nil { // conversion error, either var is empty or not a number
-		// cannot continue
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
+  width, err := strconv.Atoi(r.Param("width"))
+  if err != nil { // conversion error, either var is empty or not a number
+    // cannot continue
+    w.WriteHeader(http.StatusNotFound)
+    return
+  }
 
-	height, err := strconv.Atoi(r.Param("height"))
-	if err != nil {
-		// if height is omitted the image is gonna be a square
-		height = width
-	}
+  height, err := strconv.Atoi(r.Param("height"))
+  if err != nil {
+    // if height is omitted the image is gonna be a square
+    height = width
+  }
 
-	if (width <= 2560 && width > 0) && (height <= 2560 && height > 0) {
-		// set vars for the next filter
-	} else {
-		// bad request
-		w.WriteHeader(http.StatusBadRequest)
-		w.Render("400", nil)
-	}
+  if (width <= 2560 && width > 0) && (height <= 2560 && height > 0) {
+    // set vars for the next filter
+  } else {
+    // bad request
+    w.WriteHeader(http.StatusBadRequest)
+    w.Render("400", nil)
+  }
 }
 
 func GenerateImageCache(w traffic.ResponseWriter, r *traffic.Request) {
-	// pseudo code
-	if not cache_folder_exists and create_folder_fails
-		throw error with panic
+  // pseudo code
+  if not cache_folder_exists and create_folder_fails
+    throw error with panic
 
-	write_image_file_according_to_parameters
+  write_image_file_according_to_parameters
 }
 
 func ImageHandler(w traffic.ResponseWriter, r *traffic.Request) {
-	// output the image with the correct content-type
-	w.Header().Set("Content-Type", "image/jpeg")
+  // output the image with the correct content-type
+  w.Header().Set("Content-Type", "image/jpeg")
 
-	// at this point we can safely assume that the image file already exists
+  // at this point we can safely assume that the image file already exists
 }
 
 // this filter is global to the router and is applied before each request
 router.AddBeforeFilter(PoweredByHandler)
 
 func PoweredByHandler(w traffic.ResponseWriter, r *traffic.Request) {
-	w.Header().Set("X-Powered-By", "Grumpy cat")
+  w.Header().Set("X-Powered-By", "Grumpy cat")
 }
 ```
 
@@ -185,10 +185,10 @@ Traffic Response Writer has a method to render templates called `Render`, that t
 By default templates are placed in the `/view` folder.  
 Templates can be nested one isnide the other like in our `404` example
 
-```django
+```handlebars
 {% raw %}
 {{ template "includes/header" }}
-	<div class="error error-404"></div>
+  <div class="error error-404"></div>
 {{ template "includes/footer" }}
 {% endraw %}
 ```
@@ -196,7 +196,7 @@ If you are writing an API you might find the methods `WriteJSON` and `WriteXML` 
 
 Traffic also support serving static assets: every file placed in the `/public` folder is directly accessible.  
 For example if we put a css inside `/public/css/app.css` it will be automatically accessible as
-```http://address/css/app.css```.  
+`http://address/css/app.css`.  
 
 **Update**:  static files are served through `StaticMiddleware` that is added automatically only if environment is *‘development’*.
 Environment is set using the `TRAFFIC_ENV` variable, so if you set it to`production`, you have to manually add the `StaticMiddleware`  
@@ -217,14 +217,14 @@ The Traffic router has builtin handlers for `404` and `500` erros that can be cu
 router.NotFoundHandler = NotFoundHandler
 
 func NotFoundHandler(w traffic.ResponseWriter, r *traffic.Request) {
-	w.Render("404")
+  w.Render("404")
 }
 
 // Custom error handler
 router.ErrorHandler = ErrorHandler
 
 func ErrorHandler(w traffic.ResponseWriter, r *traffic.Request) {
-	w.Render("500")
+  w.Render("500")
 }
 ```
 

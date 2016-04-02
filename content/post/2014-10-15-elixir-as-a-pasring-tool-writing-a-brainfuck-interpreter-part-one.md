@@ -299,9 +299,3 @@ Almost no need to explain what it is going on, the data pointer is simply increm
 In the next post I'll talk about how to handle expanding the memory tape when needed and, the most fun part, where Elixir capabilities really shine, handling loops and jumps in a very easy way.
 
 > [I've created a gist with all the code presented in this post](https://gist.github.com/wstucco/bc6a5037fe8b1fbf1cf0), of course it misses loops, but you can use it as a starting point for your own experiments
-
-
-
-
-
-

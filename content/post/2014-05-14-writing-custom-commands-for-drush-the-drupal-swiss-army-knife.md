@@ -45,7 +45,7 @@ Drush search for commandfiles in the following locations:
 - `sites/all/drush` in the current Drupal installation
 - all enabled modules folders in the current Drupal installation
 
-##Implementing the command
+## Implementing the command
 
 To implement a Drush command, the script must implement the drush_command hook.
 This function must return a data structure containing all the informations that define your custom command.  
@@ -96,8 +96,8 @@ function drush_diceroller_roll_dice($faces=6) {
     '!n' => $rolls
   )));
   // for n=0..$rolls
-    // roll the nth dice
-    // print the result
+  // roll the nth dice
+  // print the result
 }
 
 ```

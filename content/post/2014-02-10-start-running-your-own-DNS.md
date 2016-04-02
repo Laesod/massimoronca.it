@@ -98,7 +98,7 @@ $ dig google-public-dns-a.google.com @127.0.0.1
 ;; Query time: 0 msec
 ```
 
-Bonus: if you run Apache on your dev machine, you can easily setup the *one virtual host to rule them all* through [mass vistrual hosting](http://httpd.apache.org/docs/2.4/vhosts/mass.html).  
+Bonus: if you run Apache on your dev machine, you can easily setup the *one virtual host to rule them all* through [mass virtual hosting](http://httpd.apache.org/docs/2.4/vhosts/mass.html).  
 
 Edit `/etc/apache2/extra/httpd-vhosts.conf` and add this configuration, every `.dev` domain will point to a folder with the same name, but without the extension, in `~/Sites` folder.  
 For example, `myapp.dev` will point to `~/Sites/myapp`.

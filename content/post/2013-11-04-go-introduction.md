@@ -237,6 +237,7 @@ http.ListenAndServe(":8080", NewMiddleware())
 ```
 
 Every time a client connects, it doesn't receive any message back, except for the new header.
+
 ![X-Powered-By mikamai][27]
 
 Nice, but not very interesting, plus we lost the ability to serve the content to the client, cause
@@ -310,7 +311,7 @@ et voilà
 
 All the code presented in this article can be downlaoded from [github][36]
 
-  [1]: http://upload.wikimedia.org/wikipedia/commons/2/23/Golang.png "Gopher"
+  [1]: /assets/images/i-tried-go-and-i-liked-it/gopher.png "Gopher"
   [2]: http://golang.org/doc/gopher/
   [3]: http://google.com
   [4]: http://golang.org
@@ -336,13 +337,13 @@ All the code presented in this article can be downlaoded from [github][36]
   [24]: http://play.golang.org/
   [25]: http://nodejs.org/about/
   [26]: http://golang.org/ref/spec#Function_literals
-  [27]: http://31.media.tumblr.com/83ea05b44971684313f8d6d1c535b2d9/tumblr_mvhrpwaNvX1rhmakfo1_r1_500.png
-  [28]: http://24.media.tumblr.com/aedc0f5dd849aae18ef022f7d10f3dad/tumblr_mvhrpwaNvX1rhmakfo2_r1_1280.png
-  [29]: http://31.media.tumblr.com/d3cd5cabdc9bb2a83f12923093d6581f/tumblr_mvhrpwaNvX1rhmakfo3_r1_1280.png
+  [27]: /assets/images/i-tried-go-and-i-liked-it/x-powered-by-mikamai.png
+  [28]: /assets/images/i-tried-go-and-i-liked-it/middleware-deny.png
+  [29]: /assets/images/i-tried-go-and-i-liked-it/middleware-permit.png
   [30]: http://google.com
   [31]: http://golang.org
   [32]: http://en.wikipedia.org/wiki/Rob_Pike "Rob Pike"
   [33]: http://en.wikipedia.org/wiki/Ken_Thompson "Ken Thompson"
   [34]: http://plan9.bell-labs.com/plan9/glenda.html "Glenda the Plan9 Bunny"
-  [35]: http://25.media.tumblr.com/a472850a96238d71194c7fbb23909ae7/tumblr_mvhrpwaNvX1rhmakfo4_r2_1280.png
+  [35]: /assets/images/i-tried-go-and-i-liked-it/middleware-console.png
   [36]: https://gist.github.com/wstucco/7248624
