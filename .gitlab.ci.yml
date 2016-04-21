@@ -2,6 +2,7 @@ image: publysher/hugo
 
 pages:
   script:
+  - rm -rf public/*
   - hugo
   artifacts:
     paths:
